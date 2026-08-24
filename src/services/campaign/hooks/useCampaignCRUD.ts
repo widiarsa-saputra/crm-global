@@ -11,7 +11,7 @@ interface DeleteCampaignParams {
     id: number;
 }
 
-export const useDeleteCampaign = () => {
+const useDeleteCampaign = () => {
     return useBaseDelete<DeleteCampaignParams, GeneralRes, SingleCampaignResponse>({
         endpoint: ({ id }) => `${API_VERSION}/campaigns/${id}`,
         schema: GeneralResponseSchema,
@@ -19,15 +19,15 @@ export const useDeleteCampaign = () => {
     });
 };
 
+export default useDeleteCampaign;
 
-
-
+const API_VERSION = "v1";
 
 interface IndexCampaignProps {
     params?: { [key: string]: unknown };
 }
 
-export const useIndexCampaign = (query?: IndexCampaignProps) =>
+const useIndexCampaign = (query?: IndexCampaignProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/campaigns`,
@@ -39,11 +39,11 @@ export const useIndexCampaign = (query?: IndexCampaignProps) =>
         schema: IndexCampaignResponseSchema,
     });
 
+export default useIndexCampaign;
 
+const API_VERSION = "v1";
 
-
-
-export const useUpdateCampaign = () => {
+const useUpdateCampaign = () => {
     return useBaseUpdate<UpdateCampaignPayload, SingleCampaignResponse, SingleCampaignResponse>({
         endpoint: `${API_VERSION}/campaigns`,
         schema: SingleCampaignSchema,
@@ -51,5 +51,5 @@ export const useUpdateCampaign = () => {
     });
 };
 
-
+export default useUpdateCampaign;
 
