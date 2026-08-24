@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+
+  <!-- ANTI CACHE TAGS (Wajib ditambahkan) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <link rel="icon" type="image/png" href="/logo/ic_logo.png" />
+  <link rel="apple-touch-icon" href="/logo/ic_logo.png" />
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#001944" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+  <title>Bimbel Online</title>
+</head>
+
+<body>
+  <!-- Script Cache Busting Version Check -->
+  <script>
+    (function () {
+      // 1. Matikan Service Worker lama (kalau ada/pernah terpasang)
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function (registrations) {
+          if (registrations.length > 0) {
+            for (var i = 0; i < registrations.length; i++) {
+              registrations[i].unregister();
+            }
+            // Force reload agar SW benar-benar terlepas dan tidak meng-intercept request file JS/JSON
+            window.location.reload();
+          }
+        });
+      }
+
+      // 2. Cek file version.json ke server
+      // Menggunakan "?t=" agar file JSON dipaksa ambil baru dari server, bukan cache
+      fetch('/version.json?t=' + Date.now())
+        .then(function (response) { 
+          return response.text();
+        })
+        .then(function (text) {
+          if (text.trim().startsWith('<')) {
+            throw new Error("File version.json tidak ditemukan, menerima fallback HTML.");
+          }
+          return JSON.parse(text);
+        })
+        .then(function (data) {
+          var latestVersion = data.version;
+          var currentVersion = localStorage.getItem('app_version');
+
+          // 3. Bandingkan versi
+          if (currentVersion && currentVersion !== latestVersion) {
+            // Update memori karena versi berbeda
+            localStorage.setItem('app_version', latestVersion);
+
+            // Reload halaman dengan menyelipkan code unik di link (memaksa tarik ulang js/css)
+            var url = new URL(window.location.href);
+            url.searchParams.set('v', latestVersion);
+            window.location.replace(url.toString()); // Force Refresh!
+          } else {
+            // Pengunjung baru: simpan versi untuk ke depannya
+            localStorage.setItem('app_version', latestVersion);
+          }
+        })
+        .catch(function (e) {
+          console.warn('Gagal mengecek versi update:', e.message || e);
+        });
+    })();
+  </script>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>

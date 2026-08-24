@@ -1,0 +1,133 @@
+{
+    "common": {
+        "close": "Tutup"
+    },
+    "sidebar": {
+        "title": "Sidebar",
+        "main": "Main",
+        "master": "Master"
+    },
+    "menu": {
+        "dashboard": "Dasbor",
+        "inventory-stock": "Stok Inventaris",
+        "hutang-piutang": "Hutang Piutang",
+        "penjualan": "Penjualan",
+        "pelanggan": "Pelanggan",
+        "laporan-analitik": "Laporan & Analitik",
+        "post": "Postingan",
+        "file-manager": "Pengelola Berkas",
+        "user-management": "Manajemen Pengguna",
+        "permissions": "Izin",
+        "roles": "Peran",
+        "setting-konfigurasi": "Pengaturan & Konfigurasi"
+    },
+    "dashboard": {
+        "title": "Dasbor",
+        "total-sales-today": "Total Penjualan Hari Ini",
+        "total-transactions": "Total Transaksi",
+        "low-stock-warning": "Peringatan Stok Rendah",
+        "new-customers-today": "Pelanggan Baru Hari Ini",
+        "yesterday": "kemarin",
+        "new-warning": "peringatan baru",
+        "sales": {
+            "title": "Penjualan",
+            "this-month": "Penjualan Bulan Ini",
+            "last-month": "Penjualan Bulan Lalu",
+            "this-week": "Penjualan Minggu Ini",
+            "last-week": "Penjualan Minggu Lalu"
+        },
+        "top-customers": {
+            "title": "Pelanggan Teratas",
+            "timeframe": {
+                "title": "Rentang Waktu",
+                "last-90-days": "90 Hari Terakhir",
+                "last-30-days": "30 Hari Terakhir",
+                "last-7-days": "7 Hari Terakhir",
+                "last-24-hours": "24 Jam Terakhir"
+            },
+            "table": {
+                "user-name": "Nama Pengguna",
+                "total-spent": "Total Dibelanjakan",
+                "total-transactions": "Total Transaksi",
+                "last-transaction": "Transaksi Terakhir",
+                "action": {
+                    "title": "Aksi",
+                    "see-detail": "Lihat Detail"
+                }
+            }
+        },
+        "transactions-history": {
+            "title": "Riwayat Transaksi",
+            "transactions": {
+                "all-transactions": "Semua Transaksi",
+                "income": "Pendapatan",
+                "expenses": "Pengeluaran"
+            },
+            "timeframe": {
+                "title": "Rentang Waktu",
+                "last-90-days": "90 Hari Terakhir",
+                "last-30-days": "30 Hari Terakhir",
+                "last-7-days": "7 Hari Terakhir",
+                "last-24-hours": "24 Jam Terakhir"
+            },
+            "status": {
+                "all-status": "Semua Status",
+                "completed": "Selesai",
+                "pending": "Menunggu",
+                "cancelled": "Dibatalkan"
+            },
+            "table": {
+                "transaction-type": "Tipe Transaksi",
+                "user-name": "Nama Pengguna",
+                "time": "Waktu",
+                "amount": "Jumlah",
+                "status": "Status",
+                "action": {
+                    "title": "Aksi",
+                    "see-detail": "Lihat Detail"
+                }
+            }
+        },
+        "notification": {
+            "title": "Notifikasi",
+            "table": {
+                "type": "Tipe",
+                "title": "Judul",
+                "message": "Pesan",
+                "date": "Tanggal",
+                "action": {
+                    "title": "Aksi",
+                    "see-detail": "Lihat Detail"
+                }
+            }
+        }
+    },
+    "user-management": {
+        "title": "Manajemen Pengguna",
+        "add-user": "Tambah Pengguna",
+        "edit-user": "Edit Pengguna",
+        "user-list": "Daftar Pengguna",
+        "card": {
+            "total-users": "Total Pengguna",
+            "active-users": "Pengguna Aktif",
+            "inactive-users": "Pengguna Tidak Aktif",
+            "recently-added": "Baru Ditambahkan"
+        },
+        "table": {
+            "title": "Daftar Pengguna",
+            "name": "Nama",
+            "email": "Email",
+            "phone": "Telepon",
+            "role": "Peran",
+            "action": {
+                "title": "Aksi",
+                "edit": "Edit",
+                "delete": "Hapus"
+            },
+            "no-role": "Tidak Ada Peran"
+        }
+    },
+    "test": {
+        "title": "test"
+    }
+}

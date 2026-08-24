@@ -1,0 +1,140 @@
+{
+    "common": {
+        "close": "Close",
+        "sort": {
+            "title": "Sort By",
+            "asc": "Ascending",
+            "desc": "Descending"
+        }
+    },
+    "sidebar": {
+        "title": "Sidebar",
+        "main": "Main",
+        "master": "Master"
+    },
+    "menu": {
+        "dashboard": "Dashboard",
+        "inventory-stock": "Inventory Stock",
+        "hutang-piutang": "Accounts Payable & Receivable",
+        "penjualan": "Sales",
+        "pelanggan": "Customers",
+        "laporan-analitik": "Reports & Analytics",
+        "post": "Post",
+        "file-manager": "File Manager",
+        "user-management": "User Management",
+        "permissions": "Permissions",
+        "roles": "Roles",
+        "setting-konfigurasi": "Settings & Configuration"
+    },
+    "dashboard": {
+        "title": "Dashboard",
+        "total-sales-today": "Total Sales Today",
+        "total-transactions": "Total Transactions",
+        "low-stock-warning": "Low Stock Warning",
+        "new-customers-today": "New Customers Today",
+        "yesterday": "yesterday",
+        "new-warning": "new warning",
+        "sales": {
+            "title": "Sales",
+            "this-month": "Sales This Month",
+            "last-month": "Sales Last Month",
+            "this-week": "Sales This Week",
+            "last-week": "Sales Last Week"
+        },
+        "top-customers": {
+            "title": "Top Customers",
+            "timeframe": {
+                "title": "Timeframe",
+                "last-90-days": "Last 90 Days",
+                "last-30-days": "Last 30 Days",
+                "last-7-days": "Last 7 Days",
+                "last-24-hours": "Last 24 Hours"
+            },
+            "table": {
+                "user-name": "User Name",
+                "total-spent": "Total Spent",
+                "total-transactions": "Total Transactions",
+                "last-transaction": "Last Transaction",
+                "action": {
+                    "title": "Action",
+                    "see-detail": "See Detail"
+                }
+            }
+        },
+        "transactions-history": {
+            "title": "Transactions History",
+            "transactions": {
+                "title": "Transactions",
+                "all-transactions": "All Transactions",
+                "income": "Income",
+                "expenses": "Expenses"
+            },
+            "timeframe": {
+                "title": "Timeframe",
+                "last-90-days": "Last 90 Days",
+                "last-30-days": "Last 30 Days",
+                "last-7-days": "Last 7 Days",
+                "last-24-hours": "Last 24 Hours"
+            },
+            "status": {
+                "title": "Status",
+                "all-status": "All Status",
+                "completed": "Completed",
+                "pending": "Pending",
+                "cancelled": "Cancelled"
+            },
+            "table": {
+                "transaction-type": "Transaction Type",
+                "user-name": "User Name",
+                "time": "Time",
+                "amount": "Amount",
+                "status": "Status",
+                "action": {
+                    "title": "Action",
+                    "see-detail": "See Detail"
+                }
+            }
+        },
+        "notification": {
+            "title": "Notification",
+            "table": {
+                "type": "Type",
+                "title": "Title",
+                "message": "Message",
+                "date": "Date",
+                "action": {
+                    "title": "Action",
+                    "see-detail": "See Detail"
+                }
+            }
+        }
+    },
+    "user-management": {
+        "title": "User Management",
+        "add-user": "Add User",
+        "edit-user": "Edit User",
+        "user-list": "User List",
+        "card" : {
+            "total-users": "Total Users",
+            "active-users": "Active Users",
+            "inactive-users": "Inactive Users",
+            "recently-added": "Recently Added"
+        },
+        "table": {
+            "title": "User List",
+            "name": "Name",
+            "email": "Email",
+            "phone": "Phone",
+            "role": "Role",
+            "action": {
+                "title": "Action",
+                "edit": "Edit",
+                "delete": "Delete"
+            },
+            "no-role": "No Role"
+        }
+    },
+    "test": {
+        "title": "test"
+    }
+}
