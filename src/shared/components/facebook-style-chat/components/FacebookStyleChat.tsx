@@ -49,7 +49,7 @@ const FacebookStyleChat: React.FC = () => {
     const userMap = useMemo(() => {
         const map = new Map<string, string>();
         if (isAllUsersSuccess && allUsersData?.data) {
-            allUsersData.data.forEach((appUser: SingleUserResponse) => {
+            (allUsersData.data as any[]).forEach((appUser: SingleUserResponse) => {
                 map.set(appUser.id, appUser.name); // Simpan -> '123': 'Komang'
             });
         }

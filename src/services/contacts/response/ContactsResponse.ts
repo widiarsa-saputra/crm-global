@@ -1,7 +1,6 @@
 import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
-export const CreateContactResponseSchema = BaseResponseSchema(SingleContactSchema);
 
 export type CreateContactResponse = z.infer<typeof CreateContactResponseSchema>;
 
@@ -18,7 +17,6 @@ export const DeleteContactDataSchema = z.nullable(
     })
 ).optional();
 
-export const DeleteContactResponseSchema = BaseResponseSchema(DeleteContactDataSchema);
 
 export type DeleteContactResponse = z.infer<typeof DeleteContactResponseSchema>;
 
@@ -43,17 +41,24 @@ export const SingleContactSchema = z.object({
 
 export const ContactListSchema = z.array(SingleContactSchema);
 
-export const IndexContactResponseSchema = BaseResponseSchema(ContactListSchema);
 
 export type IndexContactResponse = z.infer<typeof IndexContactResponseSchema>;
 
 export type SingleContactResponse = z.infer<typeof SingleContactSchema>;
 
-export const ShowContactResponseSchema = BaseResponseSchema(SingleContactSchema);
 
 export type ShowContactResponse = z.infer<typeof ShowContactResponseSchema>;
 
-export const UpdateContactResponseSchema = BaseResponseSchema(SingleContactSchema);
 
 export type UpdateContactResponse = z.infer<typeof UpdateContactResponseSchema>;
 
+
+export const CreateContactResponseSchema = BaseResponseSchema(SingleContactSchema);
+
+export const DeleteContactResponseSchema = BaseResponseSchema(DeleteContactDataSchema);
+
+export const IndexContactResponseSchema = BaseResponseSchema(ContactListSchema);
+
+export const ShowContactResponseSchema = BaseResponseSchema(SingleContactSchema);
+
+export const UpdateContactResponseSchema = BaseResponseSchema(SingleContactSchema);

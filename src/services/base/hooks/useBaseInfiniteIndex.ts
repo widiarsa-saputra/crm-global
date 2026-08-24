@@ -8,8 +8,8 @@ interface RequestConfig extends Partial<AxiosRequestConfig> {
     endpoint: string;
 }
 
-export interface InfiniteQueryConfig<T> extends Omit<
-    UseInfiniteQueryOptions<T, Error, import("@tanstack/react-query").InfiniteData<T>, T, string[], number>,
+export interface InfiniteQueryConfig extends Omit<
+    UseInfiniteQueryOptions<any, any, any, any, any>,
     "queryFn" | "queryKey" | "initialPageParam" | "getNextPageParam"
 > {
     key: string;
@@ -17,7 +17,7 @@ export interface InfiniteQueryConfig<T> extends Omit<
 
 interface UseBaseInfiniteIndexProps<T> {
     request: RequestConfig;
-    query: InfiniteQueryConfig<T>;
+    query: InfiniteQueryConfig;
     schema: ZodSchema<T>;
 }
 

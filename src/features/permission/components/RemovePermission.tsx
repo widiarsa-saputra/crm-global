@@ -37,7 +37,7 @@ const RemovePermission: React.FC<Props> = ({ permission }) => {
             variant="ghost"
             size="sm"
             className="h-6 px-2 text-red-600 hover:text-red-800"
-            onClick={() => onRemove(permission.id)}
+            onClick={() => onRemove(Number(permission.id))}
             aria-label="Delete"
         >
             <Trash className="h-4 w-4" />

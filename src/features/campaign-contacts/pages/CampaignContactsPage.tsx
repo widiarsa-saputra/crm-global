@@ -12,8 +12,8 @@ import {
 } from '@/components/ui/table';
 import { MousePointerClick, CheckCircle2, XCircle, Users, Percent, FileText, Edit, Play, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import { campaignService } from '@/services/campaign';
-import { campaignContactService } from '@/services/campaign-contact';
+import { useIndexCampaign } from "@/services/campaign";
+import { privateApi } from "@/api/api";
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 
@@ -41,20 +41,17 @@ const CampaignContactsPage: React.FC = () => {
     ];
 
     // API Query for Master Campaign List
-    const { data: apiCampaigns, isError: isCampaignsError, isLoading: isCampaignsLoading } = useQuery({
-        queryKey: ['campaigns'],
-        queryFn: campaignService.getAll,
-        retry: 1
-    });
+    const { data: apiCampaignsRes, isError: isCampaignsError, isLoading: isCampaignsLoading } = useIndexCampaign();
+    const apiCampaigns = apiCampaignsRes?.data || [];
 
     // API Query for Campaign Contacts Details
     const { data: apiContacts, isError: isContactsError, isLoading: isContactsLoading } = useQuery({
         queryKey: ['campaign-contacts', selectedCampaignId],
-        queryFn: () => campaignContactService.getByCampaignId(selectedCampaignId),
+        queryFn: () => privateApi.get(`/v1/campaigns/${selectedCampaignId}/contacts`).then(res => res.data.data),
         retry: 1
     });
 
-    const campaigns = isCampaignsError || !apiCampaigns ? mockCampaigns : apiCampaigns.map(c => ({
+    const campaigns = isCampaignsError || !apiCampaigns ? mockCampaigns : apiCampaigns.map((c: any) => ({
         id: c.id,
         name: c.campaign_name,
         segment: c.segment_name || "Unknown Segment",
@@ -74,7 +71,7 @@ const CampaignContactsPage: React.FC = () => {
         }
     };
 
-    const contacts = isContactsError || !apiContacts ? mockContacts : apiContacts.map(c => ({
+    const contacts = isContactsError || !apiContacts ? mockContacts : apiContacts.map((c: any) => ({
         id: c.id,
         name: c.contact_name || "Unknown",
         email: c.contact_email || "Unknown",
@@ -84,14 +81,14 @@ const CampaignContactsPage: React.FC = () => {
         sentAt: c.sent_at || "-"
     }));
 
-    const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
+    const selectedCampaign = campaigns.find((c: any) => c.id === selectedCampaignId);
 
-    const filteredContacts = contacts.filter(c =>
+    const filteredContacts = contacts.filter((c: any) =>
         c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
         c.email.toLowerCase().includes(contactSearch.toLowerCase())
     );
 
-    const filteredCampaigns = campaigns.filter(c =>
+    const filteredCampaigns = campaigns.filter((c: any) =>
         c.name.toLowerCase().includes(campaignSearch.toLowerCase()) ||
         c.segment.toLowerCase().includes(campaignSearch.toLowerCase())
     );
@@ -140,7 +137,7 @@ const CampaignContactsPage: React.FC = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {filteredContacts.map((contact) => (
+                                    {filteredContacts.map((contact: any) => (
                                         <TableRow key={contact.id} className="hover:bg-slate-50">
                                             <TableCell className="font-medium">{contact.name}</TableCell>
                                             <TableCell className="text-muted-foreground">{contact.email}</TableCell>
@@ -204,7 +201,7 @@ const CampaignContactsPage: React.FC = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {paginatedCampaigns.map((campaign) => (
+                                    {paginatedCampaigns.map((campaign: any) => (
                                         <TableRow
                                             key={campaign.id}
                                             className={`cursor-pointer ${selectedCampaignId === campaign.id ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-slate-50'}`}

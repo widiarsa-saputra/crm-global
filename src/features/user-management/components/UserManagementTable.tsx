@@ -45,7 +45,7 @@ const UserManagementTable: React.FC<Props> = ({ users }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {users.data.map((user) => (
+                        {(users.data as any[]).map((user: any) => (
                             <UserItems user={user} key={user.id} />
                         ))}
                     </tbody>

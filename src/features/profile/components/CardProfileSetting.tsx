@@ -22,9 +22,9 @@ const CardProfileSetting: React.FC = () => {
     useEffect(() => {
         if (userFetch && isSuccess) {
             reset({
-                name: userFetch.data.name,
-                email: userFetch.data.email,
-                phone: userFetch.data.phone,
+                name: userFetch.data!.name,
+                email: userFetch.data!.email,
+                phone: userFetch.data!.phone,
             });
         }
     }, [userFetch]);
@@ -48,9 +48,9 @@ const CardProfileSetting: React.FC = () => {
                     if (res.data) {
                         relogin({
                             ...res.data.data,
-                            roles: res.data.data.roles ?? [],
-                            permissions: res.data.data.permissions ?? [],
-                            photo_url: res.data.data.photo_url ?? undefined,
+                            roles: res.data.data!.roles ?? [],
+                            permissions: res.data.data!.permissions ?? [],
+                            photo_url: res.data.data!.photo_url ?? undefined,
                         } as LoginData);
                     }
                 });

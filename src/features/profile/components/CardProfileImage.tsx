@@ -33,10 +33,10 @@ const CardProfileImage: React.FC = () => {
                 if (res.data) {
                     relogin({
                         ...res.data.data,
-                        roles: res.data.data.roles ?? [],
-                        permissions: res.data.data.permissions ?? [],
-                        photo_url: res.data.data.photo_url ?? undefined,
-                    });
+                        roles: res.data.data!.roles ?? [],
+                        permissions: res.data.data!.permissions ?? [],
+                        photo_url: res.data.data!.photo_url ?? undefined,
+                    } as any);
                 }
             });
         },

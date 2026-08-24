@@ -74,7 +74,7 @@ export const useIndexContact = (query: IndexContactProps) =>
 
 
 
-interface IndexContactProps {
+interface IndexContactInfiniteProps {
     params?: {
         segment_id?: string;
         search?: string;
@@ -83,7 +83,7 @@ interface IndexContactProps {
     };
 }
 
-export const useIndexContactInfinite = (query: IndexContactProps) =>
+export const useIndexContactInfinite = (query: IndexContactInfiniteProps) =>
     useBaseInfiniteIndex({
         request: {
             endpoint: `${API_VERSION}/contacts`,

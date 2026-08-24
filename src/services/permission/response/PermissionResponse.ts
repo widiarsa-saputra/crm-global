@@ -11,27 +11,27 @@ export const PermissionSchema = z.object({
     id: z.string(),
 });
 
-export const CreatePermissionResponseSchema = BaseResponseSchema(PermissionSchema);
 
 export type CreatePermissionResponse = z.infer<typeof CreatePermissionResponseSchema>;
-export const DeletePermissionResponseSchema = BaseResponseSchema(PermissionSchema);
 
 export type DeletePermissionResponse = z.infer<typeof DeletePermissionResponseSchema>;
 
-const PermissionRoleSchema = z.object({
-    id: z.number(),
-    display_name: z.string(),
-    name: z.string(),
-});
+
 export const IndexPermissionResponseSchema = BaseResponseSchema(z.array(PermissionSchema));
 
 export type IndexPermissionResponse = z.infer<typeof IndexPermissionResponseSchema>;
 
 export type SinglePermissionResponse = z.infer<typeof PermissionSchema>;
-export const ShowPermissionResponseSchema = BaseResponseSchema(PermissionSchema);
 
 export type ShowPermissionResponse = z.infer<typeof ShowPermissionResponseSchema>;
-export const UpdatePermissionResponseSchema = BaseResponseSchema(PermissionSchema);
 
 export type UpdatePermissionResponse = z.infer<typeof UpdatePermissionResponseSchema>;
 
+
+export const CreatePermissionResponseSchema = BaseResponseSchema(PermissionSchema);
+
+export const DeletePermissionResponseSchema = BaseResponseSchema(PermissionSchema);
+
+export const ShowPermissionResponseSchema = BaseResponseSchema(PermissionSchema);
+
+export const UpdatePermissionResponseSchema = BaseResponseSchema(PermissionSchema);

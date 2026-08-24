@@ -1,7 +1,6 @@
 import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
-export const CreateSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
 
 export type CreateSegmentResponse = z.infer<typeof CreateSegmentResponseSchema>;
 
@@ -14,7 +13,6 @@ export const DeleteSegmentDataSchema = z.nullable(
     })
 ).optional();
 
-export const DeleteSegmentResponseSchema = BaseResponseSchema(DeleteSegmentDataSchema);
 
 export type DeleteSegmentResponse = z.infer<typeof DeleteSegmentResponseSchema>;
 
@@ -27,17 +25,24 @@ export const SingleSegmentSchema = z.object({
 
 export const SegmentListSchema = z.array(SingleSegmentSchema);
 
-export const IndexSegmentResponseSchema = BaseResponseSchema(SegmentListSchema);
 
 export type IndexSegmentResponse = z.infer<typeof IndexSegmentResponseSchema>;
 
 export type SingleSegmentResponse = z.infer<typeof SingleSegmentSchema>;
 
-export const ShowSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
 
 export type ShowSegmentResponse = z.infer<typeof ShowSegmentResponseSchema>;
 
-export const UpdateSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
 
 export type UpdateSegmentResponse = z.infer<typeof UpdateSegmentResponseSchema>;
 
+
+export const CreateSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
+
+export const DeleteSegmentResponseSchema = BaseResponseSchema(DeleteSegmentDataSchema);
+
+export const IndexSegmentResponseSchema = BaseResponseSchema(SegmentListSchema);
+
+export const ShowSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
+
+export const UpdateSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);

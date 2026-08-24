@@ -189,7 +189,7 @@ const CampaignsPage: React.FC = () => {
                                                     variant="ghost" 
                                                     size="icon" 
                                                     className="h-8 w-8 text-red-600"
-                                                    onClick={() => deleteMutation.mutate({ id: campaign.id })}
+                                                    onClick={() => deleteMutation.mutate({ id: Number(campaign.id) })}
                                                     disabled={deleteMutation.isPending}
                                                 >
                                                     <Trash2 className="w-4 h-4" />

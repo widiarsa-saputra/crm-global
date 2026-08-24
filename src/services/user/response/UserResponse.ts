@@ -2,19 +2,8 @@ import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema"
 import { PermissionSchema } from "@/services/permission";
 import { z } from "zod";
 
-export const UserSchema = z.object({
-    name: z.string(),
-    email: z.string().email("Invalid email address"),
-    phone: z.string().optional(),
-    id: z.string(),
-    updated_at: z.string(),
-    created_at: z.string(),
-});
-
-export const CreateUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
-export const DeleteUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type DeleteUserResponse = z.infer<typeof DeleteUserResponseSchema>;
 
@@ -24,7 +13,7 @@ const UserRoleSchema = z.object({
     name: z.string(),
 });
 
-export const SingleUserSchema = z.object({
+export const UserSchema = z.object({
     id: z.string(),
     name: z.string(),
     email: z.string().email("Invalid email address"),
@@ -34,15 +23,22 @@ export const SingleUserSchema = z.object({
     roles: z.array(UserRoleSchema).optional(),
     permissions: z.array(PermissionSchema).optional()
 });
-export const IndexUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type IndexUserResponse = z.infer<typeof IndexUserResponseSchema>;
 
-export type SingleUserResponse = z.infer<typeof SingleUserSchema>;
-export const ShowUserResponseSchema = BaseResponseSchema(UserSchema);
+export type SingleUserResponse = z.infer<typeof UserSchema>;
 
 export type ShowUserResponse = z.infer<typeof ShowUserResponseSchema>;
-export const UpdateUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;
 
+
+export const CreateUserResponseSchema = BaseResponseSchema(UserSchema);
+
+export const DeleteUserResponseSchema = BaseResponseSchema(UserSchema);
+
+export const IndexUserResponseSchema = BaseResponseSchema(z.array(UserSchema));
+
+export const ShowUserResponseSchema = BaseResponseSchema(UserSchema);
+
+export const UpdateUserResponseSchema = BaseResponseSchema(UserSchema);

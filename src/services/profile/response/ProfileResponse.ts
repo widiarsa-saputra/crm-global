@@ -1,13 +1,17 @@
 import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
-const UserSchema = z.array(z.object({
+const UserSchema = z.object({
     // definisikan properti user sesuai kebutuhan, contoh:
     id: z.string(),
     name: z.string(),
     email: z.string(),
+    phone: z.string().optional(),
+    roles: z.array(z.any()).optional(),
+    permissions: z.array(z.any()).optional(),
+    photo_url: z.string().optional(),
     // dst...
-})).nullable().optional();
+}).nullable().optional();
 
 export const ChangePasswordResponseSchema = BaseResponseSchema(UserSchema);
 
@@ -29,18 +33,9 @@ export const ChangePhotoResponseSchema = BaseResponseSchema(UserWithPhotoSchema)
 
 export type ChangePhotoResponse = z.infer<typeof ChangePhotoResponseSchema>;
 
-const RoleSchema = z.object({
-    id: z.number(),
-    display_name: z.string(),
-    name: z.string(),
-});
 
-const PermissionSchema = z.object({
-    id: z.number(),
-    display_name: z.string(),
-    name: z.string(),
-    group: z.string(),
-});
+
+
 export const GetUserLoginResponseSchema = BaseResponseSchema(UserSchema);
 
 export type GetUserLoginResponse = z.infer<typeof GetUserLoginResponseSchema>;

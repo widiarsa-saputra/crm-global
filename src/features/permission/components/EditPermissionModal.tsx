@@ -40,7 +40,7 @@ const EditPermissionModal: React.FC<Props> = ({ permission }) => {
     useEffect(() => {
         if (open && permission) {
             reset({
-                id: permission.id,
+                id: Number(permission.id),
                 data: {
                     display_name: permission.display_name,
                     group: permission.group,
