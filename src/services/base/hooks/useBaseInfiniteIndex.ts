@@ -8,8 +8,8 @@ interface RequestConfig extends Partial<AxiosRequestConfig> {
     endpoint: string;
 }
 
-export interface InfiniteQueryConfig extends Omit<
-    UseInfiniteQueryOptions<any, any, any, any, any>,
+export interface InfiniteQueryConfig<T> extends Omit<
+    UseInfiniteQueryOptions<T, Error, import("@tanstack/react-query").InfiniteData<T>, string[], number>,
     "queryFn" | "queryKey" | "initialPageParam" | "getNextPageParam"
 > {
     key: string;
@@ -17,7 +17,7 @@ export interface InfiniteQueryConfig extends Omit<
 
 interface UseBaseInfiniteIndexProps<T> {
     request: RequestConfig;
-    query: InfiniteQueryConfig;
+    query: InfiniteQueryConfig<T>;
     schema: ZodSchema<T>;
 }
 
@@ -26,7 +26,14 @@ const buildQueryKey = (key: string, params?: Record<string, unknown>): string[] 
     return [key, ...entries];
 };
 
-const useBaseInfiniteIndex = <T extends BaseResponse<any>>({ request, query, schema }: UseBaseInfiniteIndexProps<T>) => {
+interface PaginatedResponse {
+    pagination?: {
+        current_page: number;
+        last_page: number;
+    } | null;
+}
+
+const useBaseInfiniteIndex = <T extends BaseResponse<unknown> & PaginatedResponse>({ request, query, schema }: UseBaseInfiniteIndexProps<T>) => {
     const {
         endpoint,
         method = "get",
@@ -40,7 +47,7 @@ const useBaseInfiniteIndex = <T extends BaseResponse<any>>({ request, query, sch
 
     const queryKey = buildQueryKey(query.key, params);
 
-    return useInfiniteQuery({
+    return useInfiniteQuery<T, Error, import("@tanstack/react-query").InfiniteData<T>, string[], number>({
         queryKey,
         initialPageParam: 1,
         queryFn: async ({ pageParam }) => {
@@ -72,7 +79,7 @@ const useBaseInfiniteIndex = <T extends BaseResponse<any>>({ request, query, sch
             }
         },
         getNextPageParam: (lastPage: T) => {
-            const pagination = (lastPage as any)?.pagination;
+            const pagination = lastPage.pagination;
             if (pagination && pagination.current_page < pagination.last_page) {
                 return pagination.current_page + 1;
             }

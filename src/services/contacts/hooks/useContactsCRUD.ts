@@ -6,8 +6,8 @@ import useBaseShow from "@/services/base/hooks/useBaseShow";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import { CreateContactResponse, CreateContactResponseSchema } from "@/services/contacts";
 import { DeleteContactResponse, DeleteContactResponseSchema } from "@/services/contacts";
-import { IndexContactResponseSchema, SingleContactResponse } from "@/services/contacts";
-import { ShowContactResponseSchema } from "@/services/contacts";
+import { IndexContactResponse, IndexContactResponseSchema, SingleContactResponse } from "@/services/contacts";
+import { ShowContactResponse, ShowContactResponseSchema } from "@/services/contacts";
 import { UpdateContactResponse, UpdateContactResponseSchema } from "@/services/contacts";
 import { CreateContact } from "@/services/contacts";
 import { UpdateContact } from "@/services/contacts";
@@ -59,7 +59,7 @@ interface IndexContactProps {
 }
 
 export const useIndexContact = (query: IndexContactProps) =>
-    useBaseIndex({
+    useBaseIndex<IndexContactResponse>({
         request: {
             endpoint: `${API_VERSION}/contacts`,
             params: query.params,
@@ -84,7 +84,7 @@ interface IndexContactInfiniteProps {
 }
 
 export const useIndexContactInfinite = (query: IndexContactInfiniteProps) =>
-    useBaseInfiniteIndex({
+    useBaseInfiniteIndex<IndexContactResponse>({
         request: {
             endpoint: `${API_VERSION}/contacts`,
             params: query.params,
@@ -104,7 +104,7 @@ interface ShowContactProps {
 }
 
 export const useShowContact = ({ id }: ShowContactProps) =>
-    useBaseShow({
+    useBaseShow<ShowContactResponse>({
         request: {
             endpoint: `${API_VERSION}/contacts`,
             id,

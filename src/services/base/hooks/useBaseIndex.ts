@@ -39,7 +39,7 @@ const useBaseIndex = <T>({ request, query, schema }: UseBaseIndexProps<T>) => {
 
     const queryKey = buildQueryKey(query.key, params);
 
-    return useQuery({
+    return useQuery<T, unknown, T, string[]>({
         queryKey,
         queryFn: async () => {
             try {

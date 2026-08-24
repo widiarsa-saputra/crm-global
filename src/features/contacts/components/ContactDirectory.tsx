@@ -73,7 +73,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    const contacts = isError || !apiResponse ? mockContacts : apiResponse.pages.flatMap((page: any) => page.data).map((c: any) => ({
+    const contacts = isError || !apiResponse ? mockContacts : apiResponse.pages.flatMap((page) => page.data).map((c) => ({
         id: c.id.toString(),
         name: c.nama,
         email: c.email,
@@ -114,7 +114,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             {/* Grid Content */}
             <ScrollArea className="flex-1 p-6">
                 <div ref={gridRef} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
-                    {contacts.map((contact: any) => (
+                    {contacts.map((contact) => (
                         <div key={contact.id} className="bg-background rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow relative group w-[250px]">
                             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <DropdownMenu>
@@ -141,7 +141,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             <div className="flex flex-col items-center text-center mt-2 mb-4">
                                 <Avatar className="h-16 w-16 mb-3">
                                     <AvatarFallback className="bg-primary/10 text-primary text-lg">
-                                        {contact.name.split(' ').map((n: any) => n[0]).join('').substring(0, 2)}
+                                        {contact.name.split(' ').map((n) => n[0]).join('').substring(0, 2)}
                                     </AvatarFallback>
                                 </Avatar>
                                 <h3 className="font-semibold text-sm line-clamp-1">{contact.name}</h3>
