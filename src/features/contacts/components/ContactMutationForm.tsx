@@ -4,11 +4,14 @@ import { FloatingInput } from '@/components/FloatingInput';
 import Combobox from '@/components/Combobox';
 import { Mail, User, Building, ShieldCheck, Users } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
+import { CreateContact, UpdateContact } from '@/services/contacts';
+
+type ContactFormValues = CreateContact | UpdateContact;
 
 export interface ContactMutationFormProps {
     formId: string;
-    form: UseFormReturn<any>;
-    onSubmit: (data: any) => void;
+    form: UseFormReturn<ContactFormValues>;
+    onSubmit: (data: ContactFormValues) => void;
 }
 
 const emailStatusOptions = [
@@ -19,8 +22,12 @@ const emailStatusOptions = [
 ];
 
 export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId, form, onSubmit }) => {
-    const { control, handleSubmit, formState: { errors } } = form;
+    const { control, handleSubmit, formState: { errors }, watch } = form;
     const { data: apiSegments } = useIndexSegment({});
+
+    const watchedNama = watch('nama');
+    const watchedEmail = watch('email');
+    const watchedCompany = watch('company');
 
     const segmentOptions = useMemo(() => {
         if (!apiSegments?.data) return [];
@@ -41,7 +48,8 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                         label="Name"
                         icon={User}
                         required
-                        error={errors.nama?.message as string}
+                        watch={watchedNama}
+                        error={errors.nama?.message}
                         inputProps={{
                             ...field,
                             placeholder: "Enter full name",
@@ -60,7 +68,8 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                         icon={Mail}
                         type="email"
                         required
-                        error={errors.email?.message as string}
+                        watch={watchedEmail}
+                        error={errors.email?.message}
                         inputProps={{
                             ...field,
                             placeholder: "email@example.com",
@@ -77,10 +86,11 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                         id="company"
                         label="Company (Optional)"
                         icon={Building}
-                        error={errors.company?.message as string}
+                        watch={watchedCompany}
+                        error={errors.company?.message}
                         inputProps={{
                             ...field,
-                            value: field.value || "",
+                            value: field.value ?? "",
                             placeholder: "Company name",
                         }}
                     />
@@ -99,7 +109,7 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                             options={segmentOptions}
                             value={field.value ? String(field.value) : null}
                             onChange={(option) => field.onChange(option.value)}
-                            error={errors.segment_id?.message as string}
+                            error={errors.segment_id?.message}
                         />
                     )}
                 />
@@ -113,9 +123,9 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                             label="Email Status"
                             icon={ShieldCheck}
                             options={emailStatusOptions}
-                            value={field.value}
+                            value={field.value ?? null}
                             onChange={(option) => field.onChange(option.value)}
-                            error={errors.email_status?.message as string}
+                            error={errors.email_status?.message}
                         />
                     )}
                 />
