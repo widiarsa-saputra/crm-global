@@ -13,7 +13,12 @@ import {
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIndexContactInfinite } from '@/services/contacts';
+import { SingleContactResponse } from '@/services/contacts';
 import { useInView } from 'react-intersection-observer';
+import { AddContactModal } from './AddContactModal';
+import { EditContactModal } from './EditContactModal';
+import { MoveSegmentModal } from './MoveSegmentModal';
+import { RemoveContactAlert } from './RemoveContactAlert';
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
@@ -23,6 +28,18 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
     const [searchTerm, setSearchTerm] = useState('');
     const gridRef = useRef<HTMLDivElement>(null);
     const [columns, setColumns] = useState(1);
+    const [selectedContact, setSelectedContact] = useState<SingleContactResponse | null>(null);
+    const [dialog, setDialog] = useState<'edit' | 'move' | 'delete' | null>(null);
+
+    const handleOpenDialog = (type: 'edit' | 'move' | 'delete', contact: SingleContactResponse) => {
+        setSelectedContact(contact);
+        setDialog(type);
+    };
+
+    const handleCloseDialog = () => {
+        setDialog(null);
+        setSelectedContact(null);
+    };
 
     useEffect(() => {
         const currentRef = gridRef.current;
@@ -47,7 +64,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         email: `contact${i + 1}@example.com`,
         company: i % 3 === 0 ? 'Tech Corp' : 'Business LLC',
         segment: i % 2 === 0 ? 'VIP' : 'Hot Leads',
-        status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid')
+        status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid'),
+        _raw: null as SingleContactResponse | null,
     }));
 
     const { ref: observerRef, inView } = useInView();
@@ -79,7 +97,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         email: c.email,
         company: c.company || '-',
         segment: c.segment?.name || 'Unassigned',
-        status: c.email_status
+        status: c.email_status,
+        _raw: c,
     }));
 
     const getStatusColor = (status: string) => {
@@ -104,10 +123,14 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 />
                 <div className="flex items-center gap-2">
                     {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
-                    <Button >
-                        <Plus className="w-4 h-4 mr-2" />
-                        Add Contact
-                    </Button>
+                    <AddContactModal
+                        trigger={
+                            <Button>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Add Contact
+                            </Button>
+                        }
+                    />
                 </div>
             </div>
 
@@ -124,14 +147,17 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end" className="w-40">
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => contact._raw && handleOpenDialog('edit', contact._raw)}>
                                             <Edit2 className="w-4 h-4 mr-2 text-muted-foreground" /> Edit
                                         </DropdownMenuItem>
-                                        <DropdownMenuItem>
+                                        <DropdownMenuItem onClick={() => contact._raw && handleOpenDialog('move', contact._raw)}>
                                             <MoveRight className="w-4 h-4 mr-2 text-muted-foreground" /> Move Segment
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem className="text-red-600 focus:bg-red-50 focus:text-red-600">
+                                        <DropdownMenuItem
+                                            className="text-red-600 focus:bg-red-50 focus:text-red-600"
+                                            onClick={() => contact._raw && handleOpenDialog('delete', contact._raw)}
+                                        >
                                             <Trash2 className="w-4 h-4 mr-2" /> Delete
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
@@ -173,6 +199,26 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 )}
                 <div ref={observerRef} className="h-4 w-full" />
             </ScrollArea>
+
+            {selectedContact && (
+                <>
+                    <EditContactModal
+                        contact={selectedContact}
+                        isOpen={dialog === 'edit'}
+                        onClose={handleCloseDialog}
+                    />
+                    <MoveSegmentModal
+                        contact={selectedContact}
+                        isOpen={dialog === 'move'}
+                        onClose={handleCloseDialog}
+                    />
+                    <RemoveContactAlert
+                        contact={selectedContact}
+                        isOpen={dialog === 'delete'}
+                        onClose={handleCloseDialog}
+                    />
+                </>
+            )}
         </div>
     );
 };

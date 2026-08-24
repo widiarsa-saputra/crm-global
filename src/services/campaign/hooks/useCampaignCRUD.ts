@@ -13,7 +13,7 @@ interface DeleteCampaignParams {
 
 export const useDeleteCampaign = () => {
     return useBaseDelete<DeleteCampaignParams, GeneralRes, SingleCampaignResponse>({
-        endpoint: ({ id }) => `${API_VERSION}/campaigns/${id}`,
+        endpoint: ({ id }) => `${API_VERSION}/blast-campaigns/${id}`,
         schema: GeneralResponseSchema,
         queryKey: "campaign-list",
     });
@@ -30,7 +30,7 @@ interface IndexCampaignProps {
 export const useIndexCampaign = (query?: IndexCampaignProps) =>
     useBaseIndex<IndexCampaignResponse>({
         request: {
-            endpoint: `${API_VERSION}/campaigns`,
+            endpoint: `${API_VERSION}/blast-campaigns`,
             params: query?.params,
         },
         query: {
@@ -45,7 +45,7 @@ export const useIndexCampaign = (query?: IndexCampaignProps) =>
 
 export const useUpdateCampaign = () => {
     return useBaseUpdate<UpdateCampaignPayload, SingleCampaignResponse, SingleCampaignResponse>({
-        endpoint: `${API_VERSION}/campaigns`,
+        endpoint: `${API_VERSION}/blast-campaigns`,
         schema: SingleCampaignSchema,
         queryKey: "campaign-list",
     });
