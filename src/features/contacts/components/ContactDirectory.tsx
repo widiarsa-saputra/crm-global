@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Search, Plus, MoreHorizontal, Mail, Building, Trash2, Edit2, MoveRight, Loader2 } from 'lucide-react';
+import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
+import { Plus, MoreHorizontal, Mail, Building, Trash2, Edit2, MoveRight, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -12,13 +12,34 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import useIndexContact from '@/services/contacts/hooks/useIndexContact';
+import useIndexContactInfinite from '@/services/contacts/hooks/useIndexContactInfinite';
+import { useInView } from 'react-intersection-observer';
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
 }
 
 export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId }) => {
+    const [searchTerm, setSearchTerm] = useState('');
+    const gridRef = useRef<HTMLDivElement>(null);
+    const [columns, setColumns] = useState(1);
+
+    useEffect(() => {
+        const currentRef = gridRef.current;
+        if (!currentRef) return;
+
+        const observer = new ResizeObserver((entries) => {
+            for (const entry of entries) {
+                const width = entry.contentRect.width;
+                const cols = Math.max(1, Math.floor(width / 250));
+                setColumns(cols);
+            }
+        });
+
+        observer.observe(currentRef);
+        return () => observer.disconnect();
+    }, []);
+
     // Mock data for contacts
     const mockContacts = Array.from({ length: 12 }).map((_, i) => ({
         id: i.toString(),
@@ -29,11 +50,30 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid')
     }));
 
-    const { data: apiResponse, isError, isLoading } = useIndexContact({
-        params: { segment_id: activeSegmentId || undefined },
+    const { ref: observerRef, inView } = useInView();
+
+    const { 
+        data: apiResponse, 
+        isError, 
+        isLoading,
+        fetchNextPage,
+        hasNextPage,
+        isFetchingNextPage
+    } = useIndexContactInfinite({
+        params: { 
+            segment_id: activeSegmentId || undefined,
+            search: searchTerm || undefined,
+            per_page: 50
+        },
     });
 
-    const contacts = isError || !apiResponse ? mockContacts : apiResponse.data.map(c => ({
+    useEffect(() => {
+        if (inView && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+
+    const contacts = isError || !apiResponse ? mockContacts : apiResponse.pages.flatMap(page => page.data).map(c => ({
         id: c.id.toString(),
         name: c.nama,
         email: c.email,
@@ -54,18 +94,17 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
     return (
         <div className="flex-1 flex flex-col h-full bg-slate-50/50">
             {/* Header */}
-            <div className="p-4 border-b bg-background flex items-center justify-between gap-4">
-                <div className="relative flex-1 max-w-md">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search name, email, or company..."
-                        className="pl-8 bg-muted/50"
-                    />
-                </div>
+            <div className="p-4 border-b flex items-center justify-between gap-x-4">
+                <DebouncedSearchInput
+                    value={searchTerm}
+                    onChange={setSearchTerm}
+                    placeholder="Search name, email, or company..."
+                    className="flex-1 max-w-md"
+                    inputClassName="bg-muted/50"
+                />
                 <div className="flex items-center gap-2">
                     {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
-                    <Button>
+                    <Button >
                         <Plus className="w-4 h-4 mr-2" />
                         Add Contact
                     </Button>
@@ -74,9 +113,9 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
             {/* Grid Content */}
             <ScrollArea className="flex-1 p-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div ref={gridRef} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
                     {contacts.map((contact) => (
-                        <div key={contact.id} className="bg-background rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow relative group">
+                        <div key={contact.id} className="bg-background rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow relative group w-[250px]">
                             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -127,6 +166,12 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                         </div>
                     ))}
                 </div>
+                {isFetchingNextPage && (
+                    <div className="flex justify-center py-4">
+                        <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                    </div>
+                )}
+                <div ref={observerRef} className="h-4 w-full" />
             </ScrollArea>
         </div>
     );

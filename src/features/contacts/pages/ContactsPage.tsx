@@ -8,7 +8,7 @@ const ContactsPage: React.FC = () => {
 
     return (
         <AdminLayout>
-            <div className="flex h-full overflow-hidden w-full bg-background">
+            <div className="flex h-full overflow-hidden w-full">
                 {/* Sidebar untuk Segment Management */}
                 <SegmentSidebar 
                     activeSegmentId={activeSegmentId} 

@@ -4,8 +4,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Search, Users, Folder, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useQuery } from '@tanstack/react-query';
-import { segmentService } from '@/services/segment';
+import useIndexSegment from '@/services/segments/hooks/useIndexSegment';
 
 interface SegmentSidebarProps {
     onSelectSegment: (id: string | null) => void;
@@ -21,28 +20,24 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
         { id: '4', name: 'New Signups', count: 450 },
     ];
 
-    const { data: apiSegments, isError, isLoading } = useQuery({
-        queryKey: ['segments'],
-        queryFn: segmentService.getAll,
-        retry: 1
-    });
+    const { data: apiSegments, isError, isLoading } = useIndexSegment({});
 
     // Determine segments to render
-    const segments = isError || !apiSegments ? mockSegments : apiSegments.map((s) => ({
+    const segments = isError || !apiSegments ? mockSegments : apiSegments.data.map((s) => ({
         id: s.id.toString(),
         name: s.name,
         count: 0, // Fallback to 0 if count is not provided by API
     }));
 
     return (
-        <div className="w-64 border-r bg-background flex flex-col h-full">
+        <div className="w-64 border-r flex flex-col h-full">
             <div className="p-4 border-b">
-                <Button className="w-full justify-start gap-2" size="sm">
+                <Button className="w-full justify-start gap-2">
                     <Plus className="w-4 h-4" />
                     Add Segment
                 </Button>
             </div>
-            
+
             <div className="p-4 border-b space-y-4">
                 <div className="relative">
                     <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -52,7 +47,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                         className="pl-8 bg-muted/50"
                     />
                 </div>
-                
+
                 <div className="space-y-1">
                     <Button
                         variant={activeSegmentId === null ? "secondary" : "ghost"}
