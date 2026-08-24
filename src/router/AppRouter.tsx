@@ -14,6 +14,10 @@ import AllNotificationPage from "@/features/notification/pages/AllNotificationPa
 import NotFound from "@/shared/components/error-page/NotFound";
 import FileManagerPage from "@/features/file-manager/pages/FileManagerPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
+import ContactsPage from "@/features/contacts/pages/ContactsPage";
+import CampaignsPage from "@/features/campaigns/pages/CampaignsPage";
+import CampaignContactsPage from "@/features/campaign-contacts/pages/CampaignContactsPage";
+import TemplatesPage from "@/features/templates/pages/TemplatesPage";
 
 import { Folder, Lock, ShieldCheck, UserCircle, Users } from "lucide-react";
 
@@ -68,6 +72,35 @@ export const ROUTES: Record<string, AppRoute> = {
     },
 
 
+
+    CONTACTS: {
+        path: "/contacts",
+        element: <ContactsPage />,
+        protected: true,
+        roles: [],
+        permissions: [],
+    },
+    CAMPAIGNS: {
+        path: "/campaigns",
+        element: <CampaignsPage />,
+        protected: true,
+        roles: [],
+        permissions: [],
+    },
+    CAMPAIGN_CONTACTS: {
+        path: "/campaign-contacts",
+        element: <CampaignContactsPage />,
+        protected: true,
+        roles: [],
+        permissions: [],
+    },
+    TEMPLATES: {
+        path: "/templates",
+        element: <TemplatesPage />,
+        protected: true,
+        roles: [],
+        permissions: [],
+    },
 
     // Admin settings
     USER_MANAGEMENT: {
