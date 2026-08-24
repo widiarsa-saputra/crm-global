@@ -9,7 +9,7 @@ import { useFormSubmit } from '@/shared/hooks/useFormSubmit';
 import { useForm } from 'react-hook-form';
 import { ChangePhoto } from '@/services/profile';
 import { toast } from 'sonner';
-import useGetUserLogin from '@/services/profile';
+import { useGetUserLogin } from '@/services/profile';
 
 const CardProfileImage: React.FC = () => {
     // 1. Setup hooks dan referensi

@@ -28,7 +28,7 @@ export const useCreateContact = () =>
         },
     });
 
-const API_VERSION = "v1";
+
 
 interface DeleteContactParams {
     id: string;
@@ -47,7 +47,7 @@ export const useDeleteContact = () =>
         },
     });
 
-const API_VERSION = "v1";
+
 
 interface IndexContactProps {
     params?: {
@@ -58,7 +58,7 @@ interface IndexContactProps {
     };
 }
 
-const useIndexContact = (query: IndexContactProps) =>
+export const useIndexContact = (query: IndexContactProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/contacts`,
@@ -70,9 +70,9 @@ const useIndexContact = (query: IndexContactProps) =>
         schema: IndexContactResponseSchema,
     });
 
-export default useIndexContact;
 
-const API_VERSION = "v1";
+
+
 
 interface IndexContactProps {
     params?: {
@@ -83,7 +83,7 @@ interface IndexContactProps {
     };
 }
 
-const useIndexContactInfinite = (query: IndexContactProps) =>
+export const useIndexContactInfinite = (query: IndexContactProps) =>
     useBaseInfiniteIndex({
         request: {
             endpoint: `${API_VERSION}/contacts`,
@@ -95,15 +95,15 @@ const useIndexContactInfinite = (query: IndexContactProps) =>
         schema: IndexContactResponseSchema,
     });
 
-export default useIndexContactInfinite;
 
-const API_VERSION = "v1";
+
+
 
 interface ShowContactProps {
     id: string;
 }
 
-const useShowContact = ({ id }: ShowContactProps) =>
+export const useShowContact = ({ id }: ShowContactProps) =>
     useBaseShow({
         request: {
             endpoint: `${API_VERSION}/contacts`,
@@ -115,9 +115,9 @@ const useShowContact = ({ id }: ShowContactProps) =>
         schema: ShowContactResponseSchema,
     });
 
-export default useShowContact;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateContact = () =>
     useBaseUpdate<UpdateContact, UpdateContactResponse, SingleContactResponse>({

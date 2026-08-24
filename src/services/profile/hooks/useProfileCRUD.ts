@@ -24,7 +24,7 @@ export const useChangePassword = () => {
     });
 };
 
-const API_VERSION = "v1";
+
 
 export const useChangePhoto = () => {
     // *** INI PERUBAHANNYA ***
@@ -37,9 +37,9 @@ export const useChangePhoto = () => {
     });
 };
 
-const API_VERSION = "v1";
 
-const useGetUserLogin = () =>
+
+export const useGetUserLogin = () =>
     useBaseIndex({
         query: {
             key: 'user',
@@ -50,9 +50,9 @@ const useGetUserLogin = () =>
         schema: GetUserLoginResponseSchema,
     });
 
-export default useGetUserLogin;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateProfile = () => {
     return useBaseUpdate<UpdateProfile, UpdateProfileResponse, { id: string }>({

@@ -15,7 +15,7 @@ import { z } from "zod";
 
 const API_VERSION = "v1";
 
-export default function useCreateUser() {
+export function useCreateUser() {
     return useBaseCreate<CreateUser, CreateUserResponse, User>({
         queryKey: "user-list",
         endpoint: `${API_VERSION}/users`,
@@ -31,7 +31,7 @@ export default function useCreateUser() {
     });
 }
 
-const API_VERSION = "v1";
+
 
 export const useDeleteUser = () => {
     return useBaseDelete<{ id: string }, DeleteUserResponse, User>({
@@ -48,9 +48,9 @@ export const useDeleteUser = () => {
     });
 };
 
-const API_VERSION = "v1";
 
-const useDownloadImportTemplate = () => {
+
+export const useDownloadImportTemplate = () => {
     return useMutation({
         mutationFn: async () => {
             const response = await privateApi.get(`/${API_VERSION}/users/import-template`, {
@@ -70,11 +70,11 @@ const useDownloadImportTemplate = () => {
     });
 };
 
-export default useDownloadImportTemplate;
 
-const API_VERSION = "v1";
 
-const useExportUsers = () => {
+
+
+export const useExportUsers = () => {
     return useMutation({
         mutationFn: async () => {
             const response = await privateApi.get(`/${API_VERSION}/users/export`, {
@@ -94,16 +94,16 @@ const useExportUsers = () => {
     });
 };
 
-export default useExportUsers;
 
-const API_VERSION = "v1";
+
+
 
 interface ImportUsersPayload {
     file?: File;
     preview_token?: string;
 }
 
-const useImportUsers = () => {
+export const useImportUsers = () => {
     return useBaseCreate<ImportUsersPayload, any, any>({
         queryKey: 'import-user',
         endpoint: `${API_VERSION}/users/import`,
@@ -112,15 +112,15 @@ const useImportUsers = () => {
     });
 };
 
-export default useImportUsers;
 
-const API_VERSION = "v1";
+
+
 
 interface IndexUserProps {
     params?: { [key: string]: any };
 }
 
-const useIndexUser = (query: IndexUserProps) =>
+export const useIndexUser = (query: IndexUserProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/users`,
@@ -132,15 +132,15 @@ const useIndexUser = (query: IndexUserProps) =>
         schema: IndexUserResponseSchema,
     });
 
-export default useIndexUser;
 
-const API_VERSION = "v1";
+
+
 
 interface PreviewImportPayload {
     file: File;
 }
 
-const usePreviewUserImport = () => {
+export const usePreviewUserImport = () => {
     return useBaseCreate<PreviewImportPayload, any, User>({
         queryKey: 'preview-import-user',
         endpoint: `${API_VERSION}/users/import-preview`,
@@ -149,9 +149,9 @@ const usePreviewUserImport = () => {
     });
 };
 
-export default usePreviewUserImport;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateUser = () => {
     return useBaseUpdate<UpdateUser, UpdateUserResponse, User>({

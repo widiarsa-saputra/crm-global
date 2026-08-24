@@ -4,13 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useNavigate, useParams } from "react-router";
 import { BaseTable } from "@/shared/components/table/BaseTable";
-import useIndexUser from "@/services/user";
+import { useIndexUser } from "@/services/user";
 import { Controller, useForm } from "react-hook-form";
 import { ROUTES } from "@/router/AppRouter";
 import PaginationWithShow from "@/shared/components/pagination/PaginationWithShow";
-import useIndexRole from "@/services/role";
+import { useIndexRole } from "@/services/role";
 import SectionLoader from "@/shared/components/loader/SectionLoader";
-import useCreateUserRole from "@/services/user-role";
+import { useCreateUserRole } from "@/services/user-role";
 import { useFormSubmit } from "@/shared/hooks/useFormSubmit";
 import { CreateUserRole } from "@/services/user-role";
 

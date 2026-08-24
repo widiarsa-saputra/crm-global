@@ -7,7 +7,7 @@ import { User } from "@/shared/components/facebook-style-chat/types";
 
 const API_VERSION = "v1";
 
-export default function useCreateUserRole() {
+export function useCreateUserRole() {
     return useBaseCreate<CreateUserRole, CreateUserRoleResponse, User>({
         queryKey: "user-list",
         endpoint: `${API_VERSION}/user-roles/sync-users`,
@@ -23,9 +23,9 @@ export default function useCreateUserRole() {
     });
 }
 
-const API_VERSION = "v1";
 
-export default function useSyncUserRoles() {
+
+export function useSyncUserRoles() {
     // Ganti tipe data respons yang diharapkan dan skema validasinya
     return useBaseCreate<SyncUserRoles, SyncUserRolesResponse, { id: string }>({
         endpoint: `${API_VERSION}/user-roles/sync-roles`,

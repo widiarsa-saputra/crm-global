@@ -34,15 +34,15 @@ export const useDeleteFile = () => {
     });
 };
 
-export default useDeleteFile;
 
-const API_VERSION = "v1";
+
+
 
 interface FileStatisticsProps {
     enabled?: boolean;
 }
 
-const useFileStatistics = (props?: FileStatisticsProps) => {
+export const useFileStatistics = (props?: FileStatisticsProps) => {
     return useQuery<FileStatisticsResponse>({
         queryKey: ['file-statistics'],
         queryFn: async (): Promise<FileStatisticsResponse> => {
@@ -53,15 +53,15 @@ const useFileStatistics = (props?: FileStatisticsProps) => {
     });
 };
 
-export default useFileStatistics;
 
-const API_VERSION = "v1";
+
+
 
 interface FileUsageProps {
     enabled?: boolean;
 }
 
-const useFileUsage = (props?: FileUsageProps) => {
+export const useFileUsage = (props?: FileUsageProps) => {
     return useQuery<FileUsageResponse>({
         queryKey: ['file-usage'],
         queryFn: async (): Promise<FileUsageResponse> => {
@@ -72,9 +72,9 @@ const useFileUsage = (props?: FileUsageProps) => {
     });
 };
 
-export default useFileUsage;
 
-const API_VERSION = "v1";
+
+
 
 interface ForceDeleteFileParams {
     ids: string[];
@@ -99,9 +99,9 @@ export const useForceDeleteFile = () => {
     });
 };
 
-export default useForceDeleteFile;
 
-const API_VERSION = "v1";
+
+
 
 interface IndexFileProps {
     params?: { 
@@ -113,7 +113,7 @@ interface IndexFileProps {
     };
 }
 
-const useIndexFile = (query: IndexFileProps) =>
+export const useIndexFile = (query: IndexFileProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/files`,
@@ -125,9 +125,9 @@ const useIndexFile = (query: IndexFileProps) =>
         schema: IndexFileResponseSchema,
     });
 
-export default useIndexFile;
 
-const API_VERSION = "v1";
+
+
 
 interface RestoreFileParams {
     ids: string[];
@@ -152,9 +152,9 @@ export const useRestoreFile = () => {
     });
 };
 
-export default useRestoreFile;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateFile = () => {
     return useBaseUpdate<UpdateFile, UpdateFileResponse, SingleFileResponse>({
@@ -172,9 +172,9 @@ export const useUpdateFile = () => {
     });
 };
 
-export default useUpdateFile;
 
-const API_VERSION = "v1";
+
+
 
 interface UploadFileParams {
     file: File;
@@ -224,5 +224,5 @@ export const useUploadFile = () => {
     });
 };
 
-export default useUploadFile;
+
 

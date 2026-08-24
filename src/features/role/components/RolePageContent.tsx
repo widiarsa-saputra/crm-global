@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { BaseTable } from '@/shared/components/table/BaseTable';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import SortByDropdown from '@/shared/components/utility/SortByDropdown';
-import useIndexRole from '@/services/role';
+import { useIndexRole } from '@/services/role';
 import AddRoleModal from './AddRoleModal';
 import EditRoleModal from './EditRoleModal';
 import RemoveRole from './RemoveRole';

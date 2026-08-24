@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useFormSubmit } from '@/shared/hooks/useFormSubmit'
 import { FormField } from '@/shared/components/form/FormField'
-import useCreateRole from '@/services/role'
+import { useCreateRole } from '@/services/role'
 import { CreateRole } from '@/services/role'
 
 const AddRoleModal: React.FC = () => {

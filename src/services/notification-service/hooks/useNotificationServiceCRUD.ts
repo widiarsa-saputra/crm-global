@@ -17,7 +17,7 @@ export interface CreateCronTestPayload {
     minute_to_sent: number;
 }
 
-const useCreateCronTest = () => {
+export const useCreateCronTest = () => {
     return useBaseCreate<CreateCronTestPayload, any, any>({
         queryKey: 'whatsapp-list',
         endpoint: `${API_VERSION}/notif-cron-test`,
@@ -25,11 +25,11 @@ const useCreateCronTest = () => {
     });
 };
 
-export default useCreateCronTest;
 
-const API_VERSION = "v1";
 
-const useDeleteWhatsappSession = () => {
+
+
+export const useDeleteWhatsappSession = () => {
     const queryClient = useQueryClient();
     
     return useMutation({
@@ -43,7 +43,7 @@ const useDeleteWhatsappSession = () => {
     });
 };
 
-export default useDeleteWhatsappSession;
+
 
 const WA_API_URL = import.meta.env.VITE_WA_API_URL;
 
@@ -61,7 +61,7 @@ const QRResponseSchema = z.object({
 
 type QRResponse = z.infer<typeof QRResponseSchema>;
 
-const useGetWhatsappQR = (sessionId: string, enabled: boolean = false) => {
+export const useGetWhatsappQR = (sessionId: string, enabled: boolean = false) => {
     return useBaseExternalShow<QRResponse>({
         request: {
             baseURL: WA_API_URL,
@@ -83,13 +83,13 @@ const useGetWhatsappQR = (sessionId: string, enabled: boolean = false) => {
     });
 };
 
-export default useGetWhatsappQR;
 
-const WA_API_URL = import.meta.env.VITE_WA_API_URL;
 
-const WA_API_KEY = import.meta.env.VITE_WA_API_KEY;
 
-const WA_USER = import.meta.env.VITE_WA_USER;
+
+
+
+
 
 const StatusResponseSchema = z.object({
     success: z.boolean().optional(),
@@ -101,7 +101,7 @@ const StatusResponseSchema = z.object({
 
 type StatusResponse = z.infer<typeof StatusResponseSchema>;
 
-const useGetWhatsappStatus = (sessionId: string, enabled: boolean = true) => {
+export const useGetWhatsappStatus = (sessionId: string, enabled: boolean = true) => {
     return useBaseExternalShow<StatusResponse>({
         request: {
             baseURL: WA_API_URL,
@@ -125,9 +125,9 @@ const useGetWhatsappStatus = (sessionId: string, enabled: boolean = true) => {
     });
 };
 
-export default useGetWhatsappStatus;
 
-const API_VERSION = "v1";
+
+
 
 const CronTestItemSchema = z.object({
     id: z.string(),
@@ -149,7 +149,7 @@ const CronTestSchema = z.object({
     data: z.array(CronTestItemSchema)
 }).passthrough();
 
-const useIndexCronTest = (params?: any) => {
+export const useIndexCronTest = (params?: any) => {
     return useBaseIndex<any>({
         request: {
             endpoint: `${API_VERSION}/notif-cron-test`,
@@ -162,9 +162,9 @@ const useIndexCronTest = (params?: any) => {
     });
 };
 
-export default useIndexCronTest;
 
-const API_VERSION = "v1";
+
+
 
 export interface SendEmailPayload {
     to: string;
@@ -175,7 +175,7 @@ export interface SendEmailPayload {
     bcc?: string[];
 }
 
-const useSendEmail = () => {
+export const useSendEmail = () => {
     return useBaseCreate<SendEmailPayload, any, any>({
         queryKey: 'whatsapp-list',
         endpoint: `${API_VERSION}/notification-services/email/send`,
@@ -183,16 +183,16 @@ const useSendEmail = () => {
     });
 };
 
-export default useSendEmail;
 
-const API_VERSION = "v1";
+
+
 
 interface SendMessagePayload {
     to: string;
     message: string;
 }
 
-const useSendWhatsappMessage = () => {
+export const useSendWhatsappMessage = () => {
     return useBaseCreate<SendMessagePayload, any, any>({
         queryKey: 'whatsapp-list',
         endpoint: `${API_VERSION}/notification-services/whatsapp/messages`,
@@ -200,11 +200,11 @@ const useSendWhatsappMessage = () => {
     });
 };
 
-export default useSendWhatsappMessage;
 
-const API_VERSION = "v1";
 
-const useShowCronTest = (id: string) => {
+
+
+export const useShowCronTest = (id: string) => {
     return useBaseShow<any>({
         request: {
             endpoint: `${API_VERSION}/notif-cron-test`,
@@ -218,11 +218,11 @@ const useShowCronTest = (id: string) => {
     });
 };
 
-export default useShowCronTest;
 
-const API_VERSION = "v1";
 
-const useShowEmailSetting = (queryOptions?: Record<string, any>) => {
+
+
+export const useShowEmailSetting = (queryOptions?: Record<string, any>) => {
     return useBaseShow<ShowEmailSettingResponse>({
         request: {
             id: "setting",
@@ -236,11 +236,11 @@ const useShowEmailSetting = (queryOptions?: Record<string, any>) => {
     });
 };
 
-export default useShowEmailSetting;
 
-const API_VERSION = "v1";
 
-const useShowWhatsappSession = (queryOptions?: Record<string, any>) => {
+
+
+export const useShowWhatsappSession = (queryOptions?: Record<string, any>) => {
     return useBaseShow<ShowWhatsappSessionResponse>({
         request: {
             id: "session",
@@ -254,9 +254,9 @@ const useShowWhatsappSession = (queryOptions?: Record<string, any>) => {
     });
 };
 
-export default useShowWhatsappSession;
 
-const API_VERSION = "v1";
+
+
 
 export interface UpdateEmailSettingPayload {
     host: string;
@@ -271,7 +271,7 @@ export interface UpdateEmailSettingPayload {
     timeout?: number;
 }
 
-const useUpdateEmailSetting = () => {
+export const useUpdateEmailSetting = () => {
     return useBaseUpdate<UpdateEmailSettingPayload, any, any>({
         queryKey: 'whatsapp-list',
         endpoint: () => `${API_VERSION}/notification-services/email/setting`,
@@ -279,11 +279,11 @@ const useUpdateEmailSetting = () => {
     });
 };
 
-export default useUpdateEmailSetting;
 
-const API_VERSION = "v1";
 
-const useUpdateWhatsappSession = () => {
+
+
+export const useUpdateWhatsappSession = () => {
     return useBaseUpdate<Record<string, never>, any, any>({
         queryKey: 'whatsapp-list',
         endpoint: () => `${API_VERSION}/notification-services/whatsapp/session`,
@@ -291,5 +291,5 @@ const useUpdateWhatsappSession = () => {
     });
 };
 
-export default useUpdateWhatsappSession;
+
 

@@ -12,7 +12,7 @@ import { SinglePermissionResponse } from "../response/PermissionResponse";
 
 const API_VERSION = "v1";
 
-export default function useCreatePermission() {
+export function useCreatePermission() {
     return useBaseCreate<CreatePermission, CreatePermissionResponse, SinglePermissionResponse>({
         queryKey: 'permision-list',
         endpoint: `${API_VERSION}/permissions`,
@@ -28,7 +28,7 @@ export default function useCreatePermission() {
     });
 }
 
-const API_VERSION = "v1";
+
 
 export const useDeletePermission = () => {
     return useBaseDelete<{ id: number }, DeletePermissionResponse, SinglePermissionResponse>({
@@ -44,13 +44,13 @@ export const useDeletePermission = () => {
     });
 };
 
-const API_VERSION = "v1";
+
 
 interface IndexPermissionProps {
     params?: { [key: string]: any };
 }
 
-const useIndexPermission = (query: IndexPermissionProps) =>
+export const useIndexPermission = (query: IndexPermissionProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/permissions`,
@@ -62,9 +62,9 @@ const useIndexPermission = (query: IndexPermissionProps) =>
         schema: IndexPermissionResponseSchema,
     });
 
-export default useIndexPermission;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdatePermission = () => {
     return useBaseUpdate<UpdatePermission, UpdatePermissionResponse, SinglePermissionResponse>({

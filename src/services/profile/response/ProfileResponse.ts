@@ -41,19 +41,6 @@ const PermissionSchema = z.object({
     name: z.string(),
     group: z.string(),
 });
-
-const UserSchema = z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string(),
-    phone: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
-    roles: z.array(RoleSchema).optional(),
-    permissions: z.array(PermissionSchema).optional(),
-    photo_url: z.string().nullable().optional(),
-});
-
 export const GetUserLoginResponseSchema = BaseResponseSchema(UserSchema);
 
 export type GetUserLoginResponse = z.infer<typeof GetUserLoginResponseSchema>;

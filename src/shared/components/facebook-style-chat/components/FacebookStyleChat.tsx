@@ -9,7 +9,7 @@ import ChatboxContainer from './ChatboxContainer';
 
 // --- BARU: Import hook dan tipe dari data user aplikasi Anda ---
 // Pastikan path ini benar sesuai dengan struktur proyek Anda
-import useIndexUser from '@/services/user';
+import { useIndexUser } from '@/services/user';
 import { SingleUserResponse } from '@/services/user';
 
 // URL konstanta

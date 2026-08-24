@@ -12,7 +12,7 @@ import { UpdateRole } from "@/services/role";
 
 const API_VERSION = "v1";
 
-export default function useCreateRole() {
+export function useCreateRole() {
     return useBaseCreate<CreateRole, CreateRoleResponse, Role>({
         queryKey: 'role-list',
         endpoint: `${API_VERSION}/roles`,
@@ -28,7 +28,7 @@ export default function useCreateRole() {
     });
 }
 
-const API_VERSION = "v1";
+
 
 export const useDeleteRole = () => {
     return useBaseDelete<{ id: number }, DeleteRoleResponse, Role>({
@@ -44,13 +44,13 @@ export const useDeleteRole = () => {
     });
 };
 
-const API_VERSION = "v1";
+
 
 interface IndexRoleProps {
     params?: { [key: string]: any };
 }
 
-const useIndexRole = (query: IndexRoleProps) =>
+export const useIndexRole = (query: IndexRoleProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/roles`,
@@ -62,9 +62,9 @@ const useIndexRole = (query: IndexRoleProps) =>
         schema: IndexRoleResponseSchema,
     });
 
-export default useIndexRole;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateRole = () => {
     return useBaseUpdate<UpdateRole, UpdateRoleResponse, Role>({

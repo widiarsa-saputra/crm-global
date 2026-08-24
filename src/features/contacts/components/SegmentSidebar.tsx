@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Plus, Search, Users, Folder, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import useIndexSegment from '@/services/segments';
+import { useIndexSegment } from '@/services/segments';
 
 interface SegmentSidebarProps {
     onSelectSegment: (id: string | null) => void;

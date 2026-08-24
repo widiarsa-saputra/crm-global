@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import useIndexContactInfinite from '@/services/contacts';
+import { useIndexContactInfinite } from '@/services/contacts';
 import { useInView } from 'react-intersection-observer';
 
 interface ContactDirectoryProps {

@@ -27,7 +27,7 @@ export const useCreateSegment = () =>
         },
     });
 
-const API_VERSION = "v1";
+
 
 interface DeleteSegmentParams {
     id: string;
@@ -46,13 +46,13 @@ export const useDeleteSegment = () =>
         },
     });
 
-const API_VERSION = "v1";
+
 
 interface IndexSegmentProps {
     params?: { [key: string]: unknown };
 }
 
-const useIndexSegment = (query: IndexSegmentProps) =>
+export const useIndexSegment = (query: IndexSegmentProps) =>
     useBaseIndex({
         request: {
             endpoint: `${API_VERSION}/segments`,
@@ -64,15 +64,15 @@ const useIndexSegment = (query: IndexSegmentProps) =>
         schema: IndexSegmentResponseSchema,
     });
 
-export default useIndexSegment;
 
-const API_VERSION = "v1";
+
+
 
 interface ShowSegmentProps {
     id: string;
 }
 
-const useShowSegment = ({ id }: ShowSegmentProps) =>
+export const useShowSegment = ({ id }: ShowSegmentProps) =>
     useBaseShow({
         request: {
             endpoint: `${API_VERSION}/segments`,
@@ -84,9 +84,9 @@ const useShowSegment = ({ id }: ShowSegmentProps) =>
         schema: ShowSegmentResponseSchema,
     });
 
-export default useShowSegment;
 
-const API_VERSION = "v1";
+
+
 
 export const useUpdateSegment = () =>
     useBaseUpdate<UpdateSegment, UpdateSegmentResponse, SingleSegmentResponse>({

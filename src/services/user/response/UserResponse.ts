@@ -14,16 +14,6 @@ export const UserSchema = z.object({
 export const CreateUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type CreateUserResponse = z.infer<typeof CreateUserResponseSchema>;
-
-export const UserSchema = z.nullable(z.object({
-    id: z.string(),
-    name: z.string(),
-    email: z.string().email("Invalid email address"),
-    phone: z.string().optional(),
-    created_at: z.string(),
-    updated_at: z.string()
-})).optional();
-
 export const DeleteUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type DeleteUserResponse = z.infer<typeof DeleteUserResponseSchema>;
@@ -44,23 +34,14 @@ export const SingleUserSchema = z.object({
     roles: z.array(UserRoleSchema).optional(),
     permissions: z.array(PermissionSchema).optional()
 });
-
-export const UserSchema = z.array(SingleUserSchema);
-
 export const IndexUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type IndexUserResponse = z.infer<typeof IndexUserResponseSchema>;
 
 export type SingleUserResponse = z.infer<typeof SingleUserSchema>;
-
-export const UserSchema = z.object({});
-
 export const ShowUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type ShowUserResponse = z.infer<typeof ShowUserResponseSchema>;
-
-export const UserSchema = z.object({});
-
 export const UpdateUserResponseSchema = BaseResponseSchema(UserSchema);
 
 export type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;

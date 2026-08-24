@@ -12,9 +12,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2, Trash2 } from 'lucide-react';
-import useIndexCampaign from '@/services/campaign';
-import useDeleteCampaign from '@/services/campaign';
-import useUpdateCampaign from '@/services/campaign';
+import { useIndexCampaign } from '@/services/campaign';
+import { useDeleteCampaign } from '@/services/campaign';
+import { useUpdateCampaign } from '@/services/campaign';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 
 const CampaignsPage: React.FC = () => {

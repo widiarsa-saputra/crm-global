@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddPermissionModal from './AddPermissionModal'
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput'
-import useIndexPermission from '@/services/permission';
+import { useIndexPermission } from '@/services/permission';
 import { Download, Search } from 'lucide-react';
 import FilterDropdown from '@/shared/components/utility/FilterDropdown';
 import { Checkbox } from '@/components/ui/checkbox';
