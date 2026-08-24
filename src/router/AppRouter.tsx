@@ -14,36 +14,9 @@ import AllNotificationPage from "@/features/notification/pages/AllNotificationPa
 import NotFound from "@/shared/components/error-page/NotFound";
 import FileManagerPage from "@/features/file-manager/pages/FileManagerPage";
 import DashboardPage from "@/features/dashboard/pages/DashboardPage";
-import { CourseCategoryPage } from "@/features/course-categories/pages";
-import { CoursePage } from "@/features/courses/pages";
-import CourseBuilderPage from "@/features/courses/pages/CourseBuilderPage";
-import { CourseSectionPage } from "@/features/course-sections/pages";
-import { LessonPage } from "@/features/lessons/pages";
-import StudentProgressPage from "@/features/parent-monitoring/pages/StudentProgressPage";
-import { Folder, Lock, ShieldCheck, UserCircle, Users } from "lucide-react";
-import TutorPage from "@/features/tutor/pages/TutorPage";
-import StudentPage from "@/features/student/pages/StudentPage";
-import { ClassPage } from "@/features/classes/pages";
 
-import { LessonSectionPage } from "@/features/lesson-sections/pages";
-import { LessonSectionFilePage } from "@/features/lesson-section-files/pages";
-import { PeriodPage } from "@/features/periods/pages";
-import { CurriculumPage } from "@/features/curriculums/pages";
-import { CurriculumCoursePage } from "@/features/curriculum-courses/pages";
-import { AssignTryoutPage } from "@/features/assign-tryouts/pages";
-import { EnrollmentPage } from "@/features/enrollments/pages";
-import { EnrollmentGroupPage } from "@/features/enrollment-groups/pages";
-import { PeriodEnrollmentPage } from "@/features/period-enrollments/pages";
-import { TutoringSessionPage } from "@/features/tutoring-sessions/pages";
-import { PaymentPage } from "@/features/payments/pages";
-import TryoutQuestionPage from "@/features/tryout-questions/pages/TryoutQuestionPage";
-import TryoutAttemptPage from "@/features/tryout-attempts/pages/TryoutAttemptPage";
-import TryoutSubtestPage from "@/features/tryout-subtests/pages/TryoutSubtestPage";
-import TryoutSubtestResultPage from "@/features/tryout-subtest-results/pages/TryoutSubtestResultPage";
-import TryoutAttemptAnswerPage from "@/features/tryout-attempt-answers/pages/TryoutAttemptAnswerPage";
-import QuestionBankPage from "@/features/question-banks/pages/QuestionBankPage";
-import TryoutManagementPage from "@/features/tryouts/pages/TryoutManagementPage";
-import QuestionOptionPage from "@/features/question-options/pages/QuestionOptionPage";
+import { Folder, Lock, ShieldCheck, UserCircle, Users } from "lucide-react";
+
 
 type ProtectedRoute = {
     path: string;
@@ -94,104 +67,7 @@ export const ROUTES: Record<string, AppRoute> = {
         permissions: [],
     },
 
-    // New Prototypes
 
-    LESSON_SECTIONS: { path: "/bagian-pelajaran", element: <LessonSectionPage />, protected: true, roles: [], permissions: [] },
-    LESSON_SECTION_FILES: { path: "/berkas-bagian-pelajaran", element: <LessonSectionFilePage />, protected: true, roles: [], permissions: [] },
-    PERIODS: { path: "/periode", element: <PeriodPage />, protected: true, roles: [], permissions: [] },
-    CURRICULUMS: { path: "/kurikulum", element: <CurriculumPage />, protected: true, roles: [], permissions: [] },
-    CURRICULUM_COURSES: { path: "/kursus-kurikulum", element: <CurriculumCoursePage />, protected: true, roles: [], permissions: [] },
-    ASSIGN_TRYOUTS: { path: "/penugasan-tryout", element: <AssignTryoutPage />, protected: true, roles: [], permissions: [] },
-    ENROLLMENTS: { path: "/pendaftaran", element: <EnrollmentPage />, protected: true, roles: [], permissions: [] },
-    ENROLLMENT_GROUPS: { path: "/grup-pendaftaran", element: <EnrollmentGroupPage />, protected: true, roles: [], permissions: [] },
-    PERIOD_ENROLLMENTS: { path: "/pendaftaran-periode", element: <PeriodEnrollmentPage />, protected: true, roles: [], permissions: [] },
-    TUTORING_SESSIONS: { path: "/sesi-bimbingan", element: <TutoringSessionPage />, protected: true, roles: [], permissions: [] },
-    PAYMENTS: { path: "/pembayaran", element: <PaymentPage />, protected: true, roles: [], permissions: [] },
-
-    COURSES: {
-        path: "/kursus",
-        element: <CoursePage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    COURSE_BUILDER: {
-        path: "/kursus/:id/builder",
-        element: <CourseBuilderPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    COURSE_CATEGORIES: {
-        path: "/kategori-kursus",
-        element: <CourseCategoryPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    COURSE_SECTIONS: {
-        path: "/bagian-kursus",
-        element: <CourseSectionPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    LESSONS: {
-        path: "/pelajaran",
-        element: <LessonPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    QUESTION_BANK: {
-        path: "/bank-soal",
-        element: <QuestionBankPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    QUESTION_OPTIONS: {
-        path: "/opsi-jawaban",
-        element: <QuestionOptionPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    TRYOUT: {
-        path: "/tryout",
-        element: <TryoutManagementPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    PARENT_MONITORING: {
-        path: "/laporan/perkembangan-siswa",
-        element: <StudentProgressPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    TUTOR_LIST: {
-        path: "/tutor",
-        element: <TutorPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    STUDENT_LIST: {
-        path: "/siswa",
-        element: <StudentPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    CLASS_LIST: {
-        path: "/kelas",
-        element: <ClassPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
 
     // Admin settings
     USER_MANAGEMENT: {
@@ -257,42 +133,7 @@ export const ROUTES: Record<string, AppRoute> = {
         roles: [],
         permissions: [],
     },    
-    TRYOUT_QUESTIONS: {
-        path: "/soal-tryout",
-        element: <TryoutQuestionPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    TRYOUT_ATTEMPTS: {
-        path: "/percobaan-tryout",
-        element: <TryoutAttemptPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    TRYOUT_SUBTESTS: {
-        path: "/subtes-tryout",
-        element: <TryoutSubtestPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
 
-    TRYOUT_SUBTEST_RESULTS: {
-        path: "/hasil-subtes-tryout",
-        element: <TryoutSubtestResultPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
-    TRYOUT_ATTEMPT_ANSWERS: {
-        path: "/jawaban-percobaan-tryout",
-        element: <TryoutAttemptAnswerPage />,
-        protected: true,
-        roles: [],
-        permissions: [],
-    },
     LOGIN: {
         path: "/authentication",
         element: <LoginPage />,
