@@ -11,17 +11,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText } from 'lucide-react';
+import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { campaignService } from '@/services/campaign';
 
 const CampaignsPage: React.FC = () => {
     // Mock Data for Blast Campaigns
-    const campaigns = [
+    const mockCampaigns = [
         {
             id: 1,
             name: "Promo Ramadhan 2026",
             segment: "VIP & Hot Leads",
             date: "2026-03-10 10:00",
-            status: "scheduled",
+            status: "scheduled" as const,
             openRate: 0,
             clickRate: 0
         },
@@ -30,7 +32,7 @@ const CampaignsPage: React.FC = () => {
             name: "Product Update v2.5",
             segment: "All Active Users",
             date: "2026-02-15 14:30",
-            status: "completed",
+            status: "completed" as const,
             openRate: 45.2,
             clickRate: 12.5
         },
@@ -39,7 +41,7 @@ const CampaignsPage: React.FC = () => {
             name: "Re-engagement Campaign",
             segment: "Inactive",
             date: "2026-01-20 09:00",
-            status: "completed",
+            status: "completed" as const,
             openRate: 18.4,
             clickRate: 3.2
         },
@@ -48,11 +50,27 @@ const CampaignsPage: React.FC = () => {
             name: "Welcome Onboarding",
             segment: "New Signups",
             date: "-",
-            status: "draft",
+            status: "draft" as const,
             openRate: 0,
             clickRate: 0
         }
     ];
+
+    const { data: apiCampaigns, isError, isLoading } = useQuery({
+        queryKey: ['campaigns'],
+        queryFn: campaignService.getAll,
+        retry: 1
+    });
+
+    const campaigns = isError || !apiCampaigns ? mockCampaigns : apiCampaigns.map(c => ({
+        id: c.id,
+        name: c.campaign_name,
+        segment: c.segment_name || "Unknown Segment",
+        date: c.date,
+        status: c.status,
+        openRate: c.open_rate,
+        clickRate: c.click_rate
+    }));
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -70,7 +88,10 @@ const CampaignsPage: React.FC = () => {
                 {/* Header */}
                 <div className="flex justify-between items-center mb-6">
                     <div>
-                        <h1 className="text-2xl font-bold">Email Campaigns</h1>
+                        <h1 className="text-2xl font-bold flex items-center gap-3">
+                            Email Campaigns
+                            {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
+                        </h1>
                         <p className="text-muted-foreground mt-1">Manage and schedule your email blasts.</p>
                     </div>
                     <Button>

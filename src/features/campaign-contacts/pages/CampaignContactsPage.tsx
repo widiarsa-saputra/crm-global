@@ -11,27 +11,63 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Search, Eye, MousePointerClick, CheckCircle2, XCircle, ArrowUpRight } from 'lucide-react';
+import { Search, Eye, MousePointerClick, CheckCircle2, XCircle, ArrowUpRight, Loader2 } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { campaignService } from '@/services/campaign';
+import { campaignContactService } from '@/services/campaign-contact';
 
 const CampaignContactsPage: React.FC = () => {
     // State to hold the currently selected campaign ID
     const [selectedCampaignId, setSelectedCampaignId] = useState<number>(1);
 
     // Mock Data for Blast Campaigns (Bottom Table)
-    const campaigns = [
+    const mockCampaigns = [
         { id: 1, name: "Promo Ramadhan 2026", segment: "VIP & Hot Leads", date: "2026-03-10 10:00", openRate: 0, clickRate: 0 },
         { id: 2, name: "Product Update v2.5", segment: "All Active Users", date: "2026-02-15 14:30", openRate: 45.2, clickRate: 12.5 },
         { id: 3, name: "Re-engagement Campaign", segment: "Inactive", date: "2026-01-20 09:00", openRate: 18.4, clickRate: 3.2 },
     ];
 
     // Mock Data for Campaign Contacts (Top Table)
-    const contacts = [
+    const mockContacts = [
         { id: 101, name: "Budi Santoso", email: "budi@example.com", status: "sent", isOpen: true, isClicked: true, sentAt: "2026-02-15 14:31" },
         { id: 102, name: "Siti Aminah", email: "siti@example.com", status: "sent", isOpen: true, isClicked: false, sentAt: "2026-02-15 14:31" },
         { id: 103, name: "Agus Pratama", email: "agus@example.com", status: "failed", isOpen: false, isClicked: false, sentAt: "-" },
         { id: 104, name: "Dewi Lestari", email: "dewi@example.com", status: "sent", isOpen: false, isClicked: false, sentAt: "2026-02-15 14:32" },
         { id: 105, name: "Joko Anwar", email: "joko@example.com", status: "sent", isOpen: true, isClicked: true, sentAt: "2026-02-15 14:32" },
     ];
+
+    // API Query for Master Campaign List
+    const { data: apiCampaigns, isError: isCampaignsError, isLoading: isCampaignsLoading } = useQuery({
+        queryKey: ['campaigns'],
+        queryFn: campaignService.getAll,
+        retry: 1
+    });
+
+    // API Query for Campaign Contacts Details
+    const { data: apiContacts, isError: isContactsError, isLoading: isContactsLoading } = useQuery({
+        queryKey: ['campaign-contacts', selectedCampaignId],
+        queryFn: () => campaignContactService.getByCampaignId(selectedCampaignId),
+        retry: 1
+    });
+
+    const campaigns = isCampaignsError || !apiCampaigns ? mockCampaigns : apiCampaigns.map(c => ({
+        id: c.id,
+        name: c.campaign_name,
+        segment: c.segment_name || "Unknown Segment",
+        date: c.date,
+        openRate: c.open_rate,
+        clickRate: c.click_rate
+    }));
+
+    const contacts = isContactsError || !apiContacts ? mockContacts : apiContacts.map(c => ({
+        id: c.id,
+        name: c.contact_name || "Unknown",
+        email: c.contact_email || "Unknown",
+        status: c.status,
+        isOpen: c.is_open,
+        isClicked: c.is_clicked,
+        sentAt: c.sent_at || "-"
+    }));
 
     const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
 
@@ -44,6 +80,7 @@ const CampaignContactsPage: React.FC = () => {
                         <div>
                             <h2 className="text-xl font-bold flex items-center gap-2">
                                 Contact Tracking 
+                                {isContactsLoading && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
                                 {selectedCampaign && (
                                     <Badge variant="secondary" className="ml-2 font-normal">
                                         Campaign: {selectedCampaign.name}
@@ -81,8 +118,10 @@ const CampaignContactsPage: React.FC = () => {
                                             <TableCell>
                                                 {contact.status === 'sent' ? (
                                                     <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
-                                                ) : (
+                                                ) : contact.status === 'failed' ? (
                                                     <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>
+                                                ) : (
+                                                    <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Queued</Badge>
                                                 )}
                                             </TableCell>
                                             <TableCell className="text-center">
@@ -113,6 +152,7 @@ const CampaignContactsPage: React.FC = () => {
                     <div className="p-4 border-b flex items-center justify-between bg-slate-50">
                         <h3 className="font-semibold flex items-center gap-2">
                             Select Campaign to View
+                            {isCampaignsLoading && <Loader2 className="w-4 h-4 text-primary animate-spin" />}
                         </h3>
                         <div className="relative">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />

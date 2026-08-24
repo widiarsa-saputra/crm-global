@@ -2,8 +2,10 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Search, Users, Folder } from 'lucide-react';
+import { Plus, Search, Users, Folder, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { useQuery } from '@tanstack/react-query';
+import { segmentService } from '@/services/segment';
 
 interface SegmentSidebarProps {
     onSelectSegment: (id: string | null) => void;
@@ -11,13 +13,26 @@ interface SegmentSidebarProps {
 }
 
 export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId }) => {
-    // Mock data for segments based on the requirement
-    const segments = [
+    // Mock data fallback
+    const mockSegments = [
         { id: '1', name: 'VIP', count: 1250 },
         { id: '2', name: 'Hot Leads', count: 850 },
         { id: '3', name: 'Inactive', count: 3200 },
         { id: '4', name: 'New Signups', count: 450 },
     ];
+
+    const { data: apiSegments, isError, isLoading } = useQuery({
+        queryKey: ['segments'],
+        queryFn: segmentService.getAll,
+        retry: 1
+    });
+
+    // Determine segments to render
+    const segments = isError || !apiSegments ? mockSegments : apiSegments.map((s) => ({
+        id: s.id.toString(),
+        name: s.name,
+        count: 0, // Fallback to 0 if count is not provided by API
+    }));
 
     return (
         <div className="w-64 border-r bg-background flex flex-col h-full">
@@ -62,8 +77,9 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
 
             <ScrollArea className="flex-1">
                 <div className="p-2 space-y-1">
-                    <div className="px-2 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                        Segments
+                    <div className="px-2 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wider flex justify-between items-center">
+                        <span>Segments</span>
+                        {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
                     </div>
                     {segments.map((segment) => (
                         <Button

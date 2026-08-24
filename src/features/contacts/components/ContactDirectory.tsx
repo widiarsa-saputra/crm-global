@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Plus, MoreHorizontal, User, Mail, Building, Trash2, Edit2, MoveRight } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, User, Mail, Building, Trash2, Edit2, MoveRight, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useQuery } from '@tanstack/react-query';
+import { contactService } from '@/services/contact';
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
@@ -19,13 +21,28 @@ interface ContactDirectoryProps {
 
 export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId }) => {
     // Mock data for contacts
-    const contacts = Array.from({ length: 12 }).map((_, i) => ({
+    const mockContacts = Array.from({ length: 12 }).map((_, i) => ({
         id: i.toString(),
         name: `Contact Name ${i + 1}`,
         email: `contact${i + 1}@example.com`,
         company: i % 3 === 0 ? 'Tech Corp' : 'Business LLC',
         segment: i % 2 === 0 ? 'VIP' : 'Hot Leads',
         status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid')
+    }));
+
+    const { data: apiResponse, isError, isLoading } = useQuery({
+        queryKey: ['contacts', activeSegmentId],
+        queryFn: () => contactService.getAll({ segment_id: activeSegmentId || undefined }),
+        retry: 1
+    });
+
+    const contacts = isError || !apiResponse ? mockContacts : apiResponse.data.map(c => ({
+        id: c.id.toString(),
+        name: c.nama,
+        email: c.email,
+        company: c.company || '-',
+        segment: c.segment?.name || 'Unassigned',
+        status: c.email_status
     }));
 
     const getStatusColor = (status: string) => {
@@ -50,6 +67,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                     />
                 </div>
                 <div className="flex items-center gap-2">
+                    {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
                     <Button>
                         <Plus className="w-4 h-4 mr-2" />
                         Add Contact
