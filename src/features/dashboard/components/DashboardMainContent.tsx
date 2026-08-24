@@ -122,7 +122,7 @@ const DashboardMainContent: React.FC = () => {
                                     paddingAngle={5}
                                     dataKey="value"
                                 >
-                                    {segmentDistributionData.map((entry, index) => (
+                                    {segmentDistributionData.map((_entry, index) => (
                                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                     ))}
                                 </Pie>

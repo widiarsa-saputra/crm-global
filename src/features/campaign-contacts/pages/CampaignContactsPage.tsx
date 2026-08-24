@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -11,20 +10,25 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Search, Eye, MousePointerClick, CheckCircle2, XCircle, ArrowUpRight, Loader2 } from 'lucide-react';
+import { MousePointerClick, CheckCircle2, XCircle, Users, Percent, FileText, Edit, Play, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { campaignService } from '@/services/campaign';
 import { campaignContactService } from '@/services/campaign-contact';
+import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
+import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 
 const CampaignContactsPage: React.FC = () => {
-    // State to hold the currently selected campaign ID
     const [selectedCampaignId, setSelectedCampaignId] = useState<number>(1);
+    const [campaignPage, setCampaignPage] = useState(1);
+    const [campaignItemsPerPage, setCampaignItemsPerPage] = useState(10);
+    const [contactSearch, setContactSearch] = useState('');
+    const [campaignSearch, setCampaignSearch] = useState('');
 
     // Mock Data for Blast Campaigns (Bottom Table)
     const mockCampaigns = [
-        { id: 1, name: "Promo Ramadhan 2026", segment: "VIP & Hot Leads", date: "2026-03-10 10:00", openRate: 0, clickRate: 0 },
-        { id: 2, name: "Product Update v2.5", segment: "All Active Users", date: "2026-02-15 14:30", openRate: 45.2, clickRate: 12.5 },
-        { id: 3, name: "Re-engagement Campaign", segment: "Inactive", date: "2026-01-20 09:00", openRate: 18.4, clickRate: 3.2 },
+        { id: 1, name: "Promo Ramadhan 2026", segment: "VIP & Hot Leads", date: "2026-03-10 10:00", status: "scheduled" as const, openRate: 0, clickRate: 0 },
+        { id: 2, name: "Product Update v2.5", segment: "All Active Users", date: "2026-02-15 14:30", status: "completed" as const, openRate: 45.2, clickRate: 12.5 },
+        { id: 3, name: "Re-engagement Campaign", segment: "Inactive", date: "2026-01-20 09:00", status: "completed" as const, openRate: 18.4, clickRate: 3.2 },
     ];
 
     // Mock Data for Campaign Contacts (Top Table)
@@ -55,9 +59,20 @@ const CampaignContactsPage: React.FC = () => {
         name: c.campaign_name,
         segment: c.segment_name || "Unknown Segment",
         date: c.date,
+        status: c.status,
         openRate: c.open_rate,
         clickRate: c.click_rate
     }));
+
+    const getStatusBadge = (status: string) => {
+        switch (status) {
+            case 'completed': return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Completed</Badge>;
+            case 'scheduled': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">Scheduled</Badge>;
+            case 'processing': return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Processing</Badge>;
+            case 'failed': return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>;
+            default: return <Badge variant="secondary" className="text-gray-500">Draft</Badge>;
+        }
+    };
 
     const contacts = isContactsError || !apiContacts ? mockContacts : apiContacts.map(c => ({
         id: c.id,
@@ -71,15 +86,30 @@ const CampaignContactsPage: React.FC = () => {
 
     const selectedCampaign = campaigns.find(c => c.id === selectedCampaignId);
 
+    const filteredContacts = contacts.filter(c =>
+        c.name.toLowerCase().includes(contactSearch.toLowerCase()) ||
+        c.email.toLowerCase().includes(contactSearch.toLowerCase())
+    );
+
+    const filteredCampaigns = campaigns.filter(c =>
+        c.name.toLowerCase().includes(campaignSearch.toLowerCase()) ||
+        c.segment.toLowerCase().includes(campaignSearch.toLowerCase())
+    );
+
+    const paginatedCampaigns = filteredCampaigns.slice(
+        (campaignPage - 1) * campaignItemsPerPage,
+        campaignPage * campaignItemsPerPage
+    );
+
     return (
         <AdminLayout>
             <div className="flex flex-col h-full bg-slate-50/50">
                 {/* TOP SECTION: Campaign Contacts Detail */}
-                <div className="flex-1 p-6 flex flex-col min-h-[400px]">
+                <div className="p-6 flex flex-col">
                     <div className="mb-4 flex items-center justify-between">
                         <div>
                             <h2 className="text-xl font-bold flex items-center gap-2">
-                                Contact Tracking 
+                                Contact Tracking
                                 {isContactsLoading && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
                                 {selectedCampaign && (
                                     <Badge variant="secondary" className="ml-2 font-normal">
@@ -89,16 +119,15 @@ const CampaignContactsPage: React.FC = () => {
                             </h2>
                             <p className="text-sm text-muted-foreground mt-1">Detailed tracking of individual contacts for the selected campaign.</p>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                <Input type="search" placeholder="Search contact..." className="pl-8 bg-white h-9" />
-                            </div>
-                        </div>
+                        <DebouncedSearchInput
+                            value={contactSearch}
+                            onChange={setContactSearch}
+                            placeholder="Search contact..."
+                        />
                     </div>
 
-                    <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
-                        <div className="overflow-auto flex-1">
+                    <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col">
+                        <div className="overflow-auto">
                             <Table>
                                 <TableHeader className="bg-slate-50 sticky top-0 z-10">
                                     <TableRow>
@@ -111,7 +140,7 @@ const CampaignContactsPage: React.FC = () => {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {contacts.map((contact) => (
+                                    {filteredContacts.map((contact) => (
                                         <TableRow key={contact.id} className="hover:bg-slate-50">
                                             <TableCell className="font-medium">{contact.name}</TableCell>
                                             <TableCell className="text-muted-foreground">{contact.email}</TableCell>
@@ -148,50 +177,95 @@ const CampaignContactsPage: React.FC = () => {
                 </div>
 
                 {/* BOTTOM SECTION: Master Campaign List */}
-                <div className="h-[35%] border-t bg-white flex flex-col">
-                    <div className="p-4 border-b flex items-center justify-between bg-slate-50">
+                <div className="flex-none border-t flex flex-col p-6 gap-4">
+                    <div className="flex items-center justify-between">
                         <h3 className="font-semibold flex items-center gap-2">
                             Select Campaign to View
                             {isCampaignsLoading && <Loader2 className="w-4 h-4 text-primary animate-spin" />}
                         </h3>
-                        <div className="relative">
-                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                            <Input type="search" placeholder="Search campaign..." className="pl-8 bg-white h-8 text-sm" />
-                        </div>
+                        <DebouncedSearchInput
+                            value={campaignSearch}
+                            onChange={(v) => { setCampaignSearch(v); setCampaignPage(1); }}
+                            placeholder="Search campaign..."
+                        />
                     </div>
-                    <div className="overflow-auto flex-1">
-                        <Table>
-                            <TableHeader className="bg-white sticky top-0 z-10 shadow-sm">
-                                <TableRow>
-                                    <TableHead>Campaign Name</TableHead>
-                                    <TableHead>Target Segment</TableHead>
-                                    <TableHead>Date</TableHead>
-                                    <TableHead className="text-right">Open Rate</TableHead>
-                                    <TableHead className="text-right">Click Rate</TableHead>
-                                    <TableHead className="text-right">Action</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {campaigns.map((campaign) => (
-                                    <TableRow 
-                                        key={campaign.id} 
-                                        className={`cursor-pointer ${selectedCampaignId === campaign.id ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-slate-50'}`}
-                                        onClick={() => setSelectedCampaignId(campaign.id)}
-                                    >
-                                        <TableCell className="font-medium">{campaign.name}</TableCell>
-                                        <TableCell className="text-muted-foreground">{campaign.segment}</TableCell>
-                                        <TableCell className="text-muted-foreground">{campaign.date}</TableCell>
-                                        <TableCell className="text-right font-medium text-green-600">{campaign.openRate}%</TableCell>
-                                        <TableCell className="text-right font-medium text-blue-600">{campaign.clickRate}%</TableCell>
-                                        <TableCell className="text-right">
-                                            <Button variant="ghost" size="sm" className="h-8">
-                                                View Details <ArrowUpRight className="w-4 h-4 ml-1" />
-                                            </Button>
-                                        </TableCell>
+                    <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col">
+                        <div className="overflow-auto flex-1">
+                            <Table>
+                                <TableHeader className="bg-slate-50 sticky top-0 z-10">
+                                    <TableRow>
+                                        <TableHead>Campaign Name</TableHead>
+                                        <TableHead>Target Segment</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead>Date</TableHead>
+                                        <TableHead className="text-right">Open Rate</TableHead>
+                                        <TableHead className="text-right">Click Rate</TableHead>
+                                        <TableHead className="text-right">Action</TableHead>
                                     </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {paginatedCampaigns.map((campaign) => (
+                                        <TableRow
+                                            key={campaign.id}
+                                            className={`cursor-pointer ${selectedCampaignId === campaign.id ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-slate-50'}`}
+                                            onClick={() => setSelectedCampaignId(campaign.id)}
+                                        >
+                                            <TableCell className="font-medium">
+                                                <div className="flex flex-col">
+                                                    <span>{campaign.name}</span>
+                                                    <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                                        <FileText className="w-3 h-3" /> Template linked
+                                                    </span>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div className="flex items-center gap-2">
+                                                    <Users className="w-4 h-4 text-muted-foreground" />
+                                                    {campaign.segment}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>{getStatusBadge(campaign.status)}</TableCell>
+                                            <TableCell className="text-muted-foreground">{campaign.date}</TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex items-center justify-end gap-1">
+                                                    {campaign.openRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex items-center justify-end gap-1">
+                                                    {campaign.clickRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="flex justify-end gap-2">
+                                                    {campaign.status === 'draft' ? (
+                                                        <>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600" onClick={(e) => e.stopPropagation()}>
+                                                                <Edit className="w-4 h-4" />
+                                                            </Button>
+                                                            <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600" onClick={(e) => e.stopPropagation()}>
+                                                                <Play className="w-4 h-4" />
+                                                            </Button>
+                                                        </>
+                                                    ) : (
+                                                        <Button variant="outline" size="sm" onClick={(e) => e.stopPropagation()}>
+                                                            View Report
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
+                        <PaginationWithShow
+                            totalItems={filteredCampaigns.length}
+                            itemsPerPage={campaignItemsPerPage}
+                            currentPage={campaignPage}
+                            onPageChange={setCampaignPage}
+                            onItemsPerPageChange={(n) => { setCampaignItemsPerPage(n); setCampaignPage(1); }}
+                        />
                     </div>
                 </div>
             </div>

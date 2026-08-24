@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search, Plus, MoreHorizontal, User, Mail, Building, Trash2, Edit2, MoveRight, Loader2 } from 'lucide-react';
+import { Search, Plus, MoreHorizontal, Mail, Building, Trash2, Edit2, MoveRight, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
@@ -12,8 +12,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useQuery } from '@tanstack/react-query';
-import { contactService } from '@/services/contact';
+import useIndexContact from '@/services/contacts/hooks/useIndexContact';
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
@@ -30,10 +29,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid')
     }));
 
-    const { data: apiResponse, isError, isLoading } = useQuery({
-        queryKey: ['contacts', activeSegmentId],
-        queryFn: () => contactService.getAll({ segment_id: activeSegmentId || undefined }),
-        retry: 1
+    const { data: apiResponse, isError, isLoading } = useIndexContact({
+        params: { segment_id: activeSegmentId || undefined },
     });
 
     const contacts = isError || !apiResponse ? mockContacts : apiResponse.data.map(c => ({

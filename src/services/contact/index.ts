@@ -1,4 +1,4 @@
-import { api } from '@/services/base/api';
+import { privateApi as api } from '@/api/api';
 import { Segment } from '../segment';
 
 export interface Contact {

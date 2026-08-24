@@ -1,4 +1,4 @@
-import { api } from '@/services/base/api';
+import { privateApi as api } from '@/api/api';
 
 export interface Campaign {
     id: number;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,8 +14,11 @@ import {
 import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { campaignService } from '@/services/campaign';
+import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 
 const CampaignsPage: React.FC = () => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(10);
     // Mock Data for Blast Campaigns
     const mockCampaigns = [
         {
@@ -71,6 +74,8 @@ const CampaignsPage: React.FC = () => {
         openRate: c.open_rate,
         clickRate: c.click_rate
     }));
+
+    const paginatedCampaigns = campaigns.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -132,7 +137,7 @@ const CampaignsPage: React.FC = () => {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {campaigns.map((campaign) => (
+                                {paginatedCampaigns.map((campaign) => (
                                     <TableRow key={campaign.id} className="hover:bg-slate-50">
                                         <TableCell className="font-medium">
                                             <div className="flex flex-col">
@@ -183,6 +188,13 @@ const CampaignsPage: React.FC = () => {
                             </TableBody>
                         </Table>
                     </div>
+                    <PaginationWithShow
+                        totalItems={campaigns.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
+                    />
                 </div>
             </div>
         </AdminLayout>

@@ -50,13 +50,13 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
         <div className="flex flex-col min-h-[100dvh] bg-gray-50">
             {/* Top Navigation Bar */}
             <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm">
-                <div className="flex h-16 items-center px-6 max-w-7xl mx-auto w-full">
+                <div className="flex h-16 items-center justify-center px-10 mx-auto w-full">
                     <div className="mr-8 flex items-center">
                         <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div>
                         <h1 className="text-xl font-bold text-primary hidden md:block">CRM Global</h1>
                     </div>
                     
-                    <nav className="flex items-center space-x-1 md:space-x-6 flex-1 overflow-x-auto no-scrollbar">
+                    <nav className="flex items-center space-x-1 md:space-x-6 overflow-x-auto no-scrollbar">
                         {menuSections.map((section) => (
                             section.items.map((item, idx) => {
                                 const Icon = item.icon;
@@ -86,8 +86,8 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
             </div> */}
 
             {/* Main Content Area */}
-            <main className="flex-1 flex flex-col w-full max-w-7xl mx-auto bg-gray-50/50">
-                <div className="flex-1 w-full flex flex-col overflow-x-hidden">
+            <main className="flex-1 flex flex-col w-full mx-auto bg-gray-50/50">
+                <div className="flex-1 w-full flex flex-col overflow-x-hidden px-10">
                     {children}
                 </div>
             </main>
