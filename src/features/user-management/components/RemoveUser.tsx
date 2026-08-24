@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
-import { useDeleteUser } from '@/services/user/hooks/useDeleteUser'
-import { SingleUserResponse } from '@/services/user/response/IndexUserResponse'
+import { useDeleteUser } from '@/services/user'
+import { SingleUserResponse } from '@/services/user'
 import { useQueryClient } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
 import React from 'react'

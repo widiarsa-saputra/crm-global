@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Upload, X, Image as ImageIcon } from 'lucide-react'
 import { toast } from 'sonner'
-import { useUploadFile } from '@/services/file/hooks/useUploadFile'
+import { useUploadFile } from '@/services/file'
 import { useQueryClient } from '@tanstack/react-query'
 
 interface UploadImageModalProps {

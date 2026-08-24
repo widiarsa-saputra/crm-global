@@ -1,8 +1,8 @@
 import { useAuth } from '@/auth/context/AuthProvider';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useChangePassword } from '@/services/profile/hooks/useChangePassword';
-import { ChangePassword, ChangePasswordSchema } from '@/services/profile/schema/ChangePasswordSchema';
+import { useChangePassword } from '@/services/profile';
+import { ChangePassword, ChangePasswordSchema } from '@/services/profile';
 import { useFormSubmit } from '@/shared/hooks/useFormSubmit';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useState } from 'react'

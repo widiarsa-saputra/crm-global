@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { IndexUserResponse } from '@/services/user/response/IndexUserResponse';
+import { IndexUserResponse } from '@/services/user';
 import { SortAsc, SortDesc } from 'lucide-react';
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next';

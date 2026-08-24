@@ -7,13 +7,13 @@ import { useTranslation } from 'react-i18next';
 import UserManagementTable from './UserManagementTable';
 import { Checkbox } from '@/components/ui/checkbox';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
-import useIndexUser from '@/services/user/hooks/useIndexUser';
+import useIndexUser from '@/services/user';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 import SectionLoader from '@/shared/components/loader/SectionLoader';
 import AddUserModal from './AddUserModal';
 import ImportUserModal from './ImportUserModal';
-import useExportUsers from '@/services/user/hooks/useExportUsers';
-import useDownloadImportTemplate from '@/services/user/hooks/useDownloadImportTemplate';
+import useExportUsers from '@/services/user';
+import useDownloadImportTemplate from '@/services/user';
 import { toast } from 'sonner';
 
 const UserManagementContent: React.FC = () => {

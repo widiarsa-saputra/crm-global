@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import ImageSelectionCard from './ImageSelectionCard'
 import UploadImageModal from './UploadImageModal'
-import useIndexFile from '@/services/file/hooks/useIndexFile'
+import useIndexFile from '@/services/file'
 
 export interface MediaFile {
     id: string

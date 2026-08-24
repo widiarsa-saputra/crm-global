@@ -2,9 +2,9 @@ import { useAuth } from '@/auth/context/AuthProvider';
 import { LoginData } from '@/auth/response/loginResponseSchema';
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import useGetUserLogin from '@/services/profile/hooks/useGetUserLogin';
-import { useUpdateProfile } from '@/services/profile/hooks/useUpdateProfile';
-import { UpdateProfile, UpdateProfileSchema } from '@/services/profile/schema/UpdateProfileSchema';
+import useGetUserLogin from '@/services/profile';
+import { useUpdateProfile } from '@/services/profile';
+import { UpdateProfile, UpdateProfileSchema } from '@/services/profile';
 import { useFormSubmit } from '@/shared/hooks/useFormSubmit';
 import { zodResolver } from '@hookform/resolvers/zod';
 import React, { useEffect } from 'react'

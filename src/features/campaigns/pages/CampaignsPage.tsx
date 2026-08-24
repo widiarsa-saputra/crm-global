@@ -11,9 +11,10 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2 } from 'lucide-react';
-import { useQuery } from '@tanstack/react-query';
-import { campaignService } from '@/services/campaign';
+import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2, Trash2 } from 'lucide-react';
+import useIndexCampaign from '@/services/campaign';
+import useDeleteCampaign from '@/services/campaign';
+import useUpdateCampaign from '@/services/campaign';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 
 const CampaignsPage: React.FC = () => {
@@ -59,13 +60,11 @@ const CampaignsPage: React.FC = () => {
         }
     ];
 
-    const { data: apiCampaigns, isError, isLoading } = useQuery({
-        queryKey: ['campaigns'],
-        queryFn: campaignService.getAll,
-        retry: 1
-    });
+    const { data: apiCampaigns, isError, isLoading } = useIndexCampaign();
+    const deleteMutation = useDeleteCampaign();
+    const updateMutation = useUpdateCampaign();
 
-    const campaigns = isError || !apiCampaigns ? mockCampaigns : apiCampaigns.map(c => ({
+    const campaigns = isError || !apiCampaigns ? mockCampaigns : apiCampaigns.data.map(c => ({
         id: c.id,
         name: c.campaign_name,
         segment: c.segment_name || "Unknown Segment",
@@ -169,7 +168,12 @@ const CampaignsPage: React.FC = () => {
                                             <div className="flex justify-end gap-2">
                                                 {campaign.status === 'draft' ? (
                                                     <>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600">
+                                                        <Button 
+                                                            variant="ghost" 
+                                                            size="icon" 
+                                                            className="h-8 w-8 text-blue-600"
+                                                            onClick={() => updateMutation.mutate({ id: campaign.id, data: { status: 'scheduled' } })}
+                                                        >
                                                             <Edit className="w-4 h-4" />
                                                         </Button>
                                                         <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600">
@@ -181,6 +185,15 @@ const CampaignsPage: React.FC = () => {
                                                         View Report
                                                     </Button>
                                                 )}
+                                                <Button 
+                                                    variant="ghost" 
+                                                    size="icon" 
+                                                    className="h-8 w-8 text-red-600"
+                                                    onClick={() => deleteMutation.mutate({ id: campaign.id })}
+                                                    disabled={deleteMutation.isPending}
+                                                >
+                                                    <Trash2 className="w-4 h-4" />
+                                                </Button>
                                             </div>
                                         </TableCell>
                                     </TableRow>

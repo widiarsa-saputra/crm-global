@@ -4,12 +4,12 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { getInitials } from '@/lib/utils';
 import { Mail, Loader2, Camera } from 'lucide-react';
-import { useChangePhoto } from '@/services/profile/hooks/useChangePhoto';
+import { useChangePhoto } from '@/services/profile';
 import { useFormSubmit } from '@/shared/hooks/useFormSubmit';
 import { useForm } from 'react-hook-form';
-import { ChangePhoto } from '@/services/profile/schema/ChangePhotoSchema';
+import { ChangePhoto } from '@/services/profile';
 import { toast } from 'sonner';
-import useGetUserLogin from '@/services/profile/hooks/useGetUserLogin';
+import useGetUserLogin from '@/services/profile';
 
 const CardProfileImage: React.FC = () => {
     // 1. Setup hooks dan referensi

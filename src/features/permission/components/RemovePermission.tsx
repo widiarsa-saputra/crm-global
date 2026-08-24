@@ -1,6 +1,6 @@
 import { Button } from '@/components/ui/button'
-import { useDeletePermission } from '@/services/permission/hooks/useDeletePermission'
-import { SinglePermissionResponse } from '@/services/permission/response/IndexPermissionResponse'
+import { useDeletePermission } from '@/services/permission'
+import { SinglePermissionResponse } from '@/services/permission'
 import { useQueryClient } from '@tanstack/react-query'
 import { Trash } from 'lucide-react'
 import React from 'react'
