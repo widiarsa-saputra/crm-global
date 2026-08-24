@@ -12,22 +12,14 @@ interface SegmentSidebarProps {
 }
 
 export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId }) => {
-    // Mock data fallback
-    const mockSegments = [
-        { id: '1', name: 'VIP', count: 1250 },
-        { id: '2', name: 'Hot Leads', count: 850 },
-        { id: '3', name: 'Inactive', count: 3200 },
-        { id: '4', name: 'New Signups', count: 450 },
-    ];
-
-    const { data: apiSegments, isError, isLoading } = useIndexSegment({});
+    const { data: apiSegments, isLoading } = useIndexSegment({});
 
     // Determine segments to render
-    const segments = isError || !apiSegments ? mockSegments : apiSegments.data.map((s) => ({
+    const segments = apiSegments?.data.map((s) => ({
         id: s.id.toString(),
         name: s.name,
-        count: 0, // Fallback to 0 if count is not provided by API
-    }));
+        count: s.contact_count || 0, // Fallback to 0 if count is not provided by API
+    })) || [];
 
     return (
         <div className="w-64 border-r flex flex-col h-full">
@@ -56,7 +48,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                     >
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="flex-1 text-left">All Contacts</span>
-                        <Badge variant="secondary" className="ml-auto font-normal bg-background">5750</Badge>
+                        <Badge variant="secondary" className="ml-auto font-normal bg-background">{apiSegments?.data.length}</Badge>
                     </Button>
                     <Button
                         variant={activeSegmentId === 'unassigned' ? "secondary" : "ghost"}

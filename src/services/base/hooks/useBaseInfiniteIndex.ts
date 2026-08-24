@@ -1,7 +1,7 @@
 import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
 import { privateApi } from "../../../api/api";
 import { AxiosRequestConfig } from "axios";
-import { ZodSchema } from "zod";
+
 import { BaseResponse } from "../response/BaseResponseSchema";
 
 interface RequestConfig extends Partial<AxiosRequestConfig> {
@@ -15,10 +15,12 @@ export interface InfiniteQueryConfig<T> extends Omit<
     key: string;
 }
 
+import { ZodType, ZodTypeDef } from "zod";
+
 interface UseBaseInfiniteIndexProps<T> {
     request: RequestConfig;
     query: InfiniteQueryConfig<T>;
-    schema: ZodSchema<T>;
+    schema: ZodType<T, ZodTypeDef, unknown>;
 }
 
 const buildQueryKey = (key: string, params?: Record<string, unknown>): string[] => {

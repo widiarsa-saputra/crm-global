@@ -156,7 +156,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             </div>
                             
                             <div className="flex items-center justify-between pt-4 border-t gap-2">
-                                <Badge variant="secondary" className="font-medium bg-slate-100 truncate max-w-[50%]">
+                                <Badge title='segment' variant="secondary" className="font-medium bg-slate-100 truncate max-w-[50%]">
                                     {contact.segment}
                                 </Badge>
                                 <Badge className={getStatusColor(contact.status)}>

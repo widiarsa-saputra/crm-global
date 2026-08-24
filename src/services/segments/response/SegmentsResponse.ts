@@ -17,10 +17,11 @@ export const DeleteSegmentDataSchema = z.nullable(
 export type DeleteSegmentResponse = z.infer<typeof DeleteSegmentResponseSchema>;
 
 export const SingleSegmentSchema = z.object({
-    id: z.string(),
+    id: z.union([z.string(), z.number()]),
     name: z.string(),
-    created_at: z.string(),
-    updated_at: z.string(),
+    contact_count: z.number().optional().default(0),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
 });
 
 export const SegmentListSchema = z.array(SingleSegmentSchema);

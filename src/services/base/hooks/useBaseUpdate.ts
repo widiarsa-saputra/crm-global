@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateApi } from "../../../api/api";
-import type { ZodSchema } from "zod";
+import type { ZodType, ZodTypeDef } from "zod";
 import type { AxiosRequestConfig } from "axios";
 import { GeneralRes } from "../response/BaseResponseSchema";
 
@@ -11,7 +11,7 @@ type DataForm<T extends object> = {
 
 interface BaseUpdateProps<T extends object, R> {
     endpoint: string | ((params: DataForm<T>) => string);
-    schema: ZodSchema<R>;
+    schema: ZodType<R, ZodTypeDef, unknown>;
     contentType?: "application/json" | "multipart/form-data";
     queryKey: string;
     request?: AxiosRequestConfig;

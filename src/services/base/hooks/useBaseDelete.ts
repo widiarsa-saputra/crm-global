@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosRequestConfig, AxiosResponse } from "axios";
 import { privateApi } from "../../../api/api";
-import { ZodSchema } from "zod";
+import type { ZodType, ZodTypeDef } from "zod";
 import { GeneralRes } from "../response/BaseResponseSchema";
 
 interface BaseDeleteProps<T extends { id: string | number }, R> {
     endpoint: string | ((params: T) => string);
-    schema: ZodSchema<R>;
+    schema: ZodType<R, ZodTypeDef, unknown>;
     queryKey: string;
     request?: AxiosRequestConfig;
     query?: {

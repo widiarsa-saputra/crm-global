@@ -3,16 +3,9 @@ import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import { Plus, Search, Calendar, Users, Percent, Edit, Play, FileText, Loader2, Trash2 } from 'lucide-react';
-import { useIndexCampaign } from '@/services/campaign';
+import { BaseTable, Column } from '@/shared/components/table/BaseTable';
+import { Plus, Search, Calendar, Users, Percent, Edit, FileText, Loader2, Trash2 } from 'lucide-react';
+import { SingleCampaignResponse, useIndexCampaign } from '@/services/campaign';
 import { useDeleteCampaign } from '@/services/campaign';
 import { useUpdateCampaign } from '@/services/campaign';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
@@ -20,43 +13,50 @@ import PaginationWithShow from '@/shared/components/pagination/PaginationWithSho
 const CampaignsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(10);
-    // Mock Data for Blast Campaigns
-    const mockCampaigns = [
+    const mockCampaigns: SingleCampaignResponse[] = [
         {
             id: 1,
-            name: "Promo Ramadhan 2026",
-            segment: "VIP & Hot Leads",
+            campaign_name: "Promo Ramadhan 2026",
+            segment_name: "VIP & Hot Leads",
             date: "2026-03-10 10:00",
-            status: "scheduled" as const,
-            openRate: 0,
-            clickRate: 0
+            status: "scheduled",
+            open_rate: 0,
+            click_rate: 0,
+            template_id: 1,
+            email_subject: "Promo Spesial Ramadhan"
         },
         {
             id: 2,
-            name: "Product Update v2.5",
-            segment: "All Active Users",
+            campaign_name: "Product Update v2.5",
+            segment_name: "All Active Users",
             date: "2026-02-15 14:30",
-            status: "completed" as const,
-            openRate: 45.2,
-            clickRate: 12.5
+            status: "completed",
+            open_rate: 45.2,
+            click_rate: 12.5,
+            template_id: 2,
+            email_subject: "Cek Fitur Baru v2.5!"
         },
         {
             id: 3,
-            name: "Re-engagement Campaign",
-            segment: "Inactive",
+            campaign_name: "Re-engagement Campaign",
+            segment_name: "Inactive",
             date: "2026-01-20 09:00",
-            status: "completed" as const,
-            openRate: 18.4,
-            clickRate: 3.2
+            status: "completed",
+            open_rate: 18.4,
+            click_rate: 3.2,
+            template_id: 3,
+            email_subject: "Kami merindukan Anda"
         },
         {
             id: 4,
-            name: "Welcome Onboarding",
-            segment: "New Signups",
+            campaign_name: "Welcome Onboarding",
+            segment_name: "New Signups",
             date: "-",
-            status: "draft" as const,
-            openRate: 0,
-            clickRate: 0
+            status: "draft",
+            open_rate: 0,
+            click_rate: 0,
+            template_id: 4,
+            email_subject: "Selamat datang di Platform Kami"
         }
     ];
 
@@ -64,15 +64,7 @@ const CampaignsPage: React.FC = () => {
     const deleteMutation = useDeleteCampaign();
     const updateMutation = useUpdateCampaign();
 
-    const campaigns = isError || !apiCampaigns ? mockCampaigns : apiCampaigns.data.map(c => ({
-        id: c.id,
-        name: c.campaign_name,
-        segment: c.segment_name || "Unknown Segment",
-        date: c.date,
-        status: c.status,
-        openRate: c.open_rate,
-        clickRate: c.click_rate
-    }));
+    const campaigns = isError || !apiCampaigns ? mockCampaigns : apiCampaigns.data;
 
     const paginatedCampaigns = campaigns.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -85,6 +77,95 @@ const CampaignsPage: React.FC = () => {
             default: return <Badge variant="secondary" className="text-gray-500">Draft</Badge>;
         }
     };
+
+    const columns: Column<SingleCampaignResponse>[] = [
+        {
+            title: "Campaign Name",
+            key: "name",
+            render: (campaign) => (
+                <div className="flex flex-col">
+                    <span>{campaign.campaign_name}</span>
+                    <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                        <FileText className="w-3 h-3" /> Template linked
+                    </span>
+                </div>
+            )
+        },
+        {
+            title: "Target Segment",
+            key: "segment",
+            render: (campaign) => (
+                <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-muted-foreground" />
+                    {campaign.segment_name}
+                </div>
+            )
+        },
+        {
+            title: "Status",
+            key: "status",
+            render: (campaign) => getStatusBadge(campaign.status)
+        },
+        {
+            title: "Schedule Date",
+            key: "date",
+            render: (campaign) => <span className="text-muted-foreground">{campaign.date}</span>
+        },
+        {
+            title: "Open Rate",
+            key: "openRate",
+            className: "text-right",
+            render: (campaign) => (
+                <div className="flex items-center justify-end gap-1">
+                    {campaign.open_rate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                </div>
+            )
+        },
+        {
+            title: "Click Rate",
+            key: "clickRate",
+            className: "text-right",
+            render: (campaign) => (
+                <div className="flex items-center justify-end gap-1">
+                    {campaign.click_rate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                </div>
+            )
+        },
+        {
+            title: "Actions",
+            key: "actions",
+            className: "text-right",
+            render: (campaign) => (
+                <div className="flex justify-end gap-2">
+                    {campaign.status === 'draft' ? (
+                        <>
+                            <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8 text-blue-600"
+                                onClick={() => updateMutation.mutate({ id: campaign.id, data: { status: 'scheduled' } })}
+                            >
+                                <Edit className="w-4 h-4" />
+                            </Button>
+                        </>
+                    ) : (
+                        <Button variant="outline" size="sm">
+                            View Report
+                        </Button>
+                    )}
+                    <Button 
+                        variant="ghost" 
+                        size="icon" 
+                        className="h-8 w-8 text-red-600"
+                        onClick={() => deleteMutation.mutate({ id: Number(campaign.id) })}
+                        disabled={deleteMutation.isPending}
+                    >
+                        <Trash2 className="w-4 h-4" />
+                    </Button>
+                </div>
+            )
+        }
+    ];
 
     return (
         <AdminLayout>
@@ -123,91 +204,22 @@ const CampaignsPage: React.FC = () => {
                 {/* Table */}
                 <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
                     <div className="overflow-auto flex-1">
-                        <Table>
-                            <TableHeader className="bg-slate-50 sticky top-0 z-10">
-                                <TableRow>
-                                    <TableHead>Campaign Name</TableHead>
-                                    <TableHead>Target Segment</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Schedule Date</TableHead>
-                                    <TableHead className="text-right">Open Rate</TableHead>
-                                    <TableHead className="text-right">Click Rate</TableHead>
-                                    <TableHead className="text-right">Actions</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {paginatedCampaigns.map((campaign) => (
-                                    <TableRow key={campaign.id} className="hover:bg-slate-50">
-                                        <TableCell className="font-medium">
-                                            <div className="flex flex-col">
-                                                <span>{campaign.name}</span>
-                                                <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                                    <FileText className="w-3 h-3" /> Template linked
-                                                </span>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex items-center gap-2">
-                                                <Users className="w-4 h-4 text-muted-foreground" />
-                                                {campaign.segment}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>{getStatusBadge(campaign.status)}</TableCell>
-                                        <TableCell className="text-muted-foreground">{campaign.date}</TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-1">
-                                                {campaign.openRate}% <Percent className="w-3 h-3 text-muted-foreground" />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex items-center justify-end gap-1">
-                                                {campaign.clickRate}% <Percent className="w-3 h-3 text-muted-foreground" />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="flex justify-end gap-2">
-                                                {campaign.status === 'draft' ? (
-                                                    <>
-                                                        <Button 
-                                                            variant="ghost" 
-                                                            size="icon" 
-                                                            className="h-8 w-8 text-blue-600"
-                                                            onClick={() => updateMutation.mutate({ id: campaign.id, data: { status: 'scheduled' } })}
-                                                        >
-                                                            <Edit className="w-4 h-4" />
-                                                        </Button>
-                                                        <Button variant="ghost" size="icon" className="h-8 w-8 text-green-600">
-                                                            <Play className="w-4 h-4" />
-                                                        </Button>
-                                                    </>
-                                                ) : (
-                                                    <Button variant="outline" size="sm">
-                                                        View Report
-                                                    </Button>
-                                                )}
-                                                <Button 
-                                                    variant="ghost" 
-                                                    size="icon" 
-                                                    className="h-8 w-8 text-red-600"
-                                                    onClick={() => deleteMutation.mutate({ id: Number(campaign.id) })}
-                                                    disabled={deleteMutation.isPending}
-                                                >
-                                                    <Trash2 className="w-4 h-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                        <BaseTable 
+                            columns={columns} 
+                            data={paginatedCampaigns} 
+                            isLoading={isLoading} 
+                            className="border-none"
+                        />
                     </div>
-                    <PaginationWithShow
-                        totalItems={campaigns.length}
-                        itemsPerPage={itemsPerPage}
-                        currentPage={currentPage}
-                        onPageChange={setCurrentPage}
-                        onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
-                    />
+                    {campaigns.length > itemsPerPage && (
+                        <PaginationWithShow
+                            totalItems={campaigns.length}
+                            itemsPerPage={itemsPerPage}
+                            currentPage={currentPage}
+                            onPageChange={setCurrentPage}
+                            onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
+                        />
+                    )}
                 </div>
             </div>
         </AdminLayout>

@@ -1,12 +1,12 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { privateApi } from "../../../api/api";
-import type { ZodSchema } from "zod";
+import type { ZodType, ZodTypeDef } from "zod";
 import type { AxiosRequestConfig } from "axios";
 import { GeneralRes } from "../response/BaseResponseSchema";
 
 interface BaseCreateProps<T extends object, R> {
     endpoint: string;
-    schema: ZodSchema<R>;
+    schema: ZodType<R, ZodTypeDef, unknown>;
     contentType?: "application/json" | "multipart/form-data";
     queryKey: string;
     request?: AxiosRequestConfig;

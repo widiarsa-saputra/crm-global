@@ -1,7 +1,7 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { privateApi } from "../../../api/api";
 import { AxiosRequestConfig } from "axios";
-import { ZodSchema } from "zod";
+
 
 interface RequestConfig extends Partial<AxiosRequestConfig> {
     endpoint: string;
@@ -14,10 +14,12 @@ export interface QueryConfig<T> extends Omit<
     key: string;
 }
 
+import { ZodType, ZodTypeDef } from "zod";
+
 interface UseBaseIndexProps<T> {
     request: RequestConfig;
     query: QueryConfig<T>;
-    schema: ZodSchema<T>;
+    schema: ZodType<T, ZodTypeDef, unknown>;
 }
 
 const buildQueryKey = (key: string, params?: Record<string, unknown>): string[] => {
