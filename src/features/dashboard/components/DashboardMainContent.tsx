@@ -15,26 +15,34 @@ import {
   Cell
 } from 'recharts';
 import { Badge } from '@/components/ui/badge';
+import { useIndexDashboard } from '@/services/dashboard';
+import { Loader2 } from 'lucide-react';
 
-// Mock Data for Grouped Bar Chart (Per Segment Engagement)
-const segmentEngagementData = [
-    { name: 'VIP', opened: 85, clicked: 60 },
-    { name: 'Hot Leads', opened: 65, clicked: 40 },
-    { name: 'Inactive', opened: 10, clicked: 2 },
-    { name: 'New Signups', opened: 50, clicked: 30 },
-];
-
-// Mock Data for Donut Chart (Distribution per Segment)
-const segmentDistributionData = [
-    { name: 'VIP', value: 1250 },
-    { name: 'Hot Leads', value: 850 },
-    { name: 'Inactive', value: 3200 },
-    { name: 'New Signups', value: 450 },
-];
-
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8B5CF6', '#F43F5E'];
 
 const DashboardMainContent: React.FC = () => {
+    const { data: response, isLoading } = useIndexDashboard();
+    
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center h-full">
+                <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
+            </div>
+        );
+    }
+
+    const dashboardData = response?.data;
+    
+    const segmentEngagementData = dashboardData?.engagement_per_segment.map(item => ({
+        name: item.segment_name,
+        opened: parseFloat(item.open_rate_pct),
+        clicked: parseFloat(item.click_rate_pct)
+    })) || [];
+
+    const segmentDistributionData = dashboardData?.contact_distribution.map(item => ({
+        name: item.segment_name,
+        value: item.total_contact
+    })) || [];
     return (
         <div className="p-6 h-full overflow-auto bg-slate-50/50">
             <h1 className="text-2xl font-bold mb-6">CRM & Analytics Dashboard</h1>
@@ -47,8 +55,8 @@ const DashboardMainContent: React.FC = () => {
                         <Users className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">5,750</div>
-                        <p className="text-xs text-muted-foreground mt-1">vs 120 Bounced/Invalid</p>
+                        <div className="text-2xl font-bold">{dashboardData?.summary.active_contacts.toLocaleString('id-ID') || 0}</div>
+                        <p className="text-xs text-muted-foreground mt-1">Total active contacts</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -57,8 +65,8 @@ const DashboardMainContent: React.FC = () => {
                         <Mail className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">42</div>
-                        <p className="text-xs text-muted-foreground mt-1">+3 scheduled this week</p>
+                        <div className="text-2xl font-bold">{dashboardData?.summary.total_campaigns_sent.toLocaleString('id-ID') || 0}</div>
+                        <p className="text-xs text-muted-foreground mt-1">All time</p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -67,7 +75,7 @@ const DashboardMainContent: React.FC = () => {
                         <Percent className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-green-600">32.4%</div>
+                        <div className="text-2xl font-bold text-green-600">{dashboardData?.summary.avg_open_rate || 0}%</div>
                         <p className="text-xs text-muted-foreground mt-1">Global average</p>
                     </CardContent>
                 </Card>
@@ -77,7 +85,7 @@ const DashboardMainContent: React.FC = () => {
                         <MousePointerClick className="w-4 h-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-blue-600">12.8%</div>
+                        <div className="text-2xl font-bold text-blue-600">{dashboardData?.summary.avg_click_rate || 0}%</div>
                         <p className="text-xs text-muted-foreground mt-1">Global average</p>
                     </CardContent>
                 </Card>
@@ -141,24 +149,22 @@ const DashboardMainContent: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="space-y-4">
-                        {[
-                            { name: 'Product Update v2.5', segment: 'All Active Users', status: 'completed', time: '2 days ago' },
-                            { name: 'Re-engagement Campaign', segment: 'Inactive', status: 'completed', time: '1 week ago' },
-                            { name: 'Promo Ramadhan 2026', segment: 'VIP & Hot Leads', status: 'scheduled', time: 'in 2 weeks' },
-                        ].map((activity, i) => (
+                        {dashboardData?.recent_blast_campaigns.length ? dashboardData.recent_blast_campaigns.map((activity, i) => (
                             <div key={i} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
                                 <div>
-                                    <h4 className="font-semibold text-sm">{activity.name}</h4>
-                                    <p className="text-xs text-muted-foreground mt-1">Segment: {activity.segment}</p>
+                                    <h4 className="font-semibold text-sm">{activity.campaign_name}</h4>
+                                    <p className="text-xs text-muted-foreground mt-1">Segment: {activity.segment_name || 'All Contacts'}</p>
                                 </div>
                                 <div className="text-right">
-                                    <Badge variant={activity.status === 'completed' ? 'default' : 'secondary'} className={activity.status === 'completed' ? 'bg-green-100 text-green-700 hover:bg-green-100 border-green-200' : ''}>
+                                    <Badge variant={activity.status === 'completed' ? 'default' : 'secondary'} className={activity.status === 'completed' ? 'bg-green-100 text-green-700 hover:bg-green-100 border-green-200 capitalize' : 'capitalize'}>
                                         {activity.status}
                                     </Badge>
-                                    <p className="text-xs text-muted-foreground mt-2">{activity.time}</p>
+                                    <p className="text-xs text-muted-foreground mt-2">{new Date(activity.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} {activity.time ? `• ${activity.time}` : ''}</p>
                                 </div>
                             </div>
-                        ))}
+                        )) : (
+                            <div className="text-center text-sm text-muted-foreground py-4">No recent campaigns</div>
+                        )}
                     </div>
                 </CardContent>
             </Card>
