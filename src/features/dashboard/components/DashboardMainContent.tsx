@@ -25,7 +25,7 @@ const DashboardMainContent: React.FC = () => {
     
     if (isLoading) {
         return (
-            <div className="flex items-center justify-center h-full">
+            <div className="flex items-center justify-center h-[90dvh]">
                 <Loader2 className="w-8 h-8 animate-spin text-slate-400" />
             </div>
         );

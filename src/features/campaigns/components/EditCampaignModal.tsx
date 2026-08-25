@@ -25,8 +25,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
             date: campaign.date || '',
             template_id: campaign.template_id || '',
             message: campaign.template_message || '',
-            segment_id: campaign.segment_id || null,
-            target_contact_ids: campaign.target_contacts?.map((c: { id: string | number }) => c.id.toString()) || [],
+            campaign_contacts: campaign.target_contacts?.map((c: { id: string | number }) => ({ contact_id: c.id.toString() })) || [],
             status: campaign.status || 'draft',
         },
     });
@@ -39,8 +38,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 date: campaign.date || '',
                 template_id: campaign.template_id || '',
                 message: campaign.template_message || '',
-                segment_id: campaign.segment_id || null,
-                target_contact_ids: campaign.target_contacts?.map((c: { id: string | number }) => c.id.toString()) || [],
+                campaign_contacts: campaign.target_contacts?.map((c: { id: string | number }) => ({ contact_id: c.id.toString() })) || [],
                 status: campaign.status || 'draft',
             });
         }
@@ -77,6 +75,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 form={form}
                 onSubmit={onSubmit}
                 mutation={mutation}
+                initialSegmentId={campaign.target_segment_id}
             />
         </Modal>
     );

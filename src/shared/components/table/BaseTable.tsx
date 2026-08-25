@@ -34,6 +34,8 @@ interface BaseTableProps<T> {
     sortBy?: string | null;
     sortOrder?: 'asc' | 'desc' | null;
     onSort?: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
+    onRowClick?: (item: T) => void;
+    rowClassName?: (item: T) => string;
 }
 
 export function useColumnToggle<T>(columns: Column<T>[], initialVisibleColumns?: Set<string | keyof T>) {
@@ -164,7 +166,9 @@ export function BaseTable<T extends { id?: string | number }>({
     columnToggleComponent,
     sortBy = "created_at",
     sortOrder = "desc",
-    onSort
+    onSort,
+    onRowClick,
+    rowClassName
 }: BaseTableProps<T>) {
     const { filteredColumns, renderColumnToggle } = useColumnToggle(columns);
 
@@ -247,7 +251,11 @@ export function BaseTable<T extends { id?: string | number }>({
                                     renderBody(data)
                                 ) : (
                                     data.map((item, index) => (
-                                        <TableRow key={item.id || index} className="transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-primary/5 h-px !p-0">
+                                        <TableRow 
+                                            key={item.id || index} 
+                                            className={cn("transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-primary/5 h-px !p-0", rowClassName?.(item))}
+                                            onClick={() => onRowClick?.(item)}
+                                        >
                                             {filteredColumns.map((col, colIndex) => (
                                                 <TableCell key={(col.key as string) || colIndex} className={cn("!p-0 child transition-colors duration-200 ease-in-out whitespace-nowrap text-sm text-gray-900 group h-px", col.className)}>
                                                     <div className="w-full h-full group-hover:rounded group-hover:!bg-white group-hover:shadow-md px-6 py-1 flex items-center" onClick={() => {

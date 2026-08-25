@@ -61,7 +61,7 @@ const PaginationWithShow: React.FC<PaginationProps> = ({ totalItems, itemsPerPag
             <div className="order-2 lg:order-1 w-full flex justify-center lg:justify-start text-sm text-gray-700 items-center gap-2">
                 <span>Show</span>
                 <Select value={itemsPerPage.toString()} onValueChange={(val) => onItemsPerPageChange(Number(val))}>
-                    <SelectTrigger className="w-16 h-8 text-sm">
+                    <SelectTrigger className="w-20 h-8 text-sm">
                         <SelectValue />
                     </SelectTrigger>
                     <SelectContent>

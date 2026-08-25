@@ -26,6 +26,7 @@ export interface CampaignMutationFormProps<
     form: UseFormReturn<TFieldValues>;
     onSubmit: SubmitHandler<TFieldValues>;
     mutation?: UseMutationResult<TData, TError, TVariables, TContext>;
+    initialSegmentId?: string | number | null;
 }
 
 export const CampaignMutationForm = <
@@ -38,7 +39,8 @@ export const CampaignMutationForm = <
     formId,
     form,
     onSubmit,
-    mutation
+    mutation,
+    initialSegmentId
 }: CampaignMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
     const { control, handleSubmit, formState: { errors }, watch, setValue } = form;
     const { data: apiSegments, isLoading: isSegmentsLoading } = useIndexSegment({});
@@ -47,11 +49,11 @@ export const CampaignMutationForm = <
     const watchedCampaignName = watch('campaign_name' as Path<TFieldValues>);
     const watchedEmailSubject = watch('email_subject' as Path<TFieldValues>);
     const watchedTemplateId = watch('template_id' as Path<TFieldValues>);
-    const watchedSegmentId = watch('segment_id' as Path<TFieldValues>);
     const watchedDate = watch('date' as Path<TFieldValues>);
     const watchedTime = watch('time' as Path<TFieldValues>);
     const watchedTimezone = watch('timezone' as Path<TFieldValues>);
-    const watchedContactIds = (watch('target_contact_ids' as Path<TFieldValues>) || []) as string[];
+    const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number }[];
+    const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : null);
 
     const { data: apiContacts, isLoading: contactsLoading } = useIndexContact({
         params: watchedSegmentId ? { 'filter[segment_id]': watchedSegmentId, per_page: 1000 } : {}
@@ -85,9 +87,9 @@ export const CampaignMutationForm = <
 
     useEffect(() => {
         if (segmentContacts.length > 0 && watchedSegmentId) {
-            if (watchedContactIds.length === 0) {
+            if (watchedCampaignContacts.length === 0) {
                 const contactIds = segmentContacts.map(c => c.id.toString());
-                setValue('target_contact_ids' as Path<TFieldValues>, contactIds as PathValue<TFieldValues, Path<TFieldValues>>);
+                setValue('campaign_contacts' as Path<TFieldValues>, contactIds.map(id => ({ contact_id: id })) as PathValue<TFieldValues, Path<TFieldValues>>);
             }
         }
     }, [segmentContacts, watchedSegmentId, setValue]); 
@@ -303,24 +305,17 @@ export const CampaignMutationForm = <
 
                 {/* Column 2: Target Contacts */}
                 <div className="flex flex-col">
-                    <Controller
-                        control={control}
-                        name={"segment_id" as Path<TFieldValues>}
-                        render={({ field }) => (
-                            <Combobox
-                                id="segment_id"
-                                label="Target Segment"
-                                icon={Users}
-                                options={segmentOptions}
-                                value={field.value ? String(field.value) : null}
-                                onChange={(option) => {
-                                    field.onChange(option.value);
-                                    setValue('target_contact_ids' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
-                                }}
-                                error={errors.segment_id?.message as string}
-                                isLoading={isSegmentsLoading}
-                            />
-                        )}
+                    <Combobox
+                        id="target_segment_id"
+                        label="Target Segment Filter (Optional)"
+                        icon={Users}
+                        options={segmentOptions}
+                        value={watchedSegmentId}
+                        onChange={(option) => {
+                            setWatchedSegmentId(option.value);
+                            setValue('campaign_contacts' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
+                        }}
+                        isLoading={isSegmentsLoading}
                     />
 
                     {watchedSegmentId ? (
@@ -329,17 +324,17 @@ export const CampaignMutationForm = <
                             {contactsLoading ? (
                                 <p className="text-sm text-slate-500">Loading contacts...</p>
                             ) : segmentContacts.length > 0 ? (
-                                <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col h-[500px]">
+                                <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col">
                                     <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
                                         <div className="flex items-center space-x-2">
                                             <Checkbox 
                                                 id="select-all" 
-                                                checked={watchedContactIds.length === segmentContacts.length && segmentContacts.length > 0}
+                                                checked={watchedCampaignContacts.length === segmentContacts.length && segmentContacts.length > 0}
                                                 onCheckedChange={(checked) => {
                                                     if (checked) {
-                                                        setValue('target_contact_ids' as Path<TFieldValues>, segmentContacts.map(c => c.id.toString()) as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                        setValue('campaign_contacts' as Path<TFieldValues>, segmentContacts.map(c => ({ contact_id: c.id.toString() })) as PathValue<TFieldValues, Path<TFieldValues>>);
                                                     } else {
-                                                        setValue('target_contact_ids' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                        setValue('campaign_contacts' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
                                                     }
                                                 }}
                                             />
@@ -355,13 +350,13 @@ export const CampaignMutationForm = <
                                                     <Checkbox 
                                                         id={`contact-${contact.id}`} 
                                                         className="mt-1"
-                                                        checked={watchedContactIds.includes(contact.id.toString())}
+                                                        checked={watchedCampaignContacts.some(c => c.contact_id.toString() === contact.id.toString())}
                                                         onCheckedChange={(checked) => {
-                                                            const currentIds = watchedContactIds || [];
+                                                            const currentContacts = watchedCampaignContacts || [];
                                                             if (checked) {
-                                                                setValue('target_contact_ids' as Path<TFieldValues>, [...currentIds, contact.id.toString()] as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                                setValue('campaign_contacts' as Path<TFieldValues>, [...currentContacts, { contact_id: contact.id.toString() }] as PathValue<TFieldValues, Path<TFieldValues>>);
                                                             } else {
-                                                                setValue('target_contact_ids' as Path<TFieldValues>, currentIds.filter(id => id !== contact.id.toString()) as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                                setValue('campaign_contacts' as Path<TFieldValues>, currentContacts.filter(c => c.contact_id.toString() !== contact.id.toString()) as PathValue<TFieldValues, Path<TFieldValues>>);
                                                             }
                                                         }}
                                                     />
@@ -378,8 +373,8 @@ export const CampaignMutationForm = <
                             ) : (
                                 <p className="text-sm text-slate-500 bg-slate-50 p-3 rounded-md border border-slate-200">No contacts found for this segment.</p>
                             )}
-                            {errors.target_contact_ids && (
-                                <p className="text-xs text-red-500 mt-1">{errors.target_contact_ids.message as string}</p>
+                            {errors.campaign_contacts && (
+                                <p className="text-xs text-red-500 mt-1">{errors.campaign_contacts.message as string}</p>
                             )}
                         </div>
                     ) : (

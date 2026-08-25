@@ -14,13 +14,15 @@ type Props<T> = Omit<React.ComponentProps<typeof FloatingInput>, 'watch' | 'inpu
     inputProps?: React.InputHTMLAttributes<HTMLInputElement> & { ref?: React.Ref<HTMLInputElement> };
     maxHeight?: string | number;
     isLoading?: boolean;
+    allowCustomValue?: boolean;
 }
 
-const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, icon, error, required, rightSlot, inputProps, maxHeight = '300px', isLoading }: Props<T>) => {
+const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, icon, error, required, rightSlot, inputProps, maxHeight = '300px', isLoading, allowCustomValue = false }: Props<T>) => {
     const [open, setOpen] = useState(false);
     const [onFocus, setOnFocus] = useState(false);
     const [itemFocus, setItemFocus] = useState<string | null>(null);
     const [search, setSearch] = useState('');
+    const [inputValue, setInputValue] = useState('');
     const [filteredOptions, setFilteredOptions] = useState<ComboOptions<T>[]>([]);
 
     const filteredOptionsValue = React.useMemo(() => options.filter(phase => phase.label.toLowerCase().includes(search?.toLowerCase() ?? '')), [options, search]);
@@ -88,6 +90,13 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
 
     const showValue = options.find(option => option.value === value)?.label ?? value;
 
+    useEffect(() => {
+        if (!onFocus) {
+            setInputValue(showValue ?? '');
+            setSearch('');
+        }
+    }, [showValue, onFocus]);
+
     return (
         <>
             <Popover open={open}>
@@ -103,20 +112,33 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
                             watch={value ?? search ?? ''}
                             inputProps={{
                                 ...inputProps,
-                                value: showValue ?? '',
+                                value: onFocus ? inputValue : (showValue ?? ''),
                                 onChange: e => {
                                     const val = e.target.value;
-                                    onChange({ label: val, value: val } as ComboOptions<T>);
-                                    externalSearch?.(val);
+                                    setInputValue(val);
                                     setSearch(val);
+                                    externalSearch?.(val);
+                                    if (allowCustomValue) {
+                                        onChange({ label: val, value: val } as ComboOptions<T>);
+                                    }
+                                    if (!open) setOpen(true);
                                 },
                                 className: cn("w-full", inputProps?.className),
                                 onFocus: (e) => {
                                     setOnFocus(true);
                                     inputProps?.onFocus?.(e);
                                 },
+                                autoComplete: 'off',
                                 onBlur: (e) => {
                                     setOnFocus(false);
+                                    if (!allowCustomValue && inputValue !== (showValue ?? '')) {
+                                        const match = options.find(o => o.label.toLowerCase() === inputValue.toLowerCase());
+                                        if (match) {
+                                            onChange(match);
+                                        } else {
+                                            setInputValue(showValue ?? '');
+                                        }
+                                    }
                                     inputProps?.onBlur?.(e);
                                 },
                                 onKeyDown: (e) => {
@@ -200,6 +222,7 @@ export const TimezoneCombobox = ({ value, onChange, id, label, error, required }
             onChange={(opt) => onChange(opt.value)}
             error={error}
             required={required}
+            allowCustomValue
         />
     )
 }

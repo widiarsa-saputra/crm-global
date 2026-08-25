@@ -4,9 +4,9 @@ import { SingleContactSchema } from "@/services/contacts";
 
 export const SingleCampaignSchema = z.object({
     id: z.union([z.string(), z.number()]),
-    template_id: z.union([z.string(), z.number()]),
+    template_id: z.union([z.string(), z.number()]).nullable(),
     template_message: z.string().optional(),
-    segment_id: z.union([z.string(), z.number()]).nullable().optional(),
+    target_segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_name: z.string(),
     email_subject: z.string(),
@@ -18,7 +18,7 @@ export const SingleCampaignSchema = z.object({
     click_rate: z.coerce.number().optional().default(0),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
-    segment_name: z.string().optional(),
+    segment_name: z.string().optional().nullable(),
     target_contacts: z.array(SingleContactSchema.extend({
         id: z.string(),
         campaign_id: z.string(),
@@ -35,7 +35,33 @@ export const SingleCampaignSchema = z.object({
     })).optional()
 });
 
+export const SingleCampaignResponseSchema = BaseResponseSchema(SingleCampaignSchema);
+export type SingleCampaignResponseWrapped = z.infer<typeof SingleCampaignResponseSchema>;
 export const CampaignListSchema = z.array(SingleCampaignSchema);
 export const IndexCampaignResponseSchema = BaseResponseSchema(CampaignListSchema);
 export type IndexCampaignResponse = z.infer<typeof IndexCampaignResponseSchema>;
 export type SingleCampaignResponse = z.infer<typeof SingleCampaignSchema>;
+
+export const CampaignContactSchema = z.object({
+    id: z.union([z.string(), z.number()]),
+    campaign_id: z.union([z.string(), z.number()]),
+    contact_id: z.union([z.string(), z.number()]),
+    contact_name: z.string().optional(),
+    email: z.string().optional(),
+    contact_email: z.string().optional(),
+    status: z.string().optional(),
+    send_status: z.string().optional(),
+    opened_at: z.string().nullable().optional(),
+    is_open: z.boolean().optional(),
+    is_clicked: z.boolean().optional(),
+    sent_at: z.string().nullable().optional(),
+    clicked_at: z.string().nullable().optional(),
+    error_message: z.string().nullable().optional(),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+    contact: SingleContactSchema.optional(),
+});
+export const CampaignContactListSchema = z.array(CampaignContactSchema);
+export const IndexCampaignContactResponseSchema = BaseResponseSchema(CampaignContactListSchema);
+export type IndexCampaignContactResponse = z.infer<typeof IndexCampaignContactResponseSchema>;
+export type SingleCampaignContactResponse = z.infer<typeof CampaignContactSchema>;

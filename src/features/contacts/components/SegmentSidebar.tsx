@@ -37,6 +37,8 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
         _raw: s,
     })) || [];
 
+    const totalContactsCount = apiSegments?.data.reduce((sum, segment) => sum + (segment.contact_count ?? 0), 0) ?? 0;
+
     const openDialog = (type: DialogState, segment: SingleSegmentResponse) => {
         setSelectedSegment(segment);
         setDialog(type);
@@ -79,7 +81,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="flex-1 text-left">All Contacts</span>
                         <Badge variant="secondary" className="ml-auto font-normal bg-background">
-                            {isLoading ? <Skeleton className="w-4 h-4" /> : (apiSegments?.data.length ?? 0)}
+                            {isLoading ? <Skeleton className="w-4 h-4" /> : totalContactsCount}
                         </Badge>
                     </Button>
                     <Button
