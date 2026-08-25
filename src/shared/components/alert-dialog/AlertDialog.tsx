@@ -48,7 +48,15 @@ const AlertDialog = ({
                     <AlertDialogCancel onClick={onCancel} disabled={isLoading}>
                         {cancelLabel}
                     </AlertDialogCancel>
-                    <AlertDialogAction onClick={onConfirm} disabled={isLoading}>
+                    <AlertDialogAction 
+                        onClick={(e) => {
+                            if (onConfirm) {
+                                e.preventDefault();
+                                onConfirm();
+                            }
+                        }} 
+                        disabled={isLoading}
+                    >
                         {isLoading ? "Memproses..." : confirmLabel}
                     </AlertDialogAction>
                 </AlertDialogFooter>

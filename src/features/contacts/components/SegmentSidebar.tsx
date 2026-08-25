@@ -1,33 +1,62 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Plus, Search, Users, Folder, Loader2 } from 'lucide-react';
+import { Plus, Search, Users, Folder, Loader2, Pencil, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { useIndexSegment } from '@/services/segments';
+import { useIndexSegment, SingleSegmentResponse } from '@/services/segments';
+import {
+    ContextMenu,
+    ContextMenuTrigger,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+} from '@/components/ui/context-menu';
+import { AddSegmentModal } from './AddSegmentModal';
+import { EditSegmentModal } from './EditSegmentModal';
+import { RemoveSegmentAlert } from './RemoveSegmentAlert';
 
 interface SegmentSidebarProps {
     onSelectSegment: (id: string | null) => void;
     activeSegmentId: string | null;
 }
 
+type DialogState = 'edit' | 'delete' | null;
+
 export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId }) => {
     const { data: apiSegments, isLoading } = useIndexSegment({});
 
-    // Determine segments to render
+    const [selectedSegment, setSelectedSegment] = useState<SingleSegmentResponse | null>(null);
+    const [dialog, setDialog] = useState<DialogState>(null);
+
     const segments = apiSegments?.data.map((s) => ({
-        id: s.id.toString(),
+        id: s.id?.toString() || Math.random().toString(),
         name: s.name,
-        count: s.contact_count || 0, // Fallback to 0 if count is not provided by API
+        count: s.contact_count ?? 0,
+        _raw: s,
     })) || [];
+
+    const openDialog = (type: DialogState, segment: SingleSegmentResponse) => {
+        setSelectedSegment(segment);
+        setDialog(type);
+    };
+
+    const closeDialog = () => {
+        setDialog(null);
+        setSelectedSegment(null);
+    };
 
     return (
         <div className="w-64 border-r flex flex-col h-full">
             <div className="p-4 border-b">
-                <Button className="w-full justify-start gap-2">
-                    <Plus className="w-4 h-4" />
-                    Add Segment
-                </Button>
+                <AddSegmentModal
+                    trigger={
+                        <Button className="w-full justify-start gap-2">
+                            <Plus className="w-4 h-4" />
+                            Add Segment
+                        </Button>
+                    }
+                />
             </div>
 
             <div className="p-4 border-b space-y-4">
@@ -48,7 +77,9 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                     >
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="flex-1 text-left">All Contacts</span>
-                        <Badge variant="secondary" className="ml-auto font-normal bg-background">{apiSegments?.data.length}</Badge>
+                        <Badge variant="secondary" className="ml-auto font-normal bg-background">
+                            {apiSegments?.data.length ?? 0}
+                        </Badge>
                     </Button>
                     <Button
                         variant={activeSegmentId === 'unassigned' ? "secondary" : "ghost"}
@@ -69,21 +100,54 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                         {isLoading && <Loader2 className="w-3 h-3 animate-spin" />}
                     </div>
                     {segments.map((segment) => (
-                        <Button
-                            key={segment.id}
-                            variant={activeSegmentId === segment.id ? "secondary" : "ghost"}
-                            className="w-full justify-start gap-2 h-9 px-2"
-                            onClick={() => onSelectSegment(segment.id)}
-                        >
-                            <span className="w-2 h-2 rounded-full bg-primary/40"></span>
-                            <span className="flex-1 text-left truncate">{segment.name}</span>
-                            <Badge variant="secondary" className="ml-auto font-normal bg-background">
-                                {segment.count}
-                            </Badge>
-                        </Button>
+                        <ContextMenu key={segment.id}>
+                            <ContextMenuTrigger asChild>
+                                <Button
+                                    variant={activeSegmentId === segment.id ? "secondary" : "ghost"}
+                                    className="w-full justify-start gap-2 h-9 px-2"
+                                    onClick={() => onSelectSegment(segment.id)}
+                                >
+                                    <span className="w-2 h-2 rounded-full bg-primary/40 shrink-0" />
+                                    <span className="flex-1 text-left truncate">{segment.name}</span>
+                                    <Badge variant="secondary" className="ml-auto font-normal bg-background">
+                                        {segment.count}
+                                    </Badge>
+                                </Button>
+                            </ContextMenuTrigger>
+                            <ContextMenuContent>
+                                <ContextMenuItem
+                                    onSelect={() => openDialog('edit', segment._raw)}
+                                >
+                                    <Pencil /> Edit
+                                </ContextMenuItem>
+                                <ContextMenuSeparator />
+                                <ContextMenuItem
+                                    variant="destructive"
+                                    onSelect={() => openDialog('delete', segment._raw)}
+                                >
+                                    <Trash2 /> Delete
+                                </ContextMenuItem>
+                            </ContextMenuContent>
+                        </ContextMenu>
                     ))}
                 </div>
             </ScrollArea>
+
+            {selectedSegment && dialog === 'edit' && (
+                <EditSegmentModal
+                    segment={selectedSegment}
+                    isOpen={dialog === 'edit'}
+                    onClose={closeDialog}
+                />
+            )}
+
+            {selectedSegment && dialog === 'delete' && (
+                <RemoveSegmentAlert
+                    segment={selectedSegment}
+                    isOpen={dialog === 'delete'}
+                    onClose={closeDialog}
+                />
+            )}
         </div>
     );
 };

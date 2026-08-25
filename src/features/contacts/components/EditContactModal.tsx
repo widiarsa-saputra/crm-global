@@ -15,8 +15,8 @@ interface EditContactModalProps {
 }
 
 export const EditContactModal: React.FC<EditContactModalProps> = ({ contact, isOpen, onClose }) => {
-    const { mutate: updateContact, isPending } = useUpdateContact();
-    
+    const updateContactMutation = useUpdateContact();
+
     const form = useForm<UpdateContact>({
         resolver: zodResolver(UpdateContactSchema),
         defaultValues: {
@@ -47,7 +47,7 @@ export const EditContactModal: React.FC<EditContactModalProps> = ({ contact, isO
     };
 
     const onSubmit = (data: UpdateContact) => {
-        updateContact({ id: contact.id, data }, {
+        updateContactMutation.mutate({ id: contact.id, data }, {
             onSuccess: () => {
                 onClose();
             },
@@ -64,16 +64,21 @@ export const EditContactModal: React.FC<EditContactModalProps> = ({ contact, isO
             description="Update the contact's details."
             footer={
                 <div className="flex justify-end gap-2 w-full">
-                    <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
+                    <Button type="button" variant="ghost" onClick={onClose} disabled={updateContactMutation.isPending}>
                         Cancel
                     </Button>
-                    <Button type="submit" form="edit-contact-form" disabled={isPending}>
-                        {isPending ? 'Saving...' : 'Save Changes'}
+                    <Button type="submit" form="edit-contact-form" disabled={updateContactMutation.isPending}>
+                        {updateContactMutation.isPending ? 'Saving...' : 'Save Changes'}
                     </Button>
                 </div>
             }
         >
-            <ContactMutationForm formId="edit-contact-form" form={form} onSubmit={onSubmit} />
+            <ContactMutationForm
+                formId="edit-contact-form"
+                form={form}
+                onSubmit={onSubmit}
+                mutation={updateContactMutation}
+            />
         </Modal>
     );
 };

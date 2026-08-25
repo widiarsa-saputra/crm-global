@@ -1,7 +1,10 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import AlertDialog from '@/shared/components/alert-dialog/AlertDialog';
 import { useDeleteContact } from '@/services/contacts/hooks/useContactsCRUD';
 import { SingleContactResponse } from '@/services/contacts';
+import { SubmitLoading } from '@/components/SubmitLoading';
+import { UseMutationResult } from '@tanstack/react-query';
 
 interface RemoveContactAlertProps {
     contact: SingleContactResponse | null;
@@ -10,30 +13,53 @@ interface RemoveContactAlertProps {
 }
 
 export const RemoveContactAlert: React.FC<RemoveContactAlertProps> = ({ contact, isOpen, onClose }) => {
-    const { mutate: deleteContact, isPending } = useDeleteContact();
+    const deleteContactMutation = useDeleteContact();
+    const [isAlertOpen, setIsAlertOpen] = React.useState(isOpen);
+
+    React.useEffect(() => {
+        setIsAlertOpen(isOpen);
+    }, [isOpen]);
 
     const handleConfirm = () => {
         if (!contact) return;
-        deleteContact({ id: contact.id.toString() }, {
+        deleteContactMutation.mutate({ id: contact.id.toString() }, {
             onSuccess: () => {
-                onClose();
+                setIsAlertOpen(false);
+                setTimeout(() => {
+                    onClose();
+                }, 2000);
             }
         });
     };
 
-    if (!contact) return null;
-
     return (
-        <AlertDialog
-            open={isOpen}
-            onOpenChange={(open) => !open && onClose()}
-            title="Delete Contact"
-            description={`Are you sure you want to delete ${contact.nama}? This action cannot be undone.`}
-            confirmLabel="Delete"
-            cancelLabel="Cancel"
-            onConfirm={handleConfirm}
-            onCancel={onClose}
-            isLoading={isPending}
-        />
+        <>
+            {typeof window !== 'undefined' && document.body
+                ? createPortal(
+                      <div className="relative z-[100]">
+                          <SubmitLoading 
+                              mutation={deleteContactMutation as UseMutationResult}
+                              successMessage="Contact berhasil dihapus"
+                              errorMessage="Gagal menghapus contact"
+                          />
+                      </div>,
+                      document.body
+                  )
+                : null}
+            <AlertDialog
+                open={isAlertOpen}
+                onOpenChange={(open) => {
+                    setIsAlertOpen(open);
+                    if (!open) onClose();
+                }}
+                title="Delete Contact"
+                description={`Are you sure you want to delete ${contact?.nama ?? 'this contact'}? This action cannot be undone.`}
+                confirmLabel="Delete"
+                cancelLabel="Cancel"
+                onConfirm={handleConfirm}
+                onCancel={onClose}
+                isLoading={deleteContactMutation.isPending}
+            />
+        </>
     );
 };

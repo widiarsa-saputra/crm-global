@@ -79,7 +79,9 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         isFetchingNextPage
     } = useIndexContactInfinite({
         params: { 
-            segment_id: activeSegmentId || undefined,
+            filter: {
+                segment_id: activeSegmentId || undefined
+            },
             search: searchTerm || undefined,
             per_page: 50
         },

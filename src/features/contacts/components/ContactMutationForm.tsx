@@ -2,9 +2,11 @@ import React, { useMemo } from 'react';
 import { UseFormReturn, Controller } from 'react-hook-form';
 import { FloatingInput } from '@/components/FloatingInput';
 import Combobox from '@/components/Combobox';
+import { SubmitLoading } from '@/components/SubmitLoading';
 import { Mail, User, Building, ShieldCheck, Users } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
 import { CreateContact, UpdateContact } from '@/services/contacts';
+import { UseMutationResult } from '@tanstack/react-query';
 
 type ContactFormValues = CreateContact | UpdateContact;
 
@@ -12,6 +14,8 @@ export interface ContactMutationFormProps {
     formId: string;
     form: UseFormReturn<ContactFormValues>;
     onSubmit: (data: ContactFormValues) => void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutation?: UseMutationResult<any, any, any, any>;
 }
 
 const emailStatusOptions = [
@@ -21,7 +25,7 @@ const emailStatusOptions = [
     { label: 'Unsubscribed', value: 'unsubscribed' },
 ];
 
-export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId, form, onSubmit }) => {
+export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId, form, onSubmit, mutation }) => {
     const { control, handleSubmit, formState: { errors }, watch } = form;
     const { data: apiSegments } = useIndexSegment({});
 
@@ -130,6 +134,8 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                     )}
                 />
             </div>
+
+            {mutation && <SubmitLoading mutation={mutation} />}
         </form>
     );
 };

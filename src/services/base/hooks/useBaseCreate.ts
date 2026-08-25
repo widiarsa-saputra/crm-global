@@ -71,9 +71,15 @@ export const useBaseCreate = <T extends object, R, Q extends {
             queryClient.setQueriesData({ queryKey: [queryKey] }, (oldPost: unknown) => {
                 const old = oldPost as QueryData | undefined;
                 if(!old) return previousData;
+                
+                const optimisticData = { 
+                    id: Math.random().toString(36).substring(2, 9),
+                    ...form 
+                } as unknown as Q;
+
                 return {
                     ...old,
-                    data: [form as unknown as Q, ...old.data]
+                    data: [optimisticData, ...old.data]
                 }
             });
 
