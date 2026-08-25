@@ -57,22 +57,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         return () => observer.disconnect();
     }, []);
 
-    // Mock data for contacts
-    const mockContacts = Array.from({ length: 12 }).map((_, i) => ({
-        id: i.toString(),
-        name: `Contact Name ${i + 1}`,
-        email: `contact${i + 1}@example.com`,
-        company: i % 3 === 0 ? 'Tech Corp' : 'Business LLC',
-        segment: i % 2 === 0 ? 'VIP' : 'Hot Leads',
-        status: i % 5 === 0 ? 'bounced' : (i % 7 === 0 ? 'unsubscribed' : 'valid'),
-        _raw: null as SingleContactResponse | null,
-    }));
-
     const { ref: observerRef, inView } = useInView();
 
     const { 
         data: apiResponse, 
-        isError, 
         isLoading,
         fetchNextPage,
         hasNextPage,
@@ -93,7 +81,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         }
     }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    const contacts = isError || !apiResponse ? mockContacts : apiResponse.pages.flatMap((page) => page.data).map((c) => ({
+    const contacts = apiResponse ? apiResponse.pages.flatMap((page) => page.data).map((c) => ({
         id: c.id.toString(),
         name: c.nama,
         email: c.email,
@@ -101,7 +89,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         segment: c.segment?.name || 'Unassigned',
         status: c.email_status,
         _raw: c,
-    }));
+    })) : [];
 
     const getStatusColor = (status: string) => {
         switch (status) {

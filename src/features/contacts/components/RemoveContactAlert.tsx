@@ -4,7 +4,7 @@ import AlertDialog from '@/shared/components/alert-dialog/AlertDialog';
 import { useDeleteContact } from '@/services/contacts/hooks/useContactsCRUD';
 import { SingleContactResponse } from '@/services/contacts';
 import { SubmitLoading } from '@/components/SubmitLoading';
-import { UseMutationResult } from '@tanstack/react-query';
+import { useQueryClient, UseMutationResult } from '@tanstack/react-query';
 
 interface RemoveContactAlertProps {
     contact: SingleContactResponse | null;
@@ -14,6 +14,7 @@ interface RemoveContactAlertProps {
 
 export const RemoveContactAlert: React.FC<RemoveContactAlertProps> = ({ contact, isOpen, onClose }) => {
     const deleteContactMutation = useDeleteContact();
+    const queryClient = useQueryClient();
     const [isAlertOpen, setIsAlertOpen] = React.useState(isOpen);
 
     React.useEffect(() => {
@@ -25,6 +26,8 @@ export const RemoveContactAlert: React.FC<RemoveContactAlertProps> = ({ contact,
         deleteContactMutation.mutate({ id: contact.id.toString() }, {
             onSuccess: () => {
                 setIsAlertOpen(false);
+                queryClient.invalidateQueries({ queryKey: ['contact-list'] });
+                queryClient.invalidateQueries({ queryKey: ['contact-list-infinite'] });
                 setTimeout(() => {
                     onClose();
                 }, 2000);

@@ -47,7 +47,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
     };
 
     return (
-        <div className="w-64 border-r flex flex-col h-full">
+        <div className="w-72 shrink-0 border-r flex flex-col h-full">
             <div className="p-4 border-b">
                 <AddSegmentModal
                     trigger={
