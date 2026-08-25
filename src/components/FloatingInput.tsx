@@ -60,11 +60,11 @@ export const FloatingInput = ({
                         htmlFor={id}
                         className={cn(
                             `absolute whitespace-nowrap top-1/2 -translate-y-1/2 text-xs font-black uppercase tracking-widest text-slate-400 ml-1`,
-                            `bg-white px-2 duration-500 transition-all`,
+                            `bg-transparent px-2 duration-500 transition-all`,
                             Icon ? "left-8" : "left-2",
                             isFloating
-                                ? Icon ? '!left-4 !top-0 !text-[10px]'
-                                    : '!top-0 !text-[10px] !left-0'
+                                ? Icon ? '!left-4 !top-0 !text-[10px] bg-white'
+                                    : '!top-0 !text-[10px] !left-0 bg-white'
                                 : ''
                         )}
                     >
