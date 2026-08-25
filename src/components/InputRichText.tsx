@@ -3,6 +3,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
+import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 
 // Expose katex to window for Quill formula module
@@ -49,12 +50,12 @@ export const InputRichText = React.forwardRef<ReactQuill, InputRichTextProps>(
                     <ReactQuill
                         ref={ref}
                         theme="snow"
-                        value={value || ''}
-                        onChange={onChange}
+                        value={DOMPurify.sanitize(value || '')}
+                        onChange={(val) => onChange?.(DOMPurify.sanitize(val))}
                         onBlur={onBlur}
                         modules={modules}
                         placeholder={placeholder}
-                        className="h-[200px] pb-12"
+                        className="min-h-[200px] pb-12"
                     />
                 </div>
                 {error && <p className="text-[10px] font-bold text-red-500 uppercase">{error}</p>}

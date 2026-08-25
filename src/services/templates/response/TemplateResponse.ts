@@ -11,6 +11,8 @@ export const SingleTemplateSchema = z.object({
 
 export const TemplateListSchema = z.array(SingleTemplateSchema);
 export const IndexTemplateResponseSchema = BaseResponseSchema(TemplateListSchema);
+export const SingleTemplateResponseSchema = BaseResponseSchema(SingleTemplateSchema);
 
 export type IndexTemplateResponse = z.infer<typeof IndexTemplateResponseSchema>;
 export type SingleTemplateResponse = z.infer<typeof SingleTemplateSchema>;
+export type SingleTemplateResponseWrapped = z.infer<typeof SingleTemplateResponseSchema>;

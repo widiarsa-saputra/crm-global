@@ -3,7 +3,7 @@ import { useBaseDelete } from "@/services/base/hooks/useBaseDelete";
 import useBaseIndex from "@/services/base/hooks/useBaseIndex";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import { GeneralRes, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
-import { IndexTemplateResponseSchema, SingleTemplateResponse, SingleTemplateSchema } from "../response/TemplateResponse";
+import { IndexTemplateResponseSchema, SingleTemplateResponse, SingleTemplateResponseSchema, SingleTemplateResponseWrapped } from "../response/TemplateResponse";
 import { CreateTemplatePayload, UpdateTemplatePayload } from "../schema/TemplateSchema";
 
 interface IndexTemplateProps {
@@ -24,26 +24,26 @@ export const useIndexTemplate = (query?: IndexTemplateProps) => {
 };
 
 export const useCreateTemplate = () => {
-    return useBaseCreate<CreateTemplatePayload, SingleTemplateResponse, SingleTemplateResponse>({
+    return useBaseCreate<CreateTemplatePayload, SingleTemplateResponseWrapped, SingleTemplateResponse>({
         endpoint: "v1/message-templates",
         queryKey: "template-list",
-        schema: SingleTemplateSchema,
+        schema: SingleTemplateResponseSchema,
         contentType: "application/json",
         query: {
-            onSuccess: (data: SingleTemplateResponse) => data,
+            onSuccess: (data: SingleTemplateResponseWrapped) => data.data,
             onError: (error: unknown) => { throw error; },
         }
     });
 };
 
 export const useUpdateTemplate = () => {
-    return useBaseUpdate<UpdateTemplatePayload, SingleTemplateResponse, SingleTemplateResponse>({
+    return useBaseUpdate<UpdateTemplatePayload, SingleTemplateResponseWrapped, SingleTemplateResponse>({
         endpoint: ({ id }: { id: string | number }) => `v1/message-templates/${id}`,
         queryKey: "template-list",
-        schema: SingleTemplateSchema,
+        schema: SingleTemplateResponseSchema,
         contentType: "application/json",
         query: {
-            onSuccess: (data: SingleTemplateResponse) => data,
+            onSuccess: (data: SingleTemplateResponseWrapped) => data.data,
             onError: (error: unknown) => { throw error; },
         }
     });
