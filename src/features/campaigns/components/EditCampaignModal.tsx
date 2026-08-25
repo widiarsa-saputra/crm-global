@@ -57,6 +57,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title="Edit Campaign"
+            size='2xl'
             description={`Update settings for ${campaign.campaign_name}`}
             footer={
                 <div className="flex justify-end gap-2 w-full">

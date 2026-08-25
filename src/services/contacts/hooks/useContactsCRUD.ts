@@ -78,7 +78,7 @@ interface IndexContactInfiniteProps {
     params?: {
         segment_id?: string;
         search?: string;
-        per_page?: number;
+        paginate?: number;
         [key: string]: unknown;
     };
 }

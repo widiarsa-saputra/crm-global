@@ -60,7 +60,7 @@ const RolePageContent: React.FC = () => {
                         value={search}
                         onChange={setSearch}
                         debounceTime={400}
-                        icon={<Search className="h-4 w-4" />}
+                        icon={Search}
                         className="my-4"
                         inputClassName="text-sm"
                         placeholder="Search here..."

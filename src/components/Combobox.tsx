@@ -19,8 +19,13 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
     const [onFocus, setOnFocus] = useState(false);
     const [itemFocus, setItemFocus] = useState<string | null>(null);
     const [search, setSearch] = useState('');
+    const [filteredOptions, setFilteredOptions] = useState<ComboOptions<T>[]>([]);
 
-    const filteredOptions = React.useMemo(() => options.filter(phase => phase.label.toLowerCase().includes(search?.toLowerCase() ?? '')), [options, search]);
+    const filteredOptionsValue = React.useMemo(() => options.filter(phase => phase.label.toLowerCase().includes(search?.toLowerCase() ?? '')), [options, search]);
+    useEffect(() => {
+        setFilteredOptions(filteredOptionsValue)
+    }, [filteredOptionsValue])
+
     const hideContent = filteredOptions.length === 0;
 
     useEffect(() => {
@@ -43,7 +48,8 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
 
     const handleSelect = (val: ComboOptions<T>) => {
         onChange(val);
-        setSearch(val.value);
+        setSearch('');
+        setFilteredOptions(options);
         setOpen(false)
     }
     const handleOnKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -155,4 +161,36 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
     )
 }
 
-export default Combobox
+export default Combobox;
+
+interface TimezoneComboboxProps {
+    value?: string | null;
+    onChange: (value: string) => void;
+    id: string;
+    label: string;
+    error?: string;
+    required?: boolean;
+}
+
+export const TimezoneCombobox = ({ value, onChange, id, label, error, required }: TimezoneComboboxProps) => {
+    const timezones = React.useMemo(() => {
+        try {
+            return (Intl as unknown as { supportedValuesOf: (key: string) => string[] }).supportedValuesOf('timeZone');
+        } catch (e) {
+            console.error(e)
+            return ['UTC', 'Asia/Jakarta'];
+        }
+    }, []);
+    const options = React.useMemo(() => timezones.map((tz: string) => ({ label: tz.replace(/_/g, ' '), value: tz })), [timezones]);
+    return (
+        <Combobox
+            id={id}
+            label={label}
+            options={options}
+            value={value}
+            onChange={(opt) => onChange(opt.value)}
+            error={error}
+            required={required}
+        />
+    )
+}

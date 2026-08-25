@@ -5,6 +5,7 @@ import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import { GeneralRes, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { IndexCampaignResponse, IndexCampaignResponseSchema, SingleCampaignResponse, SingleCampaignSchema } from "@/services/campaign";
 import { CreateCampaignPayload, UpdateCampaignPayload } from "../schema/CampaignSchema";
+import { keepPreviousData } from "@tanstack/react-query";
 
 export const useCreateCampaign = () => {
     return useBaseCreate<CreateCampaignPayload, SingleCampaignResponse, SingleCampaignResponse>({
@@ -44,6 +45,7 @@ export const useIndexCampaign = (query?: IndexCampaignProps) =>
         },
         query: {
             key: "campaign-list",
+            placeholderData: keepPreviousData
         },
         schema: IndexCampaignResponseSchema,
     });

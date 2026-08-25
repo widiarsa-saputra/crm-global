@@ -122,7 +122,7 @@ const UserManagementContent: React.FC = () => {
                                 value={search}
                                 onChange={setSearch}
                                 debounceTime={400}
-                                icon={<Search className="h-3.5 w-3.5" />}
+                                icon={Search}
                                 placeholder="Cari User..."
                                 inputClassName="bg-slate-50/80 border-slate-100 h-9 rounded"
                             />

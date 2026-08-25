@@ -66,7 +66,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 segment_id: activeSegmentId || undefined
             },
             search: searchTerm || undefined,
-            per_page: 50
+            paginate: 50
         },
     });
 

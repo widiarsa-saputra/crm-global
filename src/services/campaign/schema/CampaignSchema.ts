@@ -7,6 +7,8 @@ export const CreateCampaignSchema = z.object({
     campaign_name: z.string().min(1, "Campaign name is required"),
     email_subject: z.string().min(1, "Email subject is required"),
     date: z.string().min(1, "Date is required"),
+    time: z.string().optional(),
+    timezone: z.string().optional(),
     status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']).optional().default('draft'),
 });
 
@@ -17,6 +19,8 @@ export const UpdateCampaignSchema = z.object({
     campaign_name: z.string().optional(),
     email_subject: z.string().optional(),
     date: z.string().optional(),
+    time: z.string().optional(),
+    timezone: z.string().optional(),
     status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']).optional(),
 });
 

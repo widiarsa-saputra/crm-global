@@ -3,7 +3,6 @@ import { Modal } from '@/shared/components/modal/Modal';
 import { SingleCampaignResponse } from '@/services/campaign';
 import { Users, Send, MousePointerClick, MailOpen, Mail, AlignLeft, Tags } from 'lucide-react';
 import { BaseTable, Column } from '@/shared/components/table/BaseTable';
-import { SingleContactResponse } from '@/services/contacts';
 
 interface CampaignDetailModalProps {
     campaign: SingleCampaignResponse;
@@ -17,33 +16,54 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
     const totalTarget = campaign.target_contacts ? campaign.target_contacts.length : 0;
     const totalSent = campaign.status === 'completed' || campaign.status === 'processing' ? totalTarget : 0;
     
-    const contactColumns: Column<SingleContactResponse>[] = [
-        {
-            title: "Name",
-            key: "nama",
-            render: (contact) => <span className="font-medium">{contact.nama}</span>
-        },
+    type CampaignTargetContact = NonNullable<SingleCampaignResponse['target_contacts']>[0];
+
+    const contactColumns: Column<CampaignTargetContact>[] = [
         {
             title: "Email",
             key: "email",
-        },
-        {
-            title: "Company",
-            key: "company",
-        },
-        {
-            title: "Status",
-            key: "email_status",
             render: (contact) => (
-                <span className={`px-2 py-1 rounded-full text-xs ${
-                    contact.email_status === 'valid' ? 'bg-green-100 text-green-700' :
-                    contact.email_status === 'invalid' ? 'bg-red-100 text-red-700' :
-                    contact.email_status === 'bounced' ? 'bg-orange-100 text-orange-700' :
-                    'bg-slate-100 text-slate-700'
-                }`}>
-                    {contact.email_status || 'Unknown'}
-                </span>
+                <div className="flex flex-col">
+                    <span className="font-medium">{contact.email}</span>
+                    <span className="text-xs text-muted-foreground">{contact.nama}</span>
+                </div>
             )
+        },
+        {
+            title: "Status Pengiriman",
+            key: "send_status" as keyof CampaignTargetContact,
+            render: (contact) => {
+                const status = contact.send_status || 'Pending';
+                return (
+                    <span className={`px-2 py-1 rounded-full text-xs ${
+                        status.toLowerCase() === 'sent' ? 'bg-green-100 text-green-700' :
+                        status.toLowerCase() === 'failed' ? 'bg-red-100 text-red-700' :
+                        'bg-slate-100 text-slate-700'
+                    }`}>
+                        {status}
+                    </span>
+                );
+            }
+        },
+        {
+            title: "Waktu Dibuka",
+            key: "open_time" as keyof CampaignTargetContact,
+            render: (contact) => {
+                if (!contact.open_time) return <span className="text-muted-foreground">-</span>;
+                
+                const openDate = new Date(contact.open_time);
+                if (isNaN(openDate.getTime())) return <span className="text-muted-foreground">-</span>;
+
+                const today = new Date();
+                const isToday = openDate.getDate() === today.getDate() && 
+                                openDate.getMonth() === today.getMonth() && 
+                                openDate.getFullYear() === today.getFullYear();
+                
+                const dateStr = isToday ? "Hari ini" : openDate.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+                const timeWithTz = openDate.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' });
+                
+                return <span>{dateStr}, {timeWithTz.replace('.', ':')}</span>;
+            }
         }
     ];
 
@@ -52,6 +72,8 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title={`Campaign Report: ${campaign.campaign_name}`}
+            description={`Blast will be executed on ${campaign.date || '-'} at ${campaign.time || '-'} (${campaign.timezone || '-'})`}
+            size='xl'
         >
             <div className="flex flex-col gap-6 py-4">
                 
@@ -98,46 +120,48 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                     </div>
                 </div>
 
-                {/* Campaign Information Section */}
-                <div className="bg-white border rounded-xl overflow-hidden">
-                    <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700">
-                        Campaign Information
-                    </div>
-                    <div className="p-4 grid gap-4 md:grid-cols-2">
-                        <div className="flex flex-col gap-1">
-                            <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Mail className="w-4 h-4" /> Email Subject</span>
-                            <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.email_subject || '-'}</span>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                    {/* Campaign Information Section */}
+                    <div className="bg-white border rounded-xl overflow-hidden">
+                        <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700">
+                            Campaign Information
                         </div>
-                        <div className="flex flex-col gap-1">
-                            <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Tags className="w-4 h-4" /> Target Segment</span>
-                            <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.segment_name || 'All Contacts'}</span>
-                        </div>
-                        <div className="flex flex-col gap-1 md:col-span-2">
-                            <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Template Message</span>
-                            <div className="font-medium bg-slate-50 p-3 rounded border min-h-[100px] whitespace-pre-wrap text-sm">
-                                {campaign.template_message || <span className="text-muted-foreground italic">No template message available</span>}
+                        <div className="p-4 grid gap-4">
+                            <div className="flex flex-col gap-1">
+                                <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Mail className="w-4 h-4" /> Email Subject</span>
+                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.email_subject || '-'}</span>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Tags className="w-4 h-4" /> Target Segment</span>
+                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.segment_name || 'All Contacts'}</span>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Template Message</span>
+                                <div className="font-medium bg-slate-50 p-3 rounded border min-h-[100px] whitespace-pre-wrap text-sm">
+                                    {campaign.template_message || <span className="text-muted-foreground italic">No template message available</span>}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Target Contacts Table Section */}
-                <div className="bg-white border rounded-xl overflow-hidden flex flex-col min-h-[300px]">
-                    <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700">
-                        Target Contacts List
-                    </div>
-                    <div className="overflow-auto max-h-[400px]">
-                        {campaign.target_contacts && campaign.target_contacts.length > 0 ? (
-                            <BaseTable 
-                                columns={contactColumns} 
-                                data={campaign.target_contacts} 
-                                className="border-none"
-                            />
-                        ) : (
-                            <div className="p-8 text-center text-muted-foreground">
-                                No target contacts found for this campaign.
-                            </div>
-                        )}
+                    {/* Target Contacts Table Section */}
+                    <div className="bg-white border rounded-xl overflow-hidden flex flex-col h-full min-h-[400px]">
+                        <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700 shrink-0">
+                            Target Contacts List
+                        </div>
+                        <div className="overflow-auto flex-1 max-h-[500px]">
+                            {campaign.target_contacts && campaign.target_contacts.length > 0 ? (
+                                <BaseTable 
+                                    columns={contactColumns} 
+                                    data={campaign.target_contacts} 
+                                    className="border-none"
+                                />
+                            ) : (
+                                <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">
+                                    No target contacts found for this campaign.
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
                 

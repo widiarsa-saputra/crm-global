@@ -22,6 +22,8 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
             campaign_name: '',
             email_subject: '',
             date: '',
+            time: '',
+            timezone: '',
             template_id: '',
             segment_id: null,
             target_contact_ids: [],

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
+import { FloatingDateInput, FloatingInput } from '@/components/FloatingInput';
 import { BaseTable, Column } from '@/shared/components/table/BaseTable';
-import { Plus, Users, Percent, Edit, FileText, Loader2, Trash2, Eye } from 'lucide-react';
+import { Plus, Users, Percent, Edit, FileText, Loader2, Trash2, Eye, Calendar, Clock } from 'lucide-react';
 import { SingleCampaignResponse, useIndexCampaign } from '@/services/campaign';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import { SegmentSidebar } from '@/features/contacts/components/SegmentSidebar';
@@ -20,7 +20,8 @@ const CampaignsPage: React.FC = () => {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
     const [searchTerm, setSearchTerm] = useState('');
-    const [scheduleDate, setScheduleDate] = useState('');
+    const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
+    const [scheduleTime, setScheduleTime] = useState('');
 
     const [selectedCampaign, setSelectedCampaign] = useState<SingleCampaignResponse | null>(null);
     const [dialog, setDialog] = useState<'create' | 'edit' | 'delete' | 'detail' | null>(null);
@@ -42,7 +43,8 @@ const CampaignsPage: React.FC = () => {
             search: searchTerm || undefined,
             filter: {
                 segment_id: activeSegmentId === 'unassigned' ? null : activeSegmentId || undefined,
-                schedule_date: scheduleDate || undefined,
+                schedule_date: scheduleDate ? `${scheduleDate.getFullYear()}-${String(scheduleDate.getMonth() + 1).padStart(2, '0')}-${String(scheduleDate.getDate()).padStart(2, '0')}` : undefined,
+                time: scheduleTime || undefined,
             }
         }
     });
@@ -190,13 +192,29 @@ const CampaignsPage: React.FC = () => {
                                 className="bg-white"
                             />
                         </div>
-                        <div className="w-48">
-                            <Input
-                                type="date"
+                        <div className="w-64">
+                            <FloatingDateInput
+                                id="filter-date"
+                                label="Schedule Date"
+                                icon={Calendar}
                                 value={scheduleDate}
-                                onChange={(e) => setScheduleDate(e.target.value)}
-                                className="bg-white"
-                                title="Filter by Schedule Date"
+                                onChange={setScheduleDate}
+                                placeholder="All Dates"
+                                inputProps={{ className: "bg-white" }}
+                            />
+                        </div>
+                        <div className="w-48">
+                            <FloatingInput
+                                id="filter-time"
+                                label="Schedule Time"
+                                icon={Clock}
+                                type="time"
+                                watch={scheduleTime}
+                                inputProps={{
+                                    value: scheduleTime,
+                                    onChange: (e) => setScheduleTime(e.target.value),
+                                    className: "bg-white"
+                                }}
                             />
                         </div>
                     </div>
