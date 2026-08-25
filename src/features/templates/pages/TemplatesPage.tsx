@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
 import AdminLayout from '@/layouts/AdminLayout';
+import { InputRichText } from '@/components/InputRichText';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -55,17 +54,14 @@ const TemplatesPage: React.FC = () => {
                             <p className="text-xs text-muted-foreground">Click a tag above to insert it into the editor at the end of the text.</p>
                         </div>
                         
-                        <div className="flex-1 flex flex-col mt-2 min-h-[300px]">
-                            <label className="text-sm font-semibold mb-2">Message Content</label>
-                            <div className="flex-1 border rounded-md overflow-hidden relative">
-                                <ReactQuill 
-                                    theme="snow" 
-                                    value={content} 
-                                    onChange={setContent} 
-                                    className="h-[calc(100%-42px)]"
-                                    placeholder="Write your email content here..."
-                                />
-                            </div>
+                        <div className="flex-1 flex flex-col mt-2">
+                            <InputRichText 
+                                id="template-content"
+                                label="Message Content"
+                                value={content} 
+                                onChange={setContent} 
+                                placeholder="Write your email content here..."
+                            />
                         </div>
                         
                         <div className="flex justify-end gap-3 pt-4 border-t mt-4">

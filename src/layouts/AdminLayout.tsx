@@ -38,7 +38,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
             label: 'Email Campaigns',
             items: [
                 { icon: Mail as ElementType, text: 'Campaigns', url: ROUTES.CAMPAIGNS.path },
-                { icon: Send as ElementType, text: 'Campaign Contacts', url: ROUTES.CAMPAIGN_CONTACTS.path },
+                { icon: Send as ElementType, text: 'Campaign Logs', url: ROUTES.CAMPAIGN_CONTACTS.path },
                 { icon: FileText as ElementType, text: 'Templates', url: ROUTES.TEMPLATES.path },
             ],
             icon: Mail as ElementType,

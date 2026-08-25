@@ -4,11 +4,7 @@ import { BaseTable } from '@/shared/components/table/BaseTable';
 
 import { Badge } from '@/components/ui/badge';
 import {
-    Table,
-    TableBody,
     TableCell,
-    TableHead,
-    TableHeader,
     TableRow,
 } from '@/components/ui/table';
 import { MousePointerClick, CheckCircle2, XCircle, Users, Percent, FileText, Loader2 } from 'lucide-react';
@@ -159,52 +155,54 @@ const CampaignContactsPage: React.FC = () => {
                             />
                         </div>
 
-                        <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col">
+                        <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
                             <div className="overflow-auto">
-                                <Table>
-                                    <TableHeader className="bg-slate-50 sticky top-0 z-10">
-                                        <TableRow>
-                                            <TableHead>Contact Name</TableHead>
-                                            <TableHead>Email</TableHead>
-                                            <TableHead>Status</TableHead>
-                                            <TableHead className="text-center">Opened</TableHead>
-                                            <TableHead className="text-center">Clicked</TableHead>
-                                            <TableHead className="text-right">Sent Time</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {filteredContacts.map((contact) => (
-                                            <TableRow key={contact.id} className="hover:bg-slate-50">
-                                                <TableCell className="font-medium">{contact.name}</TableCell>
-                                                <TableCell className="text-muted-foreground">{contact.email}</TableCell>
-                                                <TableCell>
-                                                    {contact.status === 'sent' ? (
-                                                        <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
-                                                    ) : contact.status === 'failed' ? (
-                                                        <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>
-                                                    ) : (
-                                                        <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Queued</Badge>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    {contact.isOpen ? (
-                                                        <div className="flex justify-center"><CheckCircle2 className="w-5 h-5 text-green-500" /></div>
-                                                    ) : (
-                                                        <div className="flex justify-center"><XCircle className="w-5 h-5 text-slate-300" /></div>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell className="text-center">
-                                                    {contact.isClicked ? (
-                                                        <div className="flex justify-center"><MousePointerClick className="w-5 h-5 text-blue-500" /></div>
-                                                    ) : (
-                                                        <div className="flex justify-center"><XCircle className="w-5 h-5 text-slate-300" /></div>
-                                                    )}
-                                                </TableCell>
-                                                <TableCell className="text-right text-muted-foreground">{contact.sentAt}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
+                                <BaseTable
+                                    columns={[
+                                        { title: "Contact Name", key: "name" },
+                                        { title: "Email", key: "email" },
+                                        { title: "Status", key: "status" },
+                                        { title: "Opened", key: "isOpen", className: "text-center" },
+                                        { title: "Clicked", key: "isClicked", className: "text-center" },
+                                        { title: "Sent Time", key: "sentAt", className: "text-right" }
+                                    ]}
+                                    data={filteredContacts}
+                                    isLoading={isContactsLoading}
+                                    renderBody={(data) => (
+                                        <>
+                                            {data.map((contact: MappedContact) => (
+                                                <TableRow key={contact.id} className="hover:bg-slate-50">
+                                                    <TableCell className="font-medium">{contact.name}</TableCell>
+                                                    <TableCell className="text-muted-foreground">{contact.email}</TableCell>
+                                                    <TableCell>
+                                                        {contact.status === 'sent' ? (
+                                                            <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
+                                                        ) : contact.status === 'failed' ? (
+                                                            <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>
+                                                        ) : (
+                                                            <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Queued</Badge>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        {contact.isOpen ? (
+                                                            <div className="flex justify-center"><CheckCircle2 className="w-5 h-5 text-green-500" /></div>
+                                                        ) : (
+                                                            <div className="flex justify-center"><XCircle className="w-5 h-5 text-slate-300" /></div>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell className="text-center">
+                                                        {contact.isClicked ? (
+                                                            <div className="flex justify-center"><MousePointerClick className="w-5 h-5 text-blue-500" /></div>
+                                                        ) : (
+                                                            <div className="flex justify-center"><XCircle className="w-5 h-5 text-slate-300" /></div>
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell className="text-right text-muted-foreground">{contact.sentAt}</TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </>
+                                    )}
+                                />
                             </div>
                         </div>
                     </div>
@@ -223,7 +221,7 @@ const CampaignContactsPage: React.FC = () => {
                             placeholder="Search campaign..."
                         />
                     </div>
-                    <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex flex-col">
+                    <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
                         <div className="overflow-auto flex-1">
                             <BaseTable
                                 columns={[

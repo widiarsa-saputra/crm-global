@@ -7,6 +7,13 @@ import {
     PaginationNext,
     PaginationPrevious,
 } from "@/components/ui/pagination";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 interface PaginationProps {
     totalItems: number;
@@ -19,11 +26,6 @@ interface PaginationProps {
 
 const PaginationWithShow: React.FC<PaginationProps> = ({ totalItems, itemsPerPage, currentPage, onPageChange, onItemsPerPageChange, maxButtonsToShow }) => {
     const totalPages = Math.ceil(totalItems / itemsPerPage);
-
-    const handleItemsPerPageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const newItemsPerPage = parseInt(e.target.value);
-        onItemsPerPageChange(newItemsPerPage);
-    };
 
     const handlePrev = () => {
         if (currentPage > 1) {
@@ -58,15 +60,16 @@ const PaginationWithShow: React.FC<PaginationProps> = ({ totalItems, itemsPerPag
             {/* Left Side - Show Selection */}
             <div className="order-2 lg:order-1 w-full flex justify-center lg:justify-start text-sm text-gray-700 items-center gap-2">
                 <span>Show</span>
-                <select
-                    value={itemsPerPage}
-                    onChange={handleItemsPerPageChange}
-                    className="px-2 py-1 border rounded-md text-sm"
-                >
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={30}>30</option>
-                </select>
+                <Select value={itemsPerPage.toString()} onValueChange={(val) => onItemsPerPageChange(Number(val))}>
+                    <SelectTrigger className="w-16 h-8 text-sm">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        <SelectItem value="10">10</SelectItem>
+                        <SelectItem value="20">20</SelectItem>
+                        <SelectItem value="30">30</SelectItem>
+                    </SelectContent>
+                </Select>
                 <span>per page</span>
             </div>
 
