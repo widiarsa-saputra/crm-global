@@ -10,6 +10,10 @@ import { useIndexContact } from '@/services/contacts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UseMutationResult } from '@tanstack/react-query';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.bubble.css';
+import DOMPurify from 'dompurify';
+import { InputRichText } from '@/components/InputRichText';
 
 export interface CampaignMutationFormProps<
     TFieldValues extends FieldValues,
@@ -37,8 +41,8 @@ export const CampaignMutationForm = <
     mutation
 }: CampaignMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
     const { control, handleSubmit, formState: { errors }, watch, setValue } = form;
-    const { data: apiSegments } = useIndexSegment({});
-    const { data: apiTemplates } = useIndexTemplate({});
+    const { data: apiSegments, isLoading: isSegmentsLoading } = useIndexSegment({});
+    const { data: apiTemplates, isLoading: isTemplatesLoading } = useIndexTemplate({});
 
     const watchedCampaignName = watch('campaign_name' as Path<TFieldValues>);
     const watchedEmailSubject = watch('email_subject' as Path<TFieldValues>);
@@ -97,11 +101,15 @@ export const CampaignMutationForm = <
     }, [apiSegments]);
 
     const templateOptions = useMemo(() => {
-        if (!apiTemplates?.data) return [];
-        return apiTemplates.data.map((template: { id: string | number; name: string }) => ({
-            label: template.name,
-            value: template.id.toString(),
-        }));
+        const base = [{ label: '-- Custom Message --', value: '' }];
+        if (!apiTemplates?.data) return base;
+        return [
+            ...base,
+            ...apiTemplates.data.map((template: { id: string | number; name: string }) => ({
+                label: template.name,
+                value: template.id.toString(),
+            }))
+        ];
     }, [apiTemplates]);
 
     const selectedMessage = useMemo(() => {
@@ -251,21 +259,45 @@ export const CampaignMutationForm = <
                         render={({ field }) => (
                             <Combobox
                                 id="template_id"
-                                label="Template"
+                                label="Template (Optional)"
                                 icon={FileText}
                                 options={templateOptions}
                                 value={field.value ? String(field.value) : null}
                                 onChange={(option) => field.onChange(option.value)}
                                 error={errors.template_id?.message as string}
+                                isLoading={isTemplatesLoading}
                             />
                         )}
                     />
 
-                    {selectedMessage && (
-                        <div className="p-3 bg-slate-50 text-slate-700 text-sm rounded border border-slate-200">
-                            <p className="font-medium mb-1 text-[10px] text-slate-500 uppercase tracking-wider">Template Preview</p>
-                            <p className="whitespace-pre-wrap">{selectedMessage}</p>
-                        </div>
+                    {watchedTemplateId ? (
+                        selectedMessage && (
+                            <div className="bg-slate-50 text-slate-700 text-sm rounded border border-slate-200 overflow-hidden">
+                                <div className="p-3 border-b border-slate-200 bg-slate-100">
+                                    <p className="font-medium text-[10px] text-slate-500 uppercase tracking-wider">Template Preview</p>
+                                </div>
+                                <ReactQuill 
+                                    value={DOMPurify.sanitize(selectedMessage)}
+                                    readOnly={true}
+                                    theme="bubble"
+                                />
+                            </div>
+                        )
+                    ) : (
+                        <Controller
+                            control={control}
+                            name={"message" as Path<TFieldValues>}
+                            render={({ field }) => (
+                                <InputRichText
+                                    id="message"
+                                    label="Custom Message"
+                                    required
+                                    value={field.value as string}
+                                    onChange={field.onChange}
+                                    error={errors.message?.message as string}
+                                />
+                            )}
+                        />
                     )}
                 </div>
 
@@ -286,6 +318,7 @@ export const CampaignMutationForm = <
                                     setValue('target_contact_ids' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
                                 }}
                                 error={errors.segment_id?.message as string}
+                                isLoading={isSegmentsLoading}
                             />
                         )}
                     />

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { cn } from '@/lib/utils';
 import { FloatingInput } from './FloatingInput';
+import { Loader2 } from 'lucide-react';
 
 export type ComboOptions<T> = { label: string, value: string, data?: T };
 
@@ -12,9 +13,10 @@ type Props<T> = Omit<React.ComponentProps<typeof FloatingInput>, 'watch' | 'inpu
     options: ComboOptions<T>[];
     inputProps?: React.InputHTMLAttributes<HTMLInputElement> & { ref?: React.Ref<HTMLInputElement> };
     maxHeight?: string | number;
+    isLoading?: boolean;
 }
 
-const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, icon, error, required, rightSlot, inputProps, maxHeight = '300px' }: Props<T>) => {
+const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, icon, error, required, rightSlot, inputProps, maxHeight = '300px', isLoading }: Props<T>) => {
     const [open, setOpen] = useState(false);
     const [onFocus, setOnFocus] = useState(false);
     const [itemFocus, setItemFocus] = useState<string | null>(null);
@@ -26,11 +28,14 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
         setFilteredOptions(filteredOptionsValue)
     }, [filteredOptionsValue])
 
-    const hideContent = filteredOptions.length === 0;
+    const hideContent = filteredOptions.length === 0 && !isLoading;
 
     useEffect(() => {
         if (filteredOptions.length !== 0) {
             setItemFocus(prev => {
+                if (value && filteredOptions.some(opt => opt.value === value)) {
+                    return value;
+                }
                 if (prev && filteredOptions.some(opt => opt.value === prev)) {
                     return prev;
                 }
@@ -39,7 +44,7 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
         } else {
             setItemFocus(null);
         }
-    }, [filteredOptions])
+    }, [filteredOptions, value])
 
     useEffect(() => {
         const isOpen = onFocus;
@@ -138,7 +143,11 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
                         style={{ maxHeight }}
                         onWheel={e => e.stopPropagation()}
                     >
-                        {
+                        {isLoading ? (
+                            <div className="flex items-center justify-center p-4">
+                                <Loader2 className="w-5 h-5 animate-spin text-slate-400" />
+                            </div>
+                        ) : (
                             filteredOptions.map(phase => (
                                 <button
                                     className={cn(
@@ -153,7 +162,7 @@ const Combobox = <T,>({ value, onChange, options, externalSearch, id, label, ico
                                     {phase.label}
                                 </button>
                             ))
-                        }
+                        )}
                     </div>
                 </PopoverContent>
             </Popover>

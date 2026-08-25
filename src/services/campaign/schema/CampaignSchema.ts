@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 export const CreateCampaignSchema = z.object({
-    template_id: z.union([z.string(), z.number()]),
+    template_id: z.union([z.string(), z.number()]).nullable().optional(),
+    message: z.string().optional(),
     segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_ids: z.array(z.union([z.string(), z.number()])).optional(),
     campaign_name: z.string().min(1, "Campaign name is required"),
@@ -13,7 +14,8 @@ export const CreateCampaignSchema = z.object({
 });
 
 export const UpdateCampaignSchema = z.object({
-    template_id: z.union([z.string(), z.number()]).optional(),
+    template_id: z.union([z.string(), z.number()]).nullable().optional(),
+    message: z.string().optional(),
     segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_ids: z.array(z.union([z.string(), z.number()])).optional(),
     campaign_name: z.string().optional(),

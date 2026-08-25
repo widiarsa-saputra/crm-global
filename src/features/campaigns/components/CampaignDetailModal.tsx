@@ -3,6 +3,9 @@ import { Modal } from '@/shared/components/modal/Modal';
 import { SingleCampaignResponse } from '@/services/campaign';
 import { Users, Send, MousePointerClick, MailOpen, Mail, AlignLeft, Tags } from 'lucide-react';
 import { BaseTable, Column } from '@/shared/components/table/BaseTable';
+import ReactQuill from 'react-quill-new';
+import 'react-quill-new/dist/quill.bubble.css';
+import DOMPurify from 'dompurify';
 
 interface CampaignDetailModalProps {
     campaign: SingleCampaignResponse;
@@ -137,8 +140,18 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Template Message</span>
-                                <div className="font-medium bg-slate-50 p-3 rounded border min-h-[100px] whitespace-pre-wrap text-sm">
-                                    {campaign.template_message || <span className="text-muted-foreground italic">No template message available</span>}
+                                <div className="font-medium bg-slate-50 rounded border min-h-[100px] text-sm overflow-hidden">
+                                    {campaign.template_message ? (
+                                        <ReactQuill 
+                                            value={DOMPurify.sanitize(campaign.template_message)}
+                                            readOnly={true}
+                                            theme="bubble"
+                                        />
+                                    ) : (
+                                        <div className="p-3">
+                                            <span className="text-muted-foreground italic">No template message available</span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

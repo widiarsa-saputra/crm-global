@@ -9,9 +9,10 @@ import {
     useIndexTemplate,
     useCreateTemplate,
     useUpdateTemplate,
+    useDeleteTemplate,
 } from '@/services/templates';
 import { SingleTemplateResponse } from '@/services/templates/response/TemplateResponse';
-import { Loader2, FilePlus, Save } from 'lucide-react';
+import { Loader2, FilePlus, Save, Trash2 } from 'lucide-react';
 
 const TemplatesPage: React.FC = () => {
     const [search, setSearch] = useState('');
@@ -25,8 +26,10 @@ const TemplatesPage: React.FC = () => {
 
     const createMutation = useCreateTemplate();
     const updateMutation = useUpdateTemplate();
+    const deleteMutation = useDeleteTemplate();
     const { mutate: createTemplate, isPending: isCreatingPending } = createMutation;
     const { mutate: updateTemplate, isPending: isUpdatingPending } = updateMutation;
+    const { mutate: deleteTemplate, isPending: isDeletingPending } = deleteMutation;
 
     const filteredTemplates = templates.filter((t) =>
         t.name.toLowerCase().includes(search.toLowerCase())
@@ -78,6 +81,21 @@ const TemplatesPage: React.FC = () => {
         }
     };
 
+    const handleDelete = () => {
+        if (!selectedTemplate) return;
+        deleteTemplate(
+            { id: selectedTemplate.id },
+            {
+                onSuccess: () => {
+                    setSelectedTemplate(null);
+                    setName('');
+                    setContent('');
+                    setIsCreating(false);
+                },
+            }
+        );
+    };
+
     // Select the first template on load
     useEffect(() => {
         if (templates.length > 0 && !selectedTemplate && !isCreating) {
@@ -86,6 +104,7 @@ const TemplatesPage: React.FC = () => {
     }, [templates]);
 
     const isSaving = isCreatingPending || isUpdatingPending;
+    const isDeleting = isDeletingPending;
 
     return (
         <AdminLayout>
@@ -98,6 +117,11 @@ const TemplatesPage: React.FC = () => {
                 mutation={updateMutation}
                 successMessage="Template berhasil disimpan!"
                 errorMessage="Gagal menyimpan template."
+            />
+            <SubmitLoading
+                mutation={deleteMutation}
+                successMessage="Template berhasil dihapus!"
+                errorMessage="Gagal menghapus template."
             />
             <div className="p-6 h-full flex flex-col bg-background">
                 <div className="flex justify-between items-center mb-6">
@@ -201,18 +225,37 @@ const TemplatesPage: React.FC = () => {
                                     />
                                 </div>
 
-                                <div className="flex justify-end gap-3 pt-4 border-t mt-4">
-                                    <Button variant="outline" onClick={handleDiscard} disabled={isSaving}>
-                                        Discard Changes
-                                    </Button>
-                                    <Button onClick={handleSave} disabled={isSaving || !name.trim() || !content.trim()} className="flex items-center gap-2">
-                                        {isSaving ? (
-                                            <Loader2 className="w-4 h-4 animate-spin" />
-                                        ) : (
-                                            <Save className="w-4 h-4" />
+                                <div className="flex justify-between items-center pt-4 border-t mt-4">
+                                    <div>
+                                        {!isCreating && selectedTemplate && (
+                                            <Button
+                                                variant="outline"
+                                                onClick={handleDelete}
+                                                disabled={isDeleting || isSaving}
+                                                className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700"
+                                            >
+                                                {isDeleting ? (
+                                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                                ) : (
+                                                    <Trash2 className="w-4 h-4" />
+                                                )}
+                                                Remove
+                                            </Button>
                                         )}
-                                        {isCreating ? 'Create Template' : 'Save Template'}
-                                    </Button>
+                                    </div>
+                                    <div className="flex gap-3">
+                                        <Button variant="outline" onClick={handleDiscard} disabled={isSaving || isDeleting}>
+                                            Discard Changes
+                                        </Button>
+                                        <Button onClick={handleSave} disabled={isSaving || isDeleting || !name.trim() || !content.trim()} className="flex items-center gap-2">
+                                            {isSaving ? (
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                            ) : (
+                                                <Save className="w-4 h-4" />
+                                            )}
+                                            {isCreating ? 'Create Template' : 'Save Template'}
+                                        </Button>
+                                    </div>
                                 </div>
                             </>
                         )}
