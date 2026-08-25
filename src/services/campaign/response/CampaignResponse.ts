@@ -4,7 +4,8 @@ import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema"
 export const SingleCampaignSchema = z.object({
     id: z.union([z.string(), z.number()]),
     template_id: z.union([z.string(), z.number()]),
-    target_segment_id: z.union([z.string(), z.number()]).nullable().optional(),
+    segment_id: z.union([z.string(), z.number()]).nullable().optional(),
+    target_contact_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_name: z.string(),
     email_subject: z.string(),
     date: z.string(),

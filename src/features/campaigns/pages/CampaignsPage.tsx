@@ -109,7 +109,7 @@ const CampaignsPage: React.FC = () => {
         {
             title: "Schedule Date",
             key: "date",
-            render: (campaign) => <span className="text-muted-foreground">{campaign.date}</span>
+            render: (campaign) => <span className="text-muted-foreground">{new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
         },
         {
             title: "Open Rate",
@@ -117,7 +117,7 @@ const CampaignsPage: React.FC = () => {
             className: "text-right",
             render: (campaign) => (
                 <div className="flex items-center justify-end gap-1">
-                    {campaign.open_rate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                    {campaign.open_rate} <Percent className="w-3 h-3 text-muted-foreground" />
                 </div>
             )
         },
@@ -127,16 +127,16 @@ const CampaignsPage: React.FC = () => {
             className: "text-right",
             render: (campaign) => (
                 <div className="flex items-center justify-end gap-1">
-                    {campaign.click_rate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                    {campaign.click_rate} <Percent className="w-3 h-3 text-muted-foreground" />
                 </div>
             )
         },
         {
             title: "Actions",
             key: "actions",
-            className: "text-right",
+            className: "text-right justify-end",
             render: (campaign) => (
-                <div className="flex justify-end gap-2">
+                <div className="flex justify-end gap-2 w-full">
                     {campaign.status === 'draft' ? (
                         <>
                             <Button 
@@ -202,13 +202,14 @@ const CampaignsPage: React.FC = () => {
                 </div>
                 
                 {/* Table */}
-                <div className="bg-white border rounded-xl shadow-sm overflow-hidden flex-1 flex flex-col">
+                <div className="bg-white border rounded shadow-sm overflow-hidden flex-1 flex flex-col">
                     <div className="overflow-auto flex-1">
                         <BaseTable 
                             columns={columns} 
                             data={paginatedCampaigns} 
                             isLoading={isLoading} 
                             className="border-none"
+                            skeletonRows={itemsPerPage}
                         />
                     </div>
                     {campaigns.length > itemsPerPage && (
