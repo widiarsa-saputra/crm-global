@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Modal } from '@/shared/components/modal/Modal';
 import { Button } from '@/components/ui/button';
@@ -42,6 +43,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title="Create New Campaign"
+            size='2xl'
             description="Set up a new email campaign to engage with your contacts."
             footer={
                 <div className="flex justify-end gap-2 w-full">

@@ -9,13 +9,14 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 
-type ModalSize = "sm" | "md" | "lg" | "xl" | "full"
+type ModalSize = "sm" | "md" | "lg" | "xl" | "full" | '2xl'
 
 const sizeClassMap: Record<ModalSize, string> = {
     sm: "sm:max-w-[400px]",
     md: "sm:max-w-[600px]",
     lg: "sm:max-w-[800px]",
     xl: "sm:max-w-[1000px]",
+    '2xl': 'sm:max-w-[1563px]',
     full: "sm:max-w-full",
 }
 

@@ -3,6 +3,7 @@ import { BaseResponseSchema } from '@/services/base/response/BaseResponseSchema'
 
 export const SingleTemplateSchema = z.object({
     id: z.union([z.string(), z.number()]),
+    name: z.string(),
     message: z.string(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
