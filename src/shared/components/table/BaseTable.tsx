@@ -177,7 +177,7 @@ export function BaseTable<T extends { id?: string | number }>({
                         {columnToggleComponent || (enableColumnToggle && renderColumnToggle())}
                     </div>
                 )}
-                <div className="overflow-x-auto transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-primary/10" >
+                <div className="overflow-x-auto transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-sprimary/10" >
                     <Table className="w-full table-auto">
                         <TableHeader>
                             <TableRow className="border-b bg-primary/5">

@@ -1,9 +1,18 @@
+import { useBaseCreate } from "@/services/base/hooks/useBaseCreate";
 import { useBaseDelete } from "@/services/base/hooks/useBaseDelete";
 import useBaseIndex from "@/services/base/hooks/useBaseIndex";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import { GeneralRes, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { IndexCampaignResponse, IndexCampaignResponseSchema, SingleCampaignResponse, SingleCampaignSchema } from "@/services/campaign";
-import { UpdateCampaignPayload } from "../schema/CampaignSchema";
+import { CreateCampaignPayload, UpdateCampaignPayload } from "../schema/CampaignSchema";
+
+export const useCreateCampaign = () => {
+    return useBaseCreate<CreateCampaignPayload, SingleCampaignResponse, SingleCampaignResponse>({
+        endpoint: `${API_VERSION}/blast-campaigns`,
+        schema: SingleCampaignSchema,
+        queryKey: "campaign-list",
+    });
+};
 
 const API_VERSION = "v1";
 

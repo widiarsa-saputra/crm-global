@@ -1,37 +1,43 @@
-import React, { useMemo } from 'react';
-import { UseFormReturn, Controller } from 'react-hook-form';
+import { useMemo } from 'react';
+import { Controller, UseFormReturn, FieldValues, Path, SubmitHandler } from 'react-hook-form';
 import { FloatingInput } from '@/components/FloatingInput';
 import Combobox from '@/components/Combobox';
 import { SubmitLoading } from '@/components/SubmitLoading';
 import { Mail, User, Building, ShieldCheck, Users } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
-import { CreateContact, UpdateContact } from '@/services/contacts';
 import { UseMutationResult } from '@tanstack/react-query';
 
-type ContactFormValues = CreateContact | UpdateContact;
-
-export interface ContactMutationFormProps {
+export interface ContactMutationFormProps<
+    TFieldValues extends FieldValues,
+    TData = unknown,
+    TError = unknown,
+    TVariables = unknown,
+    TContext = unknown
+> {
     formId: string;
-    form: UseFormReturn<ContactFormValues>;
-    onSubmit: (data: ContactFormValues) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutation?: UseMutationResult<any, any, any, any>;
+    form: UseFormReturn<TFieldValues>;
+    onSubmit: SubmitHandler<TFieldValues>;
+    mutation?: UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
-const emailStatusOptions = [
-    { label: 'Valid', value: 'valid' },
-    { label: 'Invalid', value: 'invalid' },
-    { label: 'Bounced', value: 'bounced' },
-    { label: 'Unsubscribed', value: 'unsubscribed' },
-];
-
-export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId, form, onSubmit, mutation }) => {
+export const ContactMutationForm = <
+    TFieldValues extends FieldValues,
+    TData = unknown,
+    TError = unknown,
+    TVariables = unknown,
+    TContext = unknown
+>({
+    formId,
+    form,
+    onSubmit,
+    mutation
+}: ContactMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
     const { control, handleSubmit, formState: { errors }, watch } = form;
     const { data: apiSegments } = useIndexSegment({});
 
-    const watchedNama = watch('nama');
-    const watchedEmail = watch('email');
-    const watchedCompany = watch('company');
+    const watchedNama = watch('nama' as Path<TFieldValues>);
+    const watchedEmail = watch('email' as Path<TFieldValues>);
+    const watchedCompany = watch('company' as Path<TFieldValues>);
 
     const segmentOptions = useMemo(() => {
         if (!apiSegments?.data) return [];
@@ -41,19 +47,26 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
         }));
     }, [apiSegments]);
 
+    const emailStatusOptions = [
+        { label: 'Valid', value: 'valid' },
+        { label: 'Invalid', value: 'invalid' },
+        { label: 'Bounced', value: 'bounced' },
+        { label: 'Unsubscribed', value: 'unsubscribed' },
+    ];
+
     return (
         <form id={formId} onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-1">
             <Controller
                 control={control}
-                name="nama"
+                name={"nama" as Path<TFieldValues>}
                 render={({ field }) => (
                     <FloatingInput
                         id="nama"
                         label="Name"
                         icon={User}
                         required
-                        watch={watchedNama}
-                        error={errors.nama?.message}
+                        watch={watchedNama as string}
+                        error={errors.nama?.message as string}
                         inputProps={{
                             ...field,
                             placeholder: "Enter full name",
@@ -64,7 +77,7 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
 
             <Controller
                 control={control}
-                name="email"
+                name={"email" as Path<TFieldValues>}
                 render={({ field }) => (
                     <FloatingInput
                         id="email"
@@ -72,8 +85,8 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                         icon={Mail}
                         type="email"
                         required
-                        watch={watchedEmail}
-                        error={errors.email?.message}
+                        watch={watchedEmail as string}
+                        error={errors.email?.message as string}
                         inputProps={{
                             ...field,
                             placeholder: "email@example.com",
@@ -84,14 +97,14 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
 
             <Controller
                 control={control}
-                name="company"
+                name={"company" as Path<TFieldValues>}
                 render={({ field }) => (
                     <FloatingInput
                         id="company"
                         label="Company (Optional)"
                         icon={Building}
-                        watch={watchedCompany}
-                        error={errors.company?.message}
+                        watch={watchedCompany as string}
+                        error={errors.company?.message as string}
                         inputProps={{
                             ...field,
                             value: field.value ?? "",
@@ -104,7 +117,7 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller
                     control={control}
-                    name="segment_id"
+                    name={"segment_id" as Path<TFieldValues>}
                     render={({ field }) => (
                         <Combobox
                             id="segment_id"
@@ -113,14 +126,14 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                             options={segmentOptions}
                             value={field.value ? String(field.value) : null}
                             onChange={(option) => field.onChange(option.value)}
-                            error={errors.segment_id?.message}
+                            error={errors.segment_id?.message as string}
                         />
                     )}
                 />
 
                 <Controller
                     control={control}
-                    name="email_status"
+                    name={"email_status" as Path<TFieldValues>}
                     render={({ field }) => (
                         <Combobox
                             id="email_status"
@@ -129,7 +142,7 @@ export const ContactMutationForm: React.FC<ContactMutationFormProps> = ({ formId
                             options={emailStatusOptions}
                             value={field.value ?? null}
                             onChange={(option) => field.onChange(option.value)}
-                            error={errors.email_status?.message}
+                            error={errors.email_status?.message as string}
                         />
                     )}
                 />

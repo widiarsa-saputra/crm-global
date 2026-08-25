@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { cn, positionClass } from "@/lib/utils";
 import { PopoverContentProps } from "@radix-ui/react-popover";
 import { UseMutationResult } from "@tanstack/react-query";
@@ -24,15 +24,15 @@ const PulseDots = () => {
     return <span>{dots}</span>;
 };
 
-type Props = Pick<PopoverContentProps, 'side' | 'align'> & {
-    mutation: UseMutationResult;
+type Props<TData = unknown, TError = unknown, TVariables = unknown, TContext = unknown> = Pick<PopoverContentProps, 'side' | 'align'> & {
+    mutation: UseMutationResult<TData, TError, TVariables, TContext>;
     errorMessage?: string;
     successMessage?: string;
     duration?: number;
 }
 
 
-export const SubmitLoading = (props: Props) => {
+export const SubmitLoading = <TData, TError, TVariables, TContext>(props: Props<TData, TError, TVariables, TContext>) => {
     const [openLoading, setOpenLoading] = useState(false);
     const [openToast, setOpenToast] = useState(false);
     const beforeStop = 75;

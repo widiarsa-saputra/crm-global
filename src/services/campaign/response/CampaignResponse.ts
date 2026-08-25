@@ -1,9 +1,11 @@
 import { z } from "zod";
 import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { ContactListSchema } from "@/services/contacts";
 
 export const SingleCampaignSchema = z.object({
     id: z.union([z.string(), z.number()]),
     template_id: z.union([z.string(), z.number()]),
+    template_message: z.string().optional(),
     segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_name: z.string(),
@@ -15,6 +17,7 @@ export const SingleCampaignSchema = z.object({
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
     segment_name: z.string().optional(),
+    target_contacts: ContactListSchema.optional()
 });
 
 export const CampaignListSchema = z.array(SingleCampaignSchema);
