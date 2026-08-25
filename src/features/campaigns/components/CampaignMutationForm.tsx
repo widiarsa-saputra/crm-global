@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormReturn, Controller, FieldValues, Path, PathValue, SubmitHandler } from 'react-hook-form';
 import { FloatingInput, FloatingDateInput } from '@/components/FloatingInput';
 import Combobox, { TimezoneCombobox } from '@/components/Combobox';
@@ -112,6 +112,8 @@ export const CampaignMutationForm = <
         return template?.message || '';
     }, [watchedTemplateId, apiTemplates]);
 
+    const [isEmailSubjectFocused, setIsEmailSubjectFocused] = useState(false);
+
     return (
         <form id={formId} onSubmit={handleSubmit(onSubmit)} className="p-1">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -202,18 +204,44 @@ export const CampaignMutationForm = <
                         control={control}
                         name={"email_subject" as Path<TFieldValues>}
                         render={({ field }) => (
-                            <FloatingInput
-                                id="email_subject"
-                                label="Email Subject"
-                                icon={Mail}
-                                required
-                                watch={watchedEmailSubject as string}
-                                error={errors.email_subject?.message as string}
-                                inputProps={{
-                                    ...field,
-                                    placeholder: "Enter subject for the email",
-                                }}
-                            />
+                            <div className="relative flex flex-col">
+                                {isEmailSubjectFocused && (
+                                    <div className="flex gap-2 mb-4 animate-in fade-in slide-in-from-bottom-1">
+                                        {[
+                                            { label: 'Name', value: 'nama' },
+                                            { label: 'Email', value: 'email' },
+                                            { label: 'Company', value: 'company' },
+                                        ].map((v) => (
+                                            <button
+                                                key={v.value}
+                                                type="button"
+                                                onMouseDown={(e) => {
+                                                    e.preventDefault(); // Mencegah input kehilangan fokus
+                                                    const currentValue = field.value || "";
+                                                    field.onChange(currentValue + (currentValue ? " " : "") + `{{${v.value}}}`);
+                                                }}
+                                                className="px-2 py-1 text-[11px] font-medium bg-slate-100 hover:bg-slate-200 text-slate-600 rounded transition-colors border border-slate-200"
+                                            >
+                                                +{v.label}
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                                <FloatingInput
+                                    id="email_subject"
+                                    label="Email Subject"
+                                    icon={Mail}
+                                    required
+                                    watch={watchedEmailSubject as string}
+                                    error={errors.email_subject?.message as string}
+                                    inputProps={{
+                                        ...field,
+                                        onFocus: () => setIsEmailSubjectFocused(true),
+                                        onBlur: () => setIsEmailSubjectFocused(false),
+                                        placeholder: "Enter subject for the email",
+                                    }}
+                                />
+                            </div>
                         )}
                     />
 

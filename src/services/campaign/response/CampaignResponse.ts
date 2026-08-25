@@ -20,8 +20,8 @@ export const SingleCampaignSchema = z.object({
     updated_at: z.string().optional(),
     segment_name: z.string().optional(),
     target_contacts: z.array(SingleContactSchema.extend({
-        send_status: z.string().optional(),
-        open_time: z.string().optional()
+        status: z.string().optional(),
+        opened_at: z.string().optional()
     })).optional()
 });
 

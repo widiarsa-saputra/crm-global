@@ -31,9 +31,9 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
         },
         {
             title: "Status Pengiriman",
-            key: "send_status" as keyof CampaignTargetContact,
+            key: "status" as keyof CampaignTargetContact,
             render: (contact) => {
-                const status = contact.send_status || 'Pending';
+                const status = contact.status || 'Pending';
                 return (
                     <span className={`px-2 py-1 rounded-full text-xs ${
                         status.toLowerCase() === 'sent' ? 'bg-green-100 text-green-700' :
@@ -47,11 +47,11 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
         },
         {
             title: "Waktu Dibuka",
-            key: "open_time" as keyof CampaignTargetContact,
+            key: "opened_at" as keyof CampaignTargetContact,
             render: (contact) => {
-                if (!contact.open_time) return <span className="text-muted-foreground">-</span>;
+                if (!contact.opened_at) return <span className="text-muted-foreground">-</span>;
                 
-                const openDate = new Date(contact.open_time);
+                const openDate = new Date(contact.opened_at);
                 if (isNaN(openDate.getTime())) return <span className="text-muted-foreground">-</span>;
 
                 const today = new Date();
@@ -72,7 +72,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title={`Campaign Report: ${campaign.campaign_name}`}
-            description={`Blast will be executed on ${campaign.date || '-'} at ${campaign.time || '-'} (${campaign.timezone || '-'})`}
+            description={`Blast will be executed on ${new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) || '-'} at ${campaign.time || '-'} (${campaign.timezone || '-'})`}
             size='xl'
         >
             <div className="flex flex-col gap-6 py-4">
