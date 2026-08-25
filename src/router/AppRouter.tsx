@@ -1,4 +1,4 @@
-import React, { ElementType, JSX } from "react";
+import React, { JSX } from "react";
 import { Routes, Route, BrowserRouter } from "react-router";
 import LoginPage from "../auth/pages/LoginPage";
 import ForbiddenPage from "../auth/pages/ForbiddenPage";
@@ -19,8 +19,6 @@ import CampaignsPage from "@/features/campaigns/pages/CampaignsPage";
 import CampaignContactsPage from "@/features/campaign-contacts/pages/CampaignContactsPage";
 import TemplatesPage from "@/features/templates/pages/TemplatesPage";
 
-import { Folder, Lock, ShieldCheck, UserCircle, Users } from "lucide-react";
-
 
 type ProtectedRoute = {
     path: string;
@@ -28,23 +26,6 @@ type ProtectedRoute = {
     protected: true;
     roles: string[];
     permissions?: string[];
-};
-
-export interface MenuItem {
-    icon: React.ElementType;
-    text: string;
-    url: string;
-    roles?: string[];
-    permissions?: string[];
-}
-
-export interface MenuSection {
-    order?: number;
-    id?: string;
-    label: string;
-    icon: React.ElementType;
-    items: MenuItem[];
-    customContent?: React.ReactNode;
 };
 
 type GuestOnlyRoute = {
@@ -60,9 +41,7 @@ type PublicRoute = {
 
 type AppRoute = ProtectedRoute | GuestOnlyRoute | PublicRoute;
 
-
-
-export const ROUTES: Record<string, AppRoute> = {
+const APP_ROUTES: Record<string, AppRoute> = {
     SLASH: {
         path: "/",
         element: <DashboardPage />,
@@ -182,67 +161,10 @@ export const ROUTES: Record<string, AppRoute> = {
     },
 };
 
-export const userSections: MenuSection[] = [
-    {
-        label: "Akun Anda",
-        icon: Users as ElementType,
-        items: [
-            {
-                text: "Profil",
-                url: ROUTES.PROFILE.path,
-                icon: UserCircle,
-                permissions: ["view_profile"]
-            },
-            // {
-            //     text: "Ganti Password",
-            //     url: ROUTES.CHANGE_PASSWORD.path,
-            //     icon: Key,
-            //     permissions: ["change_password"]
-            // }
-        ]
-    },
-    {
-        label: "Manajemen Sistem",
-        icon: Folder as ElementType,
-        items: [
-            {
-                text: "Manajer Berkas",
-                url: ROUTES.FILE_MANAGER.path,
-                icon: Folder,
-                permissions: ["view_file_manager"]
-            },
-            {
-                text: "Manajemen Pengguna",
-                url: ROUTES.USER_MANAGEMENT.path,
-                icon: Users,
-                permissions: ["view_user_management"]
-            },
-            {
-                text: "Manajemen Peran",
-                url: ROUTES.ROLES.path,
-                icon: ShieldCheck,
-                permissions: ["view_role_management"]
-            },
-            {
-                text: "Manajemen Izin",
-                url: ROUTES.PERMISSIONS.path,
-                icon: Lock,
-                permissions: ["view_permission_management"]
-            },
-            // {
-            //     text: "Settings",
-            //     url: ROUTES.ADMIN_SETTINGS.path,
-            //     icon: Settings,
-            //     permissions: ["view_settings"]
-            // }
-        ]
-    }
-]
-
 const AppRouter: React.FC = () => (
     <BrowserRouter>
         <Routes>
-            {Object.entries(ROUTES).map(([, config], index) => {
+            {Object.entries(APP_ROUTES).map(([, config], index) => {
                 let wrappedElement = config.element;
 
                 if ("protected" in config && config.protected) {

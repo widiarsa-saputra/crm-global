@@ -9,19 +9,19 @@ export const DashboardSummarySchema = z.object({
 });
 
 export const EngagementPerSegmentSchema = z.object({
-    segment_name: z.string(),
+    segment_name: z.string().nullable().optional(),
     open_rate_pct: z.string(),
     click_rate_pct: z.string(),
 });
 
 export const ContactDistributionSchema = z.object({
-    segment_name: z.string(),
+    segment_name: z.string().nullable().optional(),
     total_contact: z.number(),
 });
 
 export const RecentBlastCampaignSchema = z.object({
     id: z.string(),
-    template_id: z.string(),
+    template_id: z.string().nullable().optional(),
     target_segment_id: z.string().nullable().optional(),
     campaign_name: z.string(),
     email_subject: z.string(),

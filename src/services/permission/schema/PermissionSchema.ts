@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalMinString } from "@/lib/zod";
 
 const CreatePermissionSchema = z.object({
     display_name: z.string().min(1, "Display name is required"),
@@ -11,11 +12,10 @@ export { CreatePermissionSchema };
 export type CreatePermission = z.infer<typeof CreatePermissionSchema>;
 
 const UpdatePermissionSchema = z.object({
-    display_name: z.string().min(1, "Display name is required").optional(),
-    group: z.string().min(1, "Group is required").optional(),
+    display_name: optionalMinString(1, "Display name is required"),
+    group: optionalMinString(1, "Group is required"),
 });
 
 export { UpdatePermissionSchema };
 
 export type UpdatePermission = z.infer<typeof UpdatePermissionSchema>;
-

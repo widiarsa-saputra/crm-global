@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { optionalTrimmedString } from "@/lib/zod";
 
 const ChangePasswordSchema = z.object({
     old_password: z.string().min(8, { message: "Old password is required" }),
@@ -23,10 +24,9 @@ export type ChangePhoto = z.infer<typeof ChangePhotoSchema>;
 const UpdateProfileSchema = z.object({
     name: z.string().min(1, { message: "Name is required" }),
     email: z.string().email({ message: "Invalid email address" }),
-    phone: z.string().optional(),
+    phone: optionalTrimmedString(),
 });
 
 export { UpdateProfileSchema };
 
 export type UpdateProfile = z.infer<typeof UpdateProfileSchema>;
-

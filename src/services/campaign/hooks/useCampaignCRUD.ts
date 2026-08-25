@@ -3,7 +3,7 @@ import { useBaseDelete } from "@/services/base/hooks/useBaseDelete";
 import useBaseIndex from "@/services/base/hooks/useBaseIndex";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import { GeneralRes, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
-import { IndexCampaignResponse, IndexCampaignResponseSchema, SingleCampaignResponse, SingleCampaignSchema } from "@/services/campaign";
+import { IndexCampaignResponse, IndexCampaignResponseSchema, SingleCampaignResponse, SingleCampaignSchema } from "../response/CampaignResponse";
 import { CreateCampaignPayload, UpdateCampaignPayload } from "../schema/CampaignSchema";
 import { keepPreviousData } from "@tanstack/react-query";
 
@@ -61,6 +61,5 @@ export const useUpdateCampaign = () => {
         queryKey: "campaign-list",
     });
 };
-
 
 

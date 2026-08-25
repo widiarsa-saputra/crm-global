@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
-import { SingleContactSchema } from "@/services/contacts";
+import { SingleContactSchema } from "@/services/contacts/response/ContactsResponse";
 
 export const SingleCampaignSchema = z.object({
     id: z.union([z.string(), z.number()]),
-    template_id: z.union([z.string(), z.number()]),
-    template_message: z.string().optional(),
+    template_id: z.union([z.string(), z.number()]).nullable().optional(),
+    template_message: z.string().nullable().optional(),
     segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_name: z.string(),
@@ -18,7 +18,7 @@ export const SingleCampaignSchema = z.object({
     click_rate: z.coerce.number().optional().default(0),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
-    segment_name: z.string().optional(),
+    segment_name: z.string().nullable().optional(),
     target_contacts: z.array(SingleContactSchema.extend({
         id: z.string(),
         campaign_id: z.string(),

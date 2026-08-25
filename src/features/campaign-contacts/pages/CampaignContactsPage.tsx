@@ -17,7 +17,7 @@ import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInpu
 interface ApiCampaign {
     id: string | number;
     campaign_name: string;
-    segment_name?: string;
+    segment_name?: string | null;
     date: string;
     status: string;
     open_rate: number;

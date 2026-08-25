@@ -9,7 +9,7 @@ import { useIndexPermission } from "@/services/permission";
 import { useCreateRolePermission } from "@/services/role-permission";
 import { useFormSubmit } from "@/shared/hooks/useFormSubmit";
 import { useNavigate, useParams } from "react-router";
-import { ROUTES } from "@/router/AppRouter";
+import { ROUTES } from "@/router/routeConfig";
 import { useIndexRole } from "@/services/role";
 import SectionLoader from "@/shared/components/loader/SectionLoader";
 import { SinglePermissionResponse } from "@/services/permission";

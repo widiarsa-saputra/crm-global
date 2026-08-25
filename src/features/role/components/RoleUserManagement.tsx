@@ -6,7 +6,7 @@ import { useNavigate, useParams } from "react-router";
 import { BaseTable } from "@/shared/components/table/BaseTable";
 import { useIndexUser } from "@/services/user";
 import { Controller, useForm } from "react-hook-form";
-import { ROUTES } from "@/router/AppRouter";
+import { ROUTES } from "@/router/routeConfig";
 import PaginationWithShow from "@/shared/components/pagination/PaginationWithShow";
 import { useIndexRole } from "@/services/role";
 import SectionLoader from "@/shared/components/loader/SectionLoader";
