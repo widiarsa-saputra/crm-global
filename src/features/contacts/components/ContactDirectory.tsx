@@ -128,7 +128,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             <ScrollArea className="flex-1 p-6">
                 <div ref={gridRef} className="grid gap-4" style={{ gridTemplateColumns: `repeat(${columns}, 1fr)` }}>
                     {contacts.map((contact) => (
-                        <div key={contact.id} className="bg-background rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow relative group w-[250px]">
+                        <div key={contact.id} className="bg-background rounded-xl border p-4 shadow-sm hover:shadow-md transition-shadow relative group">
                             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
