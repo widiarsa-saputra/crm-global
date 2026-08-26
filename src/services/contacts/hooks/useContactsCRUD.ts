@@ -4,13 +4,20 @@ import useBaseIndex from "@/services/base/hooks/useBaseIndex";
 import useBaseInfiniteIndex from "@/services/base/hooks/useBaseInfiniteIndex";
 import useBaseShow from "@/services/base/hooks/useBaseShow";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
-import { CreateContactResponse, CreateContactResponseSchema } from "@/services/contacts";
-import { DeleteContactResponse, DeleteContactResponseSchema } from "@/services/contacts";
-import { IndexContactResponse, IndexContactResponseSchema, SingleContactResponse } from "@/services/contacts";
-import { ShowContactResponse, ShowContactResponseSchema } from "@/services/contacts";
-import { UpdateContactResponse, UpdateContactResponseSchema } from "@/services/contacts";
-import { CreateContact } from "@/services/contacts";
-import { UpdateContact } from "@/services/contacts";
+import {
+    CreateContactResponse,
+    CreateContactResponseSchema,
+    DeleteContactResponse,
+    DeleteContactResponseSchema,
+    IndexContactResponse,
+    IndexContactResponseSchema,
+    ShowContactResponse,
+    ShowContactResponseSchema,
+    SingleContactResponse,
+    UpdateContactResponse,
+    UpdateContactResponseSchema,
+} from "../response/ContactsResponse";
+import { CreateContact, UpdateContact } from "../schema/ContactsSchema";
 
 const API_VERSION = "v1";
 
@@ -132,4 +139,3 @@ export const useUpdateContact = () =>
             },
         },
     });
-

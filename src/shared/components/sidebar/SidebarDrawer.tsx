@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 import { useQueryClient } from '@tanstack/react-query';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { AlignJustify, Grid } from 'lucide-react';
-import { MenuSection, ROUTES } from '@/router/AppRouter';
+import { MenuSection, ROUTES } from '@/router/routeConfig';
 import { UserSection } from './SidebarUserSection';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { HeaderCompany } from './SidebarContent';

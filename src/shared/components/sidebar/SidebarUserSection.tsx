@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { truncateText } from '@/lib/utils'
 import { ChevronDown, LogOut, User2Icon } from 'lucide-react'
-import { userSections } from '@/router/AppRouter'
+import { userSections } from '@/router/routeConfig'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import {

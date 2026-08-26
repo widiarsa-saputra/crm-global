@@ -1,4 +1,4 @@
-import { MenuSection, ROUTES } from '@/router/AppRouter'
+import { MenuSection, ROUTES } from '@/router/routeConfig'
 import {
     LayoutDashboard,
     Users,
