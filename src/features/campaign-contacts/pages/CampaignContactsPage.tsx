@@ -10,17 +10,18 @@ import { useIndexCampaign, useIndexCampaignContact } from '@/services/campaign/h
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 
-interface ApiCampaign {
-    id: string | number;
-    campaign_name: string;
-    segment_name?: string | null;
-    date: string;
-    status: string;
-    open_rate: number;
-    click_rate: number;
-}
+import { SingleCampaignResponse } from '@/services/campaign';
+import { getMetricColor } from '@/lib/utils';
 
+export const getStatusBadge = (status: string) => {
+    switch (status) {
+        case 'completed': return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Completed</Badge>;
 
+        case 'processing': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">Processing</Badge>;
+        case 'failed': return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>;
+        default: return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Draft</Badge>;
+    }
+};
 
 const CampaignContactsPage: React.FC = () => {
     const [selectedCampaignId, setSelectedCampaignId] = useState<number | string>();
@@ -63,6 +64,8 @@ const CampaignContactsPage: React.FC = () => {
         status: string;
         openRate: number;
         clickRate: number;
+        delivered: number;
+        sent: number;
     };
 
     type MappedContact = {
@@ -78,25 +81,17 @@ const CampaignContactsPage: React.FC = () => {
         errorMessage?: string | null;
     };
 
-    const campaigns: MappedCampaign[] = isCampaignsError || !apiCampaigns ? [] : apiCampaigns.map((c: ApiCampaign) => ({
+    const campaigns: MappedCampaign[] = isCampaignsError || !apiCampaigns ? [] : apiCampaigns.map((c: SingleCampaignResponse) => ({
         id: c.id,
         name: c.campaign_name,
         segment: c.segment_name || "-",
         date: c.date,
         status: c.status,
         openRate: c.open_rate,
-        clickRate: c.click_rate
+        clickRate: c.click_rate,
+        delivered: c.delivered || 0,
+        sent: c.sent || 0
     }));
-
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'completed': return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Completed</Badge>;
-            case 'scheduled': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">Scheduled</Badge>;
-            case 'processing': return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Processing</Badge>;
-            case 'failed': return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>;
-            default: return <Badge variant="secondary" className="text-gray-500">Draft</Badge>;
-        }
-    };
 
     const contacts: MappedContact[] = isContactsError || !apiContacts ? [] : apiContacts.map((c) => ({
         id: c.id,
@@ -136,7 +131,7 @@ const CampaignContactsPage: React.FC = () => {
                                 Contact Tracking
                                 {(isContactsLoading || isCampaignsLoading) && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
                                 {selectedCampaign && (
-                                    <Badge variant="secondary" className="ml-2 font-normal">
+                                    <Badge className="ml-2 font-normal">
                                         Campaign: {selectedCampaign.name}
                                     </Badge>
                                 )}
@@ -172,8 +167,8 @@ const CampaignContactsPage: React.FC = () => {
                                             )
                                         )
                                     },
-                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className="font-medium">{c.openFrequency}</span> },
-                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className="font-medium">{c.clickFrequency}</span> },
+                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.openFrequency)}`}>{c.openFrequency}</span> },
+                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.clickFrequency)}`}>{c.clickFrequency}</span> },
                                     { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
                                 ]}
                                 data={filteredContacts}
@@ -236,16 +231,30 @@ const CampaignContactsPage: React.FC = () => {
                                         )
                                     },
                                     {
+                                        title: "Total Delivered", key: "delivered", className: "text-right", render: (c: MappedCampaign) => (
+                                            <div className="flex items-center justify-end font-medium">
+                                                {c.delivered}
+                                            </div>
+                                        )
+                                    },
+                                    {
+                                        title: "Total Sent", key: "sent", className: "text-right", render: (c: MappedCampaign) => (
+                                            <div className="flex items-center justify-end font-medium">
+                                                {c.sent}
+                                            </div>
+                                        )
+                                    },
+                                    {
                                         title: "Open Rate", key: "openRate", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className="flex items-center justify-end gap-1">
-                                                {c.openRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.openRate)}`}>
+                                                {c.openRate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
                                         )
                                     },
                                     {
                                         title: "Click Rate", key: "clickRate", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className="flex items-center justify-end gap-1">
-                                                {c.clickRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.clickRate)}`}>
+                                                {c.clickRate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
                                         )
                                     }

@@ -134,20 +134,26 @@ export const IsActiveEnum = ['active', 'inactive'] as const
 
 export const difficultyOptions = [
   { label: 'Semua Tingkat', value: '' },
-    { value: 'easy', label: 'Mudah', color: 'text-green-500' },
-    { value: 'medium', label: 'Sedang', color: 'text-yellow-500' },
-    { value: 'hard', label: 'Sulit', color: 'text-red-500' },
-    { value: 'hots', label: 'HOTS', color: 'text-purple-500' },
+  { value: 'easy', label: 'Mudah', color: 'text-green-500' },
+  { value: 'medium', label: 'Sedang', color: 'text-yellow-500' },
+  { value: 'hard', label: 'Sulit', color: 'text-red-500' },
+  { value: 'hots', label: 'HOTS', color: 'text-purple-500' },
 ];
 
 export const getDifficultyColor = (diff: string) => {
-    switch (diff) {
-        case 'easy': return 'bg-green-500 text-white';
-        case 'medium': return 'bg-yellow-500 text-white';
-        case 'hard': return 'bg-red-500 text-white';
-        case 'hots': return 'bg-purple-500 text-white';
-        default: return 'bg-gray-200 text-gray-800';
-    }
+  switch (diff) {
+    case 'easy': return 'bg-green-500 text-white';
+    case 'medium': return 'bg-yellow-500 text-white';
+    case 'hard': return 'bg-red-500 text-white';
+    case 'hots': return 'bg-purple-500 text-white';
+    default: return 'bg-gray-200 text-gray-800';
+  }
 };
 
 export const getDifficultyLabel = (diff: string) => difficultyOptions.find(o => o.value === diff)?.label || diff;
+
+export const getMetricColor = (val: number) => {
+  if (val === 0) return 'text-red-500';
+  if (val >= 100) return 'text-green-600';
+  return 'text-orange-500';
+};

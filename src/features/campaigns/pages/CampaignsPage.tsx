@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { FloatingDateInput, FloatingInput } from '@/components/FloatingInput';
 import { BaseTable, Column } from '@/shared/components/table/BaseTable';
 import { Plus, Users, Percent, Edit, FileText, Loader2, Trash2, Eye, Calendar, Clock } from 'lucide-react';
@@ -9,11 +8,13 @@ import { SingleCampaignResponse, useIndexCampaign } from '@/services/campaign';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import { SegmentSidebar } from '@/features/contacts/components/SegmentSidebar';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
+import { getMetricColor } from '@/lib/utils';
 
 import { CreateCampaignModal } from '../components/CreateCampaignModal';
 import { EditCampaignModal } from '../components/EditCampaignModal';
 import { RemoveCampaignAlert } from '../components/RemoveCampaignAlert';
 import { CampaignDetailModal } from '../components/CampaignDetailModal';
+import { getStatusBadge } from '@/features/campaign-contacts/pages/CampaignContactsPage';
 
 const CampaignsPage: React.FC = () => {
     const [currentPage, setCurrentPage] = useState(1);
@@ -53,16 +54,6 @@ const CampaignsPage: React.FC = () => {
     const campaigns = apiCampaigns?.data || [];
     const totalItems = apiCampaigns?.pagination?.total || campaigns.length;
 
-    const getStatusBadge = (status: string) => {
-        switch (status) {
-            case 'completed': return <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Completed</Badge>;
-            case 'scheduled': return <Badge className="bg-blue-100 text-blue-700 hover:bg-blue-100 border-blue-200">Scheduled</Badge>;
-            case 'processing': return <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Processing</Badge>;
-            case 'failed': return <Badge className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200">Failed</Badge>;
-            default: return <Badge variant="secondary" className="text-gray-500">Draft</Badge>;
-        }
-    };
-
     const columns: Column<SingleCampaignResponse>[] = [
         {
             title: "Campaign Name",
@@ -101,8 +92,8 @@ const CampaignsPage: React.FC = () => {
             key: "open_rate",
             className: "text-right",
             render: (campaign) => (
-                <div className="flex items-center justify-end gap-1">
-                    {campaign.open_rate} <Percent className="w-3 h-3 text-muted-foreground" />
+                <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(campaign.open_rate)}`}>
+                    {campaign.open_rate} <Percent className="w-3 h-3 opacity-70" />
                 </div>
             )
         },
@@ -111,8 +102,8 @@ const CampaignsPage: React.FC = () => {
             key: "click_rate",
             className: "text-right",
             render: (campaign) => (
-                <div className="flex items-center justify-end gap-1">
-                    {campaign.click_rate} <Percent className="w-3 h-3 text-muted-foreground" />
+                <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(campaign.click_rate)}`}>
+                    {campaign.click_rate} <Percent className="w-3 h-3 opacity-70" />
                 </div>
             )
         },

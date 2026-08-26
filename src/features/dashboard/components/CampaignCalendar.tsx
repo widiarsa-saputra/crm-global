@@ -50,7 +50,7 @@ const generateDummyData = (): CampaignSchedule[] => {
             date: offsetDate(2),
             time: '14:30',
             timezone: 'WIB',
-            status: 'scheduled'
+            status: 'draft'
         },
         {
             id: '3',
@@ -68,7 +68,7 @@ const generateDummyData = (): CampaignSchedule[] => {
             date: offsetDate(2),
             time: '16:00',
             timezone: 'WIB',
-            status: 'scheduled'
+            status: 'processing'
         }
     ];
 };
@@ -224,7 +224,6 @@ export const CampaignCalendar: React.FC<CampaignCalendarProps> = ({ data }) => {
                                                     className={cn(
                                                         "text-left p-1.5 rounded border text-xs cursor-pointer hover:shadow-sm transition-all",
                                                         campaign.status === 'completed' ? "bg-green-50 border-green-200 text-green-800" :
-                                                        campaign.status === 'scheduled' ? "bg-blue-50 border-blue-200 text-blue-800" :
                                                         "bg-slate-50 border-slate-200 text-slate-700"
                                                     )}
                                                 >

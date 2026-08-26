@@ -14,7 +14,7 @@ export const CreateCampaignSchema = z.object({
     date: z.string().min(1, "Date is required"),
     time: z.string().optional(),
     timezone: z.string().optional(),
-    status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']).optional().default('draft'),
+    status: z.enum(['draft', 'processing', 'completed', 'failed']).optional().default('draft'),
 });
 
 export const UpdateCampaignSchema = z.object({
@@ -32,7 +32,7 @@ export const UpdateCampaignSchema = z.object({
     campaign_contacts: z.array(z.object({
         contact_id: z.union([z.string(), z.number()])
     })).optional(),
-    status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']).optional(),
+    status: z.enum(['draft', 'processing', 'completed', 'failed']).optional(),
 });
 
 export type CreateCampaignPayload = z.infer<typeof CreateCampaignSchema>;

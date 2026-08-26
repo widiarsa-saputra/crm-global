@@ -33,7 +33,7 @@ export const SingleCampaignSchema = z.object({
     campaign_name: z.string(),
     email_subject: z.string(),
     date: z.string(),
-    status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']),
+    status: z.enum(['draft', 'processing', 'completed', 'failed']),
     time: z.string().nullable().optional(),
     timezone: z.string().nullable().optional(),
     open_rate: z.coerce.number().optional().default(0),
