@@ -165,11 +165,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
             <footer className="border-t bg-white py-6 mt-auto">
                 <div className="container mx-auto px-6 text-center text-sm text-muted-foreground">
                     <p>&copy; {new Date().getFullYear()} CRM Global Inc. All rights reserved.</p>
-                    <div className="flex justify-center space-x-4 mt-2">
-                        <a href="#" className="hover:text-primary transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-primary transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-primary transition-colors">Contact Us</a>
-                    </div>
+                   
                 </div>
             </footer>
         </div>

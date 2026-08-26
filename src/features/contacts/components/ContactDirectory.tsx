@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
-import { Plus, Building, Trash2, Edit2, Loader2, Users } from 'lucide-react';
+import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Printer } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -20,6 +20,8 @@ export type MappedContact = {
     name: string;
     email: string;
     company: string;
+    location: string;
+    fax: string;
     segment: string;
     status: string;
     _raw?: SingleContactResponse;
@@ -73,6 +75,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         name: c.nama,
         email: c.email,
         company: c.company || '-',
+        location: c.location || '-',
+        fax: c.fax || '-',
         segment: c.segment?.name || 'Unassigned',
         status: c.email_status,
         _raw: c,
@@ -80,7 +84,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'active': return 'bg-green-100 text-green-700 hover:bg-green-100';
+            case 'valid': return 'bg-green-100 text-green-700 hover:bg-green-100';
             case 'blocked': return 'bg-red-100 text-red-700 hover:bg-red-100';
             case 'unsubscribed': return 'bg-orange-100 text-orange-700 hover:bg-orange-100';
             default:
@@ -142,6 +146,27 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Building className="w-3.5 h-3.5" />
                                     <span className="">{c.company || '-'}</span>
+                                </div>
+                            )
+                        },
+                        {
+                            title: "Location",
+                            key: "location",
+                            render: (c: MappedContact) => (
+                                <div className="flex items-center gap-1.5 text-slate-600 text-sm">
+                                    <MapPin className="w-3.5 h-3.5" />
+                                    <span className="truncate max-w-[150px]">{c.location || '-'}</span>
+                                </div>
+                            )
+                        },
+
+                        {
+                            title: "Fax",
+                            key: "fax",
+                            render: (c: MappedContact) => (
+                                <div className="flex items-center gap-1.5 text-slate-600 text-sm">
+                                    <Printer className="w-3.5 h-3.5" />
+                                    <span className="truncate max-w-[150px]">{c.fax || '-'}</span>
                                 </div>
                             )
                         },

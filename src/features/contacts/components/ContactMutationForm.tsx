@@ -3,7 +3,7 @@ import { Controller, UseFormReturn, FieldValues, Path, SubmitHandler } from 'rea
 import { FloatingInput } from '@/components/FloatingInput';
 import Combobox from '@/components/Combobox';
 import { SubmitLoading } from '@/components/SubmitLoading';
-import { Mail, User, Building, ShieldCheck, Users } from 'lucide-react';
+import { Mail, User, Building, ShieldCheck, Users, MapPin, Phone } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
 import { UseMutationResult } from '@tanstack/react-query';
 
@@ -38,6 +38,8 @@ export const ContactMutationForm = <
     const watchedNama = watch('nama' as Path<TFieldValues>);
     const watchedEmail = watch('email' as Path<TFieldValues>);
     const watchedCompany = watch('company' as Path<TFieldValues>);
+    const watchedLocation = watch('location' as Path<TFieldValues>);
+    const watchedFax = watch('fax' as Path<TFieldValues>);
 
     const segmentOptions = useMemo(() => {
         if (!apiSegments?.data) return [];
@@ -48,7 +50,7 @@ export const ContactMutationForm = <
     }, [apiSegments]);
 
     const emailStatusOptions = [
-        { label: 'Active', value: 'active' },
+        { label: 'Valid', value: 'valid' },
         { label: 'Unsubscribed', value: 'unsubscribed' },
         { label: 'Blocked', value: 'blocked' },
     ];
@@ -112,6 +114,46 @@ export const ContactMutationForm = <
                     />
                 )}
             />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <Controller
+                    control={control}
+                    name={"location" as Path<TFieldValues>}
+                    render={({ field }) => (
+                        <FloatingInput
+                            id="location"
+                            label="Location (Optional)"
+                            icon={MapPin}
+                            watch={watchedLocation as string}
+                            error={errors.location?.message as string}
+                            inputProps={{
+                                ...field,
+                                value: field.value ?? "",
+                                placeholder: "Enter location",
+                            }}
+                        />
+                    )}
+                />
+
+                <Controller
+                    control={control}
+                    name={"fax" as Path<TFieldValues>}
+                    render={({ field }) => (
+                        <FloatingInput
+                            id="fax"
+                            label="Fax (Optional)"
+                            icon={Phone}
+                            watch={watchedFax as string}
+                            error={errors.fax?.message as string}
+                            inputProps={{
+                                ...field,
+                                value: field.value ?? "",
+                                placeholder: "Enter fax number",
+                            }}
+                        />
+                    )}
+                />
+            </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Controller

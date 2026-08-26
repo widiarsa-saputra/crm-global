@@ -13,7 +13,7 @@ interface UpdateStatusModalProps {
 }
 
 const emailStatusOptions = [
-    { label: 'Active', value: 'active' },
+    { label: 'Valid', value: 'valid' },
     { label: 'Unsubscribed', value: 'unsubscribed' },
     { label: 'Blocked', value: 'blocked' },
 ];
