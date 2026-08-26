@@ -75,7 +75,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 form={form}
                 onSubmit={onSubmit}
                 mutation={mutation}
-                initialSegmentId={campaign.target_segment_id}
+                initialSegmentId={campaign.segment_id}
             />
         </Modal>
     );

@@ -25,6 +25,9 @@ export const UpdateCampaignSchema = z.object({
     date: optionalTrimmedString(),
     time: optionalTrimmedString(),
     timezone: optionalTrimmedString(),
+    campaign_contacts: z.array(z.object({
+        contact_id: z.union([z.string(), z.number()])
+    })).optional(),
     status: z.enum(['draft', 'scheduled', 'processing', 'completed', 'failed']).optional(),
 });
 
