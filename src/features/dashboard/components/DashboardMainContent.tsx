@@ -94,9 +94,9 @@ const DashboardMainContent: React.FC = () => {
             </div>
 
             {/* Charts Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div className="flex flex-col gap-6 mb-6">
                 {/* Grouped Bar Chart */}
-                <Card className="lg:col-span-2 shadow-sm">
+                <Card className="w-full shadow-sm">
                     <CardHeader>
                         <CardTitle className="text-lg">Engagement per Segment (Opens vs Clicks %)</CardTitle>
                     </CardHeader>
@@ -115,8 +115,23 @@ const DashboardMainContent: React.FC = () => {
                     </CardContent>
                 </Card>
 
+                {/* Schedule Calendar */}
+                <Card className="w-full shadow-sm flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Schedule Calendar</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 bg-slate-50/50 p-6 pt-0 rounded-b-xl border-t">
+                        <div className="mt-6 h-full">
+                            <CampaignCalendar />
+                        </div>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Bottom Section: Distribution & Recent Activity */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                 {/* Donut Chart */}
-                <Card className="lg:col-span-1 shadow-sm">
+                <Card className="shadow-sm">
                     <CardHeader>
                         <CardTitle className="text-lg">Contact Distribution</CardTitle>
                     </CardHeader>
@@ -145,24 +160,9 @@ const DashboardMainContent: React.FC = () => {
                         </ResponsiveContainer>
                     </CardContent>
                 </Card>
-            </div>
-
-            {/* Calendar and Recent Activity Log */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-                {/* Schedule Calendar */}
-                <Card className="lg:col-span-2 shadow-sm flex flex-col">
-                    <CardHeader>
-                        <CardTitle className="text-lg">Schedule Calendar</CardTitle>
-                    </CardHeader>
-                    <CardContent className="flex-1 bg-slate-50/50 p-6 pt-0 rounded-b-xl border-t">
-                        <div className="mt-6 h-full">
-                            <CampaignCalendar />
-                        </div>
-                    </CardContent>
-                </Card>
 
                 {/* Recent Activity Log */}
-                <Card className="lg:col-span-1 shadow-sm flex flex-col">
+                <Card className="shadow-sm flex flex-col">
                     <CardHeader>
                         <CardTitle className="text-lg">Recent Blast Campaigns</CardTitle>
                     </CardHeader>
