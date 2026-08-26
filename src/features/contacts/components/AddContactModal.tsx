@@ -22,7 +22,7 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({ trigger }) => 
             email: '',
             company: '',
             segment_id: null,
-            email_status: 'valid',
+            email_status: 'active',
         },
     });
 

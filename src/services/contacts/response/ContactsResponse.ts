@@ -11,7 +11,7 @@ export const DeleteContactDataSchema = z.nullable(
         email: z.string().email(),
         company: z.string().nullable(),
         segment_id: z.string().nullable(),
-        email_status: z.enum(["valid", "invalid", "bounced", "unsubscribed"]),
+        email_status: z.enum(["active", "unsubscribed", "blocked"]),
         created_at: z.string(),
         updated_at: z.string(),
     })
@@ -33,7 +33,7 @@ export const SingleContactSchema = z.object({
     nama: z.string(),
     email: z.string().email(),
     company: z.string().nullable(),
-    email_status: z.enum(["valid", "invalid", "bounced", "unsubscribed"]),
+    email_status: z.enum(["active", "unsubscribed", "blocked"]),
     created_at: z.string(),
     updated_at: z.string(),
     segment: SegmentSchema.optional(),

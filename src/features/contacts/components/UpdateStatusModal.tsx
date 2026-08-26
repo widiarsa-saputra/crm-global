@@ -13,10 +13,9 @@ interface UpdateStatusModalProps {
 }
 
 const emailStatusOptions = [
-    { label: 'Valid', value: 'valid' },
-    { label: 'Invalid', value: 'invalid' },
-    { label: 'Bounced', value: 'bounced' },
+    { label: 'Active', value: 'active' },
     { label: 'Unsubscribed', value: 'unsubscribed' },
+    { label: 'Blocked', value: 'blocked' },
 ];
 
 export const UpdateStatusModal: React.FC<UpdateStatusModalProps> = ({ contact, isOpen, onClose }) => {

@@ -80,8 +80,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
     const getStatusColor = (status: string) => {
         switch (status) {
-            case 'valid': return 'bg-green-100 text-green-700 hover:bg-green-100';
-            case 'bounced': return 'bg-red-100 text-red-700 hover:bg-red-100';
+            case 'active': return 'bg-green-100 text-green-700 hover:bg-green-100';
+            case 'blocked': return 'bg-red-100 text-red-700 hover:bg-red-100';
             case 'unsubscribed': return 'bg-orange-100 text-orange-700 hover:bg-orange-100';
             default:
                 return 'bg-slate-100 text-slate-800 border-slate-200';

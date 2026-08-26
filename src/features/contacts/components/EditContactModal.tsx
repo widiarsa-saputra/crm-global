@@ -24,7 +24,7 @@ export const EditContactModal: React.FC<EditContactModalProps> = ({ contact, isO
             email: contact?.email || '',
             company: contact?.company || '',
             segment_id: contact?.segment_id ? contact.segment_id.toString() : null,
-            email_status: contact?.email_status || 'valid',
+            email_status: contact?.email_status || 'active',
         },
     });
 
@@ -35,7 +35,7 @@ export const EditContactModal: React.FC<EditContactModalProps> = ({ contact, isO
                 email: contact.email,
                 company: contact.company || '',
                 segment_id: contact.segment_id ? contact.segment_id.toString() : null,
-                email_status: contact.email_status || 'valid',
+                email_status: contact.email_status || 'active',
             });
         }
     }, [isOpen, contact, form]);

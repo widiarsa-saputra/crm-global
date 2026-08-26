@@ -57,11 +57,16 @@ export const CampaignMutationForm = <
     const [fileError, setFileError] = useState<string | null>(null);
 
     const { data: apiContacts, isLoading: contactsLoading } = useIndexContact({
-        params: watchedSegmentId && watchedSegmentId !== 'all'
-            ? { 'filter[segment_id]': watchedSegmentId, paginate: 1000 }
-            : watchedSegmentId === 'all'
-                ? { paginate: 1000 }
-                : {}
+        params: {
+            ...(
+                watchedSegmentId && watchedSegmentId !== 'all'
+                    ? { 'filter[segment_id]': watchedSegmentId, paginate: 1000 }
+                    : watchedSegmentId === 'all'
+                        ? { paginate: 1000 }
+                        : {}
+            ),
+            'filter[email_status_not]': 'unsubscribed'
+        }
     });
 
     const segmentContacts = useMemo(() => apiContacts?.data || [], [apiContacts]);
@@ -346,7 +351,7 @@ export const CampaignMutationForm = <
                                             value={undefined}
                                         />
                                     </div>
-                                    
+
                                 </div>
                             )}
                         />
