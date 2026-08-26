@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, startTransition } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { InputRichText } from '@/components/InputRichText';
 import { FloatingInput } from '@/components/FloatingInput';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { SubmitLoading } from '@/components/SubmitLoading';
 import {
     useIndexTemplate,
@@ -13,6 +12,7 @@ import {
 } from '@/services/templates';
 import { SingleTemplateResponse } from '@/services/templates/response/TemplateResponse';
 import { Loader2, FilePlus, Save, Trash2 } from 'lucide-react';
+import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 
 const TemplatesPage: React.FC = () => {
     const [search, setSearch] = useState('');
@@ -37,16 +37,20 @@ const TemplatesPage: React.FC = () => {
 
     const handleSelectTemplate = (template: SingleTemplateResponse) => {
         setSelectedTemplate(template);
-        setName(template.name);
-        setContent(template.message);
         setIsCreating(false);
+        startTransition(() => {
+            setName(template.name);
+            setContent(template.message);
+        });
     };
 
     const handleCreateNew = () => {
         setSelectedTemplate(null);
-        setName('');
-        setContent('');
         setIsCreating(true);
+        startTransition(() => {
+            setName('');
+            setContent('');
+        });
     };
 
     const handleSave = () => {
@@ -72,12 +76,16 @@ const TemplatesPage: React.FC = () => {
 
     const handleDiscard = () => {
         if (selectedTemplate) {
-            setName(selectedTemplate.name);
-            setContent(selectedTemplate.message);
+            startTransition(() => {
+                setName(selectedTemplate.name);
+                setContent(selectedTemplate.message);
+            });
         } else {
-            setName('');
-            setContent('');
             setIsCreating(false);
+            startTransition(() => {
+                setName('');
+                setContent('');
+            });
         }
     };
 
@@ -135,10 +143,12 @@ const TemplatesPage: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 h-[calc(100vh-140px)]">
                     {/* Left: Template List */}
                     <div className="col-span-1 border rounded-lg p-4 flex flex-col gap-4 bg-slate-50/30">
-                        <Input
+                        {/* <Input
+                        /> */}
+                        <DebouncedSearchInput
                             placeholder="Search templates..."
                             value={search}
-                            onChange={(e) => setSearch(e.target.value)}
+                            onChange={(e) => setSearch(e)}
                         />
                         <div className="space-y-2 overflow-y-auto flex-1 pr-2">
                             {isLoading && (
@@ -155,11 +165,10 @@ const TemplatesPage: React.FC = () => {
                                     <div
                                         key={template.id}
                                         onClick={() => handleSelectTemplate(template)}
-                                        className={`p-3 border rounded cursor-pointer transition-colors ${
-                                            isActive
+                                        className={`p-3 border rounded cursor-pointer transition-colors ${isActive
                                                 ? 'bg-primary/10 border-primary/20'
                                                 : 'hover:bg-slate-100'
-                                        }`}
+                                            }`}
                                     >
                                         <h3 className={`font-semibold ${isActive ? 'text-primary' : ''}`}>
                                             {template.name}

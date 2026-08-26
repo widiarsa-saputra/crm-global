@@ -58,7 +58,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
             select.dispatchEvent(new Event('change'));
         }
     };
-    
+
     const menuSections: MenuSection[] = [
         {
             label: 'Utama',
@@ -93,20 +93,20 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
             {/* Top Navigation Bar */}
             <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm px-4">
                 <div className="flex h-16 items-center justify-between px-10 mx-auto w-full">
+                    <div className="mr-8 flex items-center">
+                        {/* <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div> */}
+                        <h1 className="text-xl font-bold text-primary hidden md:block">CRM Portal</h1>
+                    </div>
                     <div className="flex items-center">
-                        <div className="mr-8 flex items-center">
-                            {/* <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div> */}
-                            <h1 className="text-xl font-bold text-primary hidden md:block">CRM Global</h1>
-                        </div>
-                        
+
                         <nav className="flex items-center space-x-1 md:space-x-6 overflow-x-auto no-scrollbar">
                             {menuSections.map((section) => (
                                 section.items.map((item, idx) => {
                                     const Icon = item.icon;
                                     const isActive = location.pathname === item.url || (item.url !== ROUTES.SLASH.path && location.pathname.startsWith(item.url + '/'));
                                     return (
-                                        <Link 
-                                            key={`${section.label}-${idx}`} 
+                                        <Link
+                                            key={`${section.label}-${idx}`}
                                             to={item.url}
                                             className={cn(
                                                 "flex items-center text-sm font-medium transition-colors hover:text-primary whitespace-nowrap px-3",

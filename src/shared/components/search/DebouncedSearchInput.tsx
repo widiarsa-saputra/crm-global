@@ -45,7 +45,7 @@ const DebouncedSearchInput: React.FC<DebouncedSearchInputProps> = ({
     }, [value]);
 
     return (
-        <div className={cn("relative flex-grow max-w-md", className)}>
+        <div className={cn("relative max-w-md", className)}>
             <FloatingInput
                 id="debounced-search"
                 label={label}

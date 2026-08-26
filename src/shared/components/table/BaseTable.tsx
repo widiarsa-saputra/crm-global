@@ -36,6 +36,7 @@ interface BaseTableProps<T> {
     onSort?: (sortBy: string, sortOrder: 'asc' | 'desc') => void;
     onRowClick?: (item: T) => void;
     rowClassName?: (item: T) => string;
+    emptyMessage?: React.ReactNode;
 }
 
 export function useColumnToggle<T>(columns: Column<T>[], initialVisibleColumns?: Set<string | keyof T>) {
@@ -168,7 +169,8 @@ export function BaseTable<T extends { id?: string | number }>({
     sortOrder = "desc",
     onSort,
     onRowClick,
-    rowClassName
+    rowClassName,
+    emptyMessage = "Data Not Found"
 }: BaseTableProps<T>) {
     const { filteredColumns, renderColumnToggle } = useColumnToggle(columns);
 
@@ -240,8 +242,8 @@ export function BaseTable<T extends { id?: string | number }>({
                             ) : data.length === 0 ? (
                                 // "Data Not Found" logic tetap sama
                                 <TableRow>
-                                    <TableCell colSpan={filteredColumns.length} className="px-6 py-1 text-center text-sm text-gray-500">
-                                        Data Not Found
+                                    <TableCell colSpan={filteredColumns.length} className="px-6 py-4 text-center text-sm text-gray-500">
+                                        {emptyMessage}
                                     </TableCell>
                                 </TableRow>
                             ) : // --- START: Perubahan Logika Rendering ---

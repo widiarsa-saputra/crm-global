@@ -32,7 +32,7 @@ const CampaignContactsPage: React.FC = () => {
     const [campaignSearch, setCampaignSearch] = useState('');
 
     // API Query for Master Campaign List
-    const { data: apiCampaignsRes, isError: isCampaignsError, isLoading: isCampaignsLoading } = useIndexCampaign();
+    const { data: apiCampaignsRes, isError: isCampaignsError, isFetching: isCampaignsLoading } = useIndexCampaign();
     const apiCampaigns = apiCampaignsRes?.data || [];
 
     useEffect(() => {
@@ -42,14 +42,15 @@ const CampaignContactsPage: React.FC = () => {
     }, [apiCampaigns, selectedCampaignId]);
 
     // API Query for Campaign Contacts Details
-    const { data: apiContactsRes, isError: isContactsError, isLoading: isContactsLoading } = useIndexCampaignContact({
+    const { data: apiContactsRes, isError: isContactsError, isFetching: isContactsLoading } = useIndexCampaignContact({
         params: {
             'filter[campaign_id]': selectedCampaignId,
             page: contactPage,
             per_page: contactItemsPerPage,
             search: contactSearch || undefined,
             include: 'contact'
-        }
+        },
+        enabled: !!selectedCampaignId
     });
     const apiContacts = apiContactsRes?.data || [];
     const contactMeta = apiContactsRes?.pagination;
@@ -124,39 +125,39 @@ const CampaignContactsPage: React.FC = () => {
         <AdminLayout>
             <div className="flex flex-col h-full bg-slate-50/50">
                 {/* TOP SECTION: Campaign Contacts Detail */}
-                {(isContactsLoading || contacts.length > 0) && (
-                    <div className="p-6 flex flex-col">
-                        <div className="mb-4 flex items-center justify-between">
-                            <div>
-                                <h2 className="text-xl font-bold flex items-center gap-2">
-                                    Contact Tracking
-                                    {isContactsLoading && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
-                                    {selectedCampaign && (
-                                        <Badge variant="secondary" className="ml-2 font-normal">
-                                            Campaign: {selectedCampaign.name}
-                                        </Badge>
-                                    )}
-                                </h2>
-                                <p className="text-sm text-muted-foreground mt-1">Detailed tracking of individual contacts for the selected campaign.</p>
-                            </div>
-                            <DebouncedSearchInput
-                                value={contactSearch}
-                                onChange={(v) => { setContactSearch(v); setContactPage(1); }}
-                                placeholder="Search contact..."
-                            />
+                <div className="p-6 flex flex-col">
+                    <div className="mb-4 flex items-center justify-between">
+                        <div>
+                            <h2 className="text-xl font-bold flex items-center gap-2">
+                                Contact Tracking
+                                {(isContactsLoading || isCampaignsLoading) && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
+                                {selectedCampaign && (
+                                    <Badge variant="secondary" className="ml-2 font-normal">
+                                        Campaign: {selectedCampaign.name}
+                                    </Badge>
+                                )}
+                            </h2>
+                            <p className="text-sm text-muted-foreground mt-1">Detailed tracking of individual contacts for the selected campaign.</p>
                         </div>
+                        <DebouncedSearchInput
+                            value={contactSearch}
+                            onChange={(v) => { setContactSearch(v); setContactPage(1); }}
+                            placeholder="Search contact..."
+                        />
+                    </div>
 
-                        <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
-                            <div className="overflow-auto">
-                                <BaseTable
-                                    columns={[
-                                        { title: "Contact Name", key: "name", render: (c: MappedContact) => <span className="font-medium">{c.name}</span> },
-                                        { title: "Email", key: "email", render: (c: MappedContact) => <span className="text-muted-foreground">{c.email}</span> },
-                                        { title: "Status", key: "status", render: (c: MappedContact) => (
+                    <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
+                        <div className="overflow-auto">
+                            <BaseTable
+                                columns={[
+                                    { title: "Contact Name", key: "name", render: (c: MappedContact) => <span className="font-medium">{c.name}</span> },
+                                    { title: "Email", key: "email", render: (c: MappedContact) => <span className="text-muted-foreground">{c.email}</span> },
+                                    {
+                                        title: "Status", key: "status", render: (c: MappedContact) => (
                                             c.status === 'sent' ? (
                                                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
                                             ) : c.status === 'failed' ? (
-                                                <Badge 
+                                                <Badge
                                                     title={c.errorMessage || "Failed to send"}
                                                     className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200 cursor-help"
                                                 >
@@ -165,26 +166,27 @@ const CampaignContactsPage: React.FC = () => {
                                             ) : (
                                                 <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Queued</Badge>
                                             )
-                                        )},
-                                        { title: "Opened", key: "isOpen", className: "text-center", render: (c: MappedContact) => c.isOpen ? "Yes" : "No" },
-                                        { title: "Clicked", key: "isClicked", className: "text-center", render: (c: MappedContact) => c.isClicked ? "Yes" : "No" },
-                                        { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
-                                    ]}
-                                    data={filteredContacts}
-                                    isLoading={isContactsLoading}
-                                    rowClassName={() => "hover:bg-slate-50"}
-                                />
-                            </div>
-                            <PaginationWithShow
-                                totalItems={contactMeta?.total || 0}
-                                itemsPerPage={contactItemsPerPage}
-                                currentPage={contactPage}
-                                onPageChange={setContactPage}
-                                onItemsPerPageChange={(n) => { setContactItemsPerPage(n); setContactPage(1); }}
+                                        )
+                                    },
+                                    { title: "Opened", key: "isOpen", className: "text-center", render: (c: MappedContact) => c.isOpen ? "Yes" : "No" },
+                                    { title: "Clicked", key: "isClicked", className: "text-center", render: (c: MappedContact) => c.isClicked ? "Yes" : "No" },
+                                    { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
+                                ]}
+                                data={filteredContacts}
+                                isLoading={isContactsLoading || isCampaignsLoading}
+                                rowClassName={() => "hover:bg-slate-50"}
+                                emptyMessage="Tidak ada data contact untuk selected campaign"
                             />
                         </div>
+                        <PaginationWithShow
+                            totalItems={contactMeta?.total || 0}
+                            itemsPerPage={contactItemsPerPage}
+                            currentPage={contactPage}
+                            onPageChange={setContactPage}
+                            onItemsPerPageChange={(n) => { setContactItemsPerPage(n); setContactPage(1); }}
+                        />
                     </div>
-                )}
+                </div>
 
                 {/* BOTTOM SECTION: Master Campaign List */}
                 <div className="flex-none border-t flex flex-col p-6 gap-4">
@@ -203,36 +205,46 @@ const CampaignContactsPage: React.FC = () => {
                         <div className="overflow-auto flex-1">
                             <BaseTable
                                 columns={[
-                                    { title: "Campaign Name", copyValue: false, key: "name", render: (c: MappedCampaign) => (
-                                        <div className="flex flex-col">
-                                            <span className="font-medium">{c.name}</span>
-                                            <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                                <FileText className="w-3 h-3" /> Template linked
-                                            </span>
-                                        </div>
-                                    )},
-                                    { title: "Target Segment", key: "segment", render: (c: MappedCampaign) => (
-                                        <div className="flex items-center gap-2">
-                                            <Users className="w-4 h-4 text-muted-foreground" />
-                                            {c.segment}
-                                        </div>
-                                    )},
+                                    {
+                                        title: "Campaign Name", copyValue: false, key: "name", render: (c: MappedCampaign) => (
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">{c.name}</span>
+                                                <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                                    <FileText className="w-3 h-3" /> Template linked
+                                                </span>
+                                            </div>
+                                        )
+                                    },
+                                    {
+                                        title: "Target Segment", key: "segment", render: (c: MappedCampaign) => (
+                                            <div className="flex items-center gap-2">
+                                                <Users className="w-4 h-4 text-muted-foreground" />
+                                                {c.segment}
+                                            </div>
+                                        )
+                                    },
                                     { title: "Status", key: "status", render: (c: MappedCampaign) => getStatusBadge(c.status) },
-                                    { title: "Date", key: "date", render: (c: MappedCampaign) => (
-                                        <span className="text-muted-foreground">
-                                            {c.date ? new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
-                                        </span>
-                                    )},
-                                    { title: "Open Rate", key: "openRate", className: "text-right", render: (c: MappedCampaign) => (
-                                        <div className="flex items-center justify-end gap-1">
-                                            {c.openRate}% <Percent className="w-3 h-3 text-muted-foreground" />
-                                        </div>
-                                    )},
-                                    { title: "Click Rate", key: "clickRate", className: "text-right", render: (c: MappedCampaign) => (
-                                        <div className="flex items-center justify-end gap-1">
-                                            {c.clickRate}% <Percent className="w-3 h-3 text-muted-foreground" />
-                                        </div>
-                                    )}
+                                    {
+                                        title: "Date", key: "date", render: (c: MappedCampaign) => (
+                                            <span className="text-muted-foreground">
+                                                {c.date ? new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
+                                            </span>
+                                        )
+                                    },
+                                    {
+                                        title: "Open Rate", key: "openRate", className: "text-right", render: (c: MappedCampaign) => (
+                                            <div className="flex items-center justify-end gap-1">
+                                                {c.openRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                            </div>
+                                        )
+                                    },
+                                    {
+                                        title: "Click Rate", key: "clickRate", className: "text-right", render: (c: MappedCampaign) => (
+                                            <div className="flex items-center justify-end gap-1">
+                                                {c.clickRate}% <Percent className="w-3 h-3 text-muted-foreground" />
+                                            </div>
+                                        )
+                                    }
                                 ]}
                                 data={paginatedCampaigns}
                                 isLoading={isCampaignsLoading}

@@ -39,6 +39,7 @@ export const useDeleteCampaign = () => {
 
 interface IndexCampaignProps {
     params?: { [key: string]: unknown };
+    enabled?: boolean;
 }
 
 export const useIndexCampaign = (query?: IndexCampaignProps) =>
@@ -64,6 +65,7 @@ export const useIndexCampaignContact = (query?: IndexCampaignProps) =>
         query: {
             key: `campaign-contacts-${JSON.stringify(query?.params)}`,
             placeholderData: keepPreviousData,
+            enabled:query?.enabled
         },
         schema: IndexCampaignContactResponseSchema,
     });
