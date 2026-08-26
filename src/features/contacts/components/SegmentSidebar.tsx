@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Plus, Search, Users, Folder, Pencil, Trash2 } from 'lucide-react';
+import { Plus, Users, Folder, Pencil, Trash2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { useIndexSegment, SingleSegmentResponse } from '@/services/segments';
 import {
@@ -27,7 +27,11 @@ interface SegmentSidebarProps {
 type DialogState = 'edit' | 'delete' | null;
 
 export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId, totalContacts }) => {
-    const { data: apiSegments, isLoading } = useIndexSegment({});
+    const [search, setSearch] = useState('');
+
+    const { data: apiSegments, isLoading } = useIndexSegment({
+        
+    });
 
     const [selectedSegment, setSelectedSegment] = useState<SingleSegmentResponse | null>(null);
     const [dialog, setDialog] = useState<DialogState>(null);
@@ -67,14 +71,13 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
             </div>
 
             <div className="p-4 border-b space-y-4">
-                <div className="relative">
-                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                        type="search"
-                        placeholder="Search segments..."
-                        className="pl-8 bg-muted/50"
-                    />
-                </div>
+                <DebouncedSearchInput
+                    value={search}
+                    onChange={setSearch}
+                    placeholder="Search segments..."
+                    className="w-full"
+                    inputClassName="bg-muted/50"
+                />
 
                 <div className="space-y-1">
                     <Button
@@ -120,7 +123,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                             Belum ada segment.
                         </div>
                     ) : (
-                        segments.map((segment) => (
+                        segments.filter(segment => segment.name.toLowerCase().includes(search.toLowerCase())).map((segment) => (
                             <ContextMenu key={segment.id}>
                                 <ContextMenuTrigger asChild>
                                     <Button
