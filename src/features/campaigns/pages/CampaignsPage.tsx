@@ -158,9 +158,9 @@ const CampaignsPage: React.FC = () => {
                     onSelectSegment={setActiveSegmentId}
                 />
 
-                <div className="flex-1 flex flex-col p-6 overflow-hidden">
+                <div className="flex-1 flex flex-col overflow-hidden">
                     {/* Header */}
-                    <header className="flex justify-between items-center mb-6 shrink-0">
+                    {/* <header className="flex justify-between items-center mb-6 shrink-0">
                         <section>
                             <h1 className="text-2xl font-bold flex items-center gap-3">
                                 Email Campaigns
@@ -172,65 +172,78 @@ const CampaignsPage: React.FC = () => {
                             <Plus className="w-4 h-4 mr-2" />
                             Create Campaign
                         </Button>
+                    </header> */}
+                    <header className="p-3 px-4 border-b flex items-center justify-between gap-x-4">
+                        {/* Filters */}
+                        <div className="flex gap-4 shrink-0">
+                            <div className="relative flex-1 max-w-md">
+                                <DebouncedSearchInput
+                                    value={searchTerm}
+                                    onChange={setSearchTerm}
+                                    placeholder="Search campaigns..."
+                                    className="bg-white"
+                                />
+                            </div>
+                            <div className="w-64">
+                                <FloatingDateInput
+                                    id="filter-date"
+                                    label="Schedule Date"
+                                    icon={Calendar}
+                                    value={scheduleDate}
+                                    onChange={setScheduleDate}
+                                    placeholder="All Dates"
+                                    inputProps={{ className: "bg-white" }}
+                                />
+                            </div>
+                            <div className="w-48">
+                                <FloatingInput
+                                    id="filter-time"
+                                    label="Schedule Time"
+                                    icon={Clock}
+                                    type="time"
+                                    watch={scheduleTime}
+                                    inputProps={{
+                                        value: scheduleTime,
+                                        onChange: (e) => setScheduleTime(e.target.value),
+                                        className: "bg-white"
+                                    }}
+                                />
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
+
+                            <Button onClick={() => handleOpenDialog('create')}>
+                                <Plus className="w-4 h-4 mr-2" />
+                                Create Campaign
+                            </Button>
+                        </div>
                     </header>
 
-                    {/* Filters */}
-                    <div className="flex gap-4 mb-6 shrink-0">
-                        <div className="relative flex-1 max-w-md">
-                            <DebouncedSearchInput
-                                value={searchTerm}
-                                onChange={setSearchTerm}
-                                placeholder="Search campaigns..."
-                                className="bg-white"
-                            />
-                        </div>
-                        <div className="w-64">
-                            <FloatingDateInput
-                                id="filter-date"
-                                label="Schedule Date"
-                                icon={Calendar}
-                                value={scheduleDate}
-                                onChange={setScheduleDate}
-                                placeholder="All Dates"
-                                inputProps={{ className: "bg-white" }}
-                            />
-                        </div>
-                        <div className="w-48">
-                            <FloatingInput
-                                id="filter-time"
-                                label="Schedule Time"
-                                icon={Clock}
-                                type="time"
-                                watch={scheduleTime}
-                                inputProps={{
-                                    value: scheduleTime,
-                                    onChange: (e) => setScheduleTime(e.target.value),
-                                    className: "bg-white"
-                                }}
-                            />
-                        </div>
-                    </div>
+
 
                     {/* Table */}
-                    <div className="bg-white border rounded shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
-                        <div className="overflow-auto flex-1">
-                            <BaseTable
-                                columns={columns}
-                                data={campaigns}
-                                isLoading={isLoading}
-                                className="border-none"
-                                skeletonRows={itemsPerPage}
-                            />
+                    <div className="p-4 flex-1 flex flex-col">
+                        <div className="bg-white border rounded overflow-hidden flex-1 flex flex-col">
+                            <div className="overflow-auto flex-1">
+                                <BaseTable
+                                    columns={columns}
+                                    data={campaigns}
+                                    isLoading={isLoading}
+                                    className="border-none"
+                                    skeletonRows={itemsPerPage}
+                                />
+                            </div>
+                            {totalItems > 0 && (
+                                <PaginationWithShow
+                                    totalItems={totalItems}
+                                    itemsPerPage={itemsPerPage}
+                                    currentPage={currentPage}
+                                    onPageChange={setCurrentPage}
+                                    onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
+                                />
+                            )}
                         </div>
-                        {totalItems > 0 && (
-                            <PaginationWithShow
-                                totalItems={totalItems}
-                                itemsPerPage={itemsPerPage}
-                                currentPage={currentPage}
-                                onPageChange={setCurrentPage}
-                                onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
-                            />
-                        )}
                     </div>
                 </div>
             </div>
