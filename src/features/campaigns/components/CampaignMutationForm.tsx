@@ -326,7 +326,7 @@ export const CampaignMutationForm = <
                                     <div className="relative">
                                         <input
                                             type="file"
-                                            className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-slate-200 rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                            className="w-full text-sm text-slate-500 file:mr-4 file:py-1 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-slate-200 rounded p-2 focus:outline-none focus:ring-2 focus:ring-primary/20 !h-11"
                                             onChange={(e) => {
                                                 const file = e.target.files?.[0];
                                                 if (file) {
