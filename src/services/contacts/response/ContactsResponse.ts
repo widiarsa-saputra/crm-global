@@ -66,3 +66,9 @@ export const IndexContactResponseSchema = BaseResponseSchema(ContactListSchema);
 export const ShowContactResponseSchema = BaseResponseSchema(SingleContactSchema);
 
 export const UpdateContactResponseSchema = BaseResponseSchema(SingleContactSchema);
+
+export const ImportContactDataSchema = z.object({
+    download_id: z.string().optional()
+});
+export const ImportContactResponseSchema = BaseResponseSchema(ImportContactDataSchema);
+export type ImportContactResponse = z.infer<typeof ImportContactResponseSchema>;

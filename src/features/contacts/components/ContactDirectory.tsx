@@ -1,12 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
-import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail } from 'lucide-react';
+import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail, Upload, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { useIndexContactInfinite } from '@/services/contacts';
+import { 
+    useIndexContactInfinite, 
+    useImportContacts, 
+    downloadContactTemplate, 
+    downloadImportResult 
+} from '@/services/contacts';
 import { SingleContactResponse } from '@/services/contacts';
 import { useInView } from 'react-intersection-observer';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { AddContactModal } from './AddContactModal';
 import { EditContactModal } from './EditContactModal';
 import { MoveSegmentModal } from './MoveSegmentModal';
@@ -43,6 +58,44 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
     const handleCloseDialog = () => {
         setDialog(null);
         setSelectedContact(null);
+    };
+
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+    const { mutate: importContacts, isPending: isImporting } = useImportContacts();
+    const [importAlertState, setImportAlertState] = useState<{
+        open: boolean;
+        status: 'success' | 'error' | null;
+        downloadId?: string;
+    }>({ open: false, status: null });
+
+    const handleImportClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        importContacts({ file }, {
+            onSuccess: (data) => {
+                setImportAlertState({
+                    open: true,
+                    status: 'success',
+                    downloadId: data.data?.download_id
+                });
+            },
+            onError: () => {
+                setImportAlertState({
+                    open: true,
+                    status: 'error'
+                });
+            },
+            onSettled: () => {
+                if (fileInputRef.current) {
+                    fileInputRef.current.value = '';
+                }
+            }
+        });
     };
 
     const { ref: observerRef, inView } = useInView();
@@ -104,6 +157,23 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 />
                 <div className="flex items-center gap-2">
                     {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
+                    
+                    <input 
+                        type="file" 
+                        ref={fileInputRef} 
+                        className="hidden" 
+                        accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+                        onChange={handleFileChange}
+                    />
+                    <Button variant="outline" onClick={() => downloadContactTemplate()} className="flex items-center">
+                        <Download className="w-4 h-4 mr-2" />
+                        Download Template
+                    </Button>
+                    <Button variant="outline" onClick={handleImportClick} disabled={isImporting}>
+                        {isImporting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Upload className="w-4 h-4 mr-2" />}
+                        Import
+                    </Button>
+
                     <AddContactModal
                         trigger={
                             <Button>
@@ -289,6 +359,41 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                     />
                 </>
             )}
+
+            <AlertDialog 
+                open={importAlertState.open} 
+                onOpenChange={(open) => !open && setImportAlertState(prev => ({ ...prev, open: false }))}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            {importAlertState.status === 'success' ? 'Import Berhasil' : 'Import Gagal'}
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            {importAlertState.status === 'success' 
+                                ? 'File import berhasil masuk antrean.' 
+                                : 'Terjadi kesalahan saat mengimpor file. Silakan unduh template yang benar dan coba lagi.'}
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        {importAlertState.status === 'success' ? (
+                            <>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => importAlertState.downloadId && downloadImportResult(importAlertState.downloadId)}>
+                                    Download
+                                </AlertDialogAction>
+                            </>
+                        ) : (
+                            <>
+                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => downloadContactTemplate()}>
+                                    Download Template
+                                </AlertDialogAction>
+                            </>
+                        )}
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </div>
     );
 };

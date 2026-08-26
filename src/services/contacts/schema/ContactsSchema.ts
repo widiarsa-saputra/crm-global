@@ -30,3 +30,7 @@ const UpdateContactSchema = z.object({
 export { UpdateContactSchema };
 
 export type UpdateContact = z.infer<typeof UpdateContactSchema>;
+
+export type ImportContact = {
+    file: File;
+};

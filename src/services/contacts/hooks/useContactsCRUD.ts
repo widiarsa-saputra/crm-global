@@ -16,8 +16,11 @@ import {
     SingleContactResponse,
     UpdateContactResponse,
     UpdateContactResponseSchema,
+    ImportContactResponse,
+    ImportContactResponseSchema
 } from "../response/ContactsResponse";
-import { CreateContact, UpdateContact } from "../schema/ContactsSchema";
+import { CreateContact, UpdateContact, ImportContact } from "../schema/ContactsSchema";
+import { privateApi } from "@/api/api";
 
 const API_VERSION = "v1";
 
@@ -34,6 +37,46 @@ export const useCreateContact = () =>
             },
         },
     });
+
+export const useImportContacts = () =>
+    useBaseCreate<ImportContact, ImportContactResponse, { id: string }>({
+        endpoint: `${API_VERSION}/contacts/import`,
+        schema: ImportContactResponseSchema,
+        contentType: "multipart/form-data",
+        queryKey: "contact-list",
+        query: {
+            onSuccess: (data: ImportContactResponse) => data,
+            onError: (error: unknown) => {
+                throw error;
+            },
+        },
+    });
+
+export const downloadContactTemplate = async () => {
+    const response = await privateApi.get(`/${API_VERSION}/contacts/template`, {
+        responseType: 'blob'
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'contact_template.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+};
+
+export const downloadImportResult = async (downloadId: string) => {
+    const response = await privateApi.get(`/${API_VERSION}/contacts/download/${downloadId}`, {
+        responseType: 'blob'
+    });
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `import_result_${downloadId}.xlsx`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+};
 
 
 
