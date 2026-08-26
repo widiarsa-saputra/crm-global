@@ -6,7 +6,7 @@ const PaginationSchema = z.object({
     from: z.number().nullable().optional(), // Allow null or undefined
     to: z.number().nullable().optional(), // Allow null or undefined
     total: z.number(),
-    per_page: z.number(),
+    paginate: z.number(),
     last_page: z.number(),
     next_page: z.number(),
     prev_page: z.number(),

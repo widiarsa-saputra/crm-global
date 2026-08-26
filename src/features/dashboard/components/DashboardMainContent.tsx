@@ -17,6 +17,8 @@ import {
 import { Badge } from '@/components/ui/badge';
 import { useIndexDashboard } from '@/services/dashboard';
 import { Loader2 } from 'lucide-react';
+import { CampaignCalendar } from './CampaignCalendar';
+import { BaseTable } from '@/shared/components/table/BaseTable';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8B5CF6', '#F43F5E'];
 
@@ -145,32 +147,42 @@ const DashboardMainContent: React.FC = () => {
                 </Card>
             </div>
 
-            {/* Recent Activity Log */}
-            <Card className="shadow-sm mb-6">
-                <CardHeader>
-                    <CardTitle className="text-lg">Recent Blast Campaigns</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="space-y-4">
-                        {dashboardData?.recent_blast_campaigns.length ? dashboardData.recent_blast_campaigns.map((activity, i) => (
-                            <div key={i} className="flex items-center justify-between border-b pb-4 last:border-0 last:pb-0">
-                                <div>
-                                    <h4 className="font-semibold text-sm">{activity.campaign_name}</h4>
-                                    <p className="text-xs text-muted-foreground mt-1">Segment: {activity.segment_name || 'All Contacts'}</p>
-                                </div>
-                                <div className="text-right">
-                                    <Badge variant={activity.status === 'completed' ? 'default' : 'secondary'} className={activity.status === 'completed' ? 'bg-green-100 text-green-700 hover:bg-green-100 border-green-200 capitalize' : 'capitalize'}>
-                                        {activity.status}
+            {/* Calendar and Recent Activity Log */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                {/* Schedule Calendar */}
+                <Card className="lg:col-span-2 shadow-sm flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Schedule Calendar</CardTitle>
+                    </CardHeader>
+                    <CardContent className="flex-1 bg-slate-50/50 p-6 pt-0 rounded-b-xl border-t">
+                        <div className="mt-6 h-full">
+                            <CampaignCalendar />
+                        </div>
+                    </CardContent>
+                </Card>
+
+                {/* Recent Activity Log */}
+                <Card className="lg:col-span-1 shadow-sm flex flex-col">
+                    <CardHeader>
+                        <CardTitle className="text-lg">Recent Blast Campaigns</CardTitle>
+                    </CardHeader>
+                    <CardContent className="overflow-hidden flex-1 p-0">
+                        <BaseTable 
+                            columns={[
+                                { title: "Campaign", key: "campaign_name", render: (c) => <span className="font-semibold text-xs leading-tight">{c.campaign_name}</span> },
+                                { title: "Status", key: "status", render: (c) => (
+                                    <Badge variant={c.status === 'completed' ? 'default' : 'secondary'} className={c.status === 'completed' ? 'bg-green-100 text-green-700 hover:bg-green-100 border-green-200 capitalize text-[10px]' : 'capitalize text-[10px]'}>
+                                        {c.status}
                                     </Badge>
-                                    <p className="text-xs text-muted-foreground mt-2">{new Date(activity.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })} {activity.time ? `• ${activity.time}` : ''}</p>
-                                </div>
-                            </div>
-                        )) : (
-                            <div className="text-center text-sm text-muted-foreground py-4">No recent campaigns</div>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+                                )},
+                                { title: "Date", key: "date", render: (c) => <div className="text-[10px] leading-tight text-slate-500 font-medium whitespace-nowrap">{new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</div> }
+                            ]}
+                            data={dashboardData?.recent_blast_campaigns || []}
+                            emptyMessage="No recent campaigns"
+                        />
+                    </CardContent>
+                </Card>
+            </div>
         </div>
     );
 };

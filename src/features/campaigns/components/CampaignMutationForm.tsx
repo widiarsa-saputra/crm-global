@@ -3,7 +3,7 @@ import { UseFormReturn, Controller, FieldValues, Path, PathValue, SubmitHandler 
 import { FloatingInput, FloatingDateInput } from '@/components/FloatingInput';
 import Combobox, { TimezoneCombobox } from '@/components/Combobox';
 import { SubmitLoading } from '@/components/SubmitLoading';
-import { Type, Mail, Calendar, Users, FileText, Clock } from 'lucide-react';
+import { Type, Mail, Calendar, Users, FileText, Clock, Link as LinkIcon } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
 import { useIndexTemplate } from '@/services/templates';
 import { useIndexContact } from '@/services/contacts';
@@ -54,9 +54,14 @@ export const CampaignMutationForm = <
     const watchedTimezone = watch('timezone' as Path<TFieldValues>);
     const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number }[];
     const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : null);
+    const [fileError, setFileError] = useState<string | null>(null);
 
     const { data: apiContacts, isLoading: contactsLoading } = useIndexContact({
-        params: watchedSegmentId ? { 'filter[segment_id]': watchedSegmentId, per_page: 1000 } : {}
+        params: watchedSegmentId && watchedSegmentId !== 'all'
+            ? { 'filter[segment_id]': watchedSegmentId, paginate: 1000 }
+            : watchedSegmentId === 'all'
+                ? { paginate: 1000 }
+                : {}
     });
 
     const segmentContacts = useMemo(() => apiContacts?.data || [], [apiContacts]);
@@ -92,14 +97,18 @@ export const CampaignMutationForm = <
                 setValue('campaign_contacts' as Path<TFieldValues>, contactIds.map(id => ({ contact_id: id })) as PathValue<TFieldValues, Path<TFieldValues>>);
             }
         }
-    }, [segmentContacts, watchedSegmentId, setValue]); 
+    }, [segmentContacts, watchedSegmentId, setValue]);
 
     const segmentOptions = useMemo(() => {
-        if (!apiSegments?.data) return [];
-        return apiSegments.data.map((segment) => ({
-            label: segment.name,
-            value: segment.id.toString(),
-        }));
+        const base = [{ label: '-- All Segments --', value: 'all' }];
+        if (!apiSegments?.data) return base;
+        return [
+            ...base,
+            ...apiSegments.data.map((segment) => ({
+                label: segment.name,
+                value: segment.id.toString(),
+            }))
+        ];
     }, [apiSegments]);
 
     const templateOptions = useMemo(() => {
@@ -278,7 +287,7 @@ export const CampaignMutationForm = <
                                 <div className="p-3 border-b border-slate-200 bg-slate-100">
                                     <p className="font-medium text-[10px] text-slate-500 uppercase tracking-wider">Template Preview</p>
                                 </div>
-                                <ReactQuill 
+                                <ReactQuill
                                     value={DOMPurify.sanitize(selectedMessage)}
                                     readOnly={true}
                                     theme="bubble"
@@ -301,6 +310,69 @@ export const CampaignMutationForm = <
                             )}
                         />
                     )}
+
+                    {/* File Upload Section */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <Controller
+                            control={control}
+                            name={"file_id" as Path<TFieldValues>}
+                            render={({ field: { onChange, value, ...field } }) => (
+                                <div className="flex flex-col gap-1">
+                                    <label className="text-sm font-medium text-slate-700 whitespace-nowrap">Upload File (Optional) {value && (
+                                        <span className="text-xs text-green-600 font-medium mt-1">
+                                            {(value as unknown as File) instanceof File ? `File selected: ${(value as unknown as File).name}` : 'File is attached'}
+                                        </span>
+                                    )}</label>
+                                    <div className="relative">
+                                        <input
+                                            type="file"
+                                            className="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 cursor-pointer border border-slate-200 rounded-md p-1.5 focus:outline-none focus:ring-2 focus:ring-primary/20"
+                                            onChange={(e) => {
+                                                const file = e.target.files?.[0];
+                                                if (file) {
+                                                    if (file.size > 15 * 1024 * 1024) {
+                                                        setFileError("Ukuran file tidak boleh lebih dari 15MB");
+                                                        e.target.value = '';
+                                                        onChange(null);
+                                                    } else {
+                                                        setFileError(null);
+                                                        onChange(file);
+                                                    }
+                                                } else {
+                                                    onChange(null);
+                                                }
+                                            }}
+                                            {...field}
+                                            value={undefined}
+                                        />
+                                    </div>
+                                    
+                                </div>
+                            )}
+                        />
+
+                        <Controller
+                            control={control}
+                            name={"file_url" as Path<TFieldValues>}
+                            render={({ field }) => (
+                                <div className="flex flex-col justify-end mt-1">
+                                    <FloatingInput
+                                        id="file_url"
+                                        label="File URL (Optional)"
+                                        icon={LinkIcon}
+                                        watch={watch('file_url' as Path<TFieldValues>) as string}
+                                        error={errors.file_url?.message as string}
+                                        inputProps={{
+                                            ...field,
+                                            placeholder: "Enter file URL",
+                                            value: field.value || "",
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        />
+                    </div>
+                    {fileError && <p className="text-red-500 text-sm mt-1 mb-2 font-medium">{fileError}</p>}
                 </div>
 
                 {/* Column 2: Target Contacts */}
@@ -327,8 +399,8 @@ export const CampaignMutationForm = <
                                 <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col">
                                     <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
                                         <div className="flex items-center space-x-2">
-                                            <Checkbox 
-                                                id="select-all" 
+                                            <Checkbox
+                                                id="select-all"
                                                 checked={watchedCampaignContacts.length === segmentContacts.length && segmentContacts.length > 0}
                                                 onCheckedChange={(checked) => {
                                                     if (checked) {
@@ -347,8 +419,8 @@ export const CampaignMutationForm = <
                                         <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
                                             {segmentContacts.map((contact) => (
                                                 <div key={contact.id} className="flex items-start space-x-3 min-w-0">
-                                                    <Checkbox 
-                                                        id={`contact-${contact.id}`} 
+                                                    <Checkbox
+                                                        id={`contact-${contact.id}`}
                                                         className="mt-1"
                                                         checked={watchedCampaignContacts.some(c => c.contact_id.toString() === contact.id.toString())}
                                                         onCheckedChange={(checked) => {

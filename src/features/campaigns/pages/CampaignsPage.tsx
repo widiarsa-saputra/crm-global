@@ -39,7 +39,7 @@ const CampaignsPage: React.FC = () => {
     const { data: apiCampaigns, isLoading } = useIndexCampaign({
         params: {
             page: currentPage,
-            paginate: itemsPerPage, // Or per_page, depending on API
+            paginate: itemsPerPage, // Or paginate, depending on API
             search: searchTerm || undefined,
             filter: {
                 segment_id: activeSegmentId === 'unassigned' ? null : activeSegmentId || undefined,
@@ -49,7 +49,7 @@ const CampaignsPage: React.FC = () => {
             include: "campaignContacts"
         }
     });
-    
+
     const campaigns = apiCampaigns?.data || [];
     const totalItems = apiCampaigns?.pagination?.total || campaigns.length;
 
@@ -123,20 +123,20 @@ const CampaignsPage: React.FC = () => {
             className: "text-right justify-end",
             render: (campaign) => (
                 <div className="flex justify-end gap-2 w-full">
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         className="h-8 w-8 text-slate-600"
                         title="View Details"
                         onClick={() => handleOpenDialog('detail', campaign)}
                     >
                         <Eye className="w-4 h-4" />
                     </Button>
-                    
+
                     {campaign.status === 'draft' && (
-                        <Button 
-                            variant="ghost" 
-                            size="icon" 
+                        <Button
+                            variant="ghost"
+                            size="icon"
                             className="h-8 w-8 text-blue-600"
                             title="Edit Campaign"
                             onClick={() => handleOpenDialog('edit', campaign)}
@@ -144,10 +144,10 @@ const CampaignsPage: React.FC = () => {
                             <Edit className="w-4 h-4" />
                         </Button>
                     )}
-                    
-                    <Button 
-                        variant="ghost" 
-                        size="icon" 
+
+                    <Button
+                        variant="ghost"
+                        size="icon"
                         className="h-8 w-8 text-red-600"
                         title="Delete Campaign"
                         onClick={() => handleOpenDialog('delete', campaign)}
@@ -162,11 +162,11 @@ const CampaignsPage: React.FC = () => {
     return (
         <AdminLayout>
             <div className="flex h-full flex-1 bg-slate-50/50 overflow-hidden">
-                <SegmentSidebar 
-                    activeSegmentId={activeSegmentId} 
-                    onSelectSegment={setActiveSegmentId} 
+                <SegmentSidebar
+                    activeSegmentId={activeSegmentId}
+                    onSelectSegment={setActiveSegmentId}
                 />
-                
+
                 <div className="flex-1 flex flex-col p-6 overflow-hidden">
                     {/* Header */}
                     <header className="flex justify-between items-center mb-6 shrink-0">
@@ -182,7 +182,7 @@ const CampaignsPage: React.FC = () => {
                             Create Campaign
                         </Button>
                     </header>
-                    
+
                     {/* Filters */}
                     <div className="flex gap-4 mb-6 shrink-0">
                         <div className="relative flex-1 max-w-md">
@@ -219,14 +219,14 @@ const CampaignsPage: React.FC = () => {
                             />
                         </div>
                     </div>
-                    
+
                     {/* Table */}
                     <div className="bg-white border rounded shadow-sm overflow-hidden flex-1 flex flex-col min-h-0">
                         <div className="overflow-auto flex-1">
-                            <BaseTable 
-                                columns={columns} 
-                                data={campaigns} 
-                                isLoading={isLoading} 
+                            <BaseTable
+                                columns={columns}
+                                data={campaigns}
+                                isLoading={isLoading}
                                 className="border-none"
                                 skeletonRows={itemsPerPage}
                             />
@@ -244,27 +244,27 @@ const CampaignsPage: React.FC = () => {
                 </div>
             </div>
 
-            <CreateCampaignModal 
-                isOpen={dialog === 'create'} 
-                onClose={handleCloseDialog} 
+            <CreateCampaignModal
+                isOpen={dialog === 'create'}
+                onClose={handleCloseDialog}
             />
-            
+
             {selectedCampaign && (
                 <>
-                    <EditCampaignModal 
-                        campaign={selectedCampaign} 
-                        isOpen={dialog === 'edit'} 
-                        onClose={handleCloseDialog} 
+                    <EditCampaignModal
+                        campaign={selectedCampaign}
+                        isOpen={dialog === 'edit'}
+                        onClose={handleCloseDialog}
                     />
-                    <RemoveCampaignAlert 
-                        campaign={selectedCampaign} 
-                        isOpen={dialog === 'delete'} 
-                        onClose={handleCloseDialog} 
+                    <RemoveCampaignAlert
+                        campaign={selectedCampaign}
+                        isOpen={dialog === 'delete'}
+                        onClose={handleCloseDialog}
                     />
-                    <CampaignDetailModal 
-                        campaign={selectedCampaign} 
-                        isOpen={dialog === 'detail'} 
-                        onClose={handleCloseDialog} 
+                    <CampaignDetailModal
+                        campaign={selectedCampaign}
+                        isOpen={dialog === 'detail'}
+                        onClose={handleCloseDialog}
                     />
                 </>
             )}

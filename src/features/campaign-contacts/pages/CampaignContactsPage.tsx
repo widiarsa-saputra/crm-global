@@ -46,7 +46,7 @@ const CampaignContactsPage: React.FC = () => {
         params: {
             'filter[campaign_id]': selectedCampaignId,
             page: contactPage,
-            per_page: contactItemsPerPage,
+            paginate: contactItemsPerPage,
             search: contactSearch || undefined,
             include: 'contact'
         },
