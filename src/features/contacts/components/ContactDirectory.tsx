@@ -50,10 +50,9 @@ export type MappedContact = {
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
-    setTotalContacts: (count: number) => void;
 }
 
-export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId, setTotalContacts }) => {
+export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedContact, setSelectedContact] = useState<SingleContactResponse | null>(null);
     const [dialog, setDialog] = useState<'edit' | 'move' | 'delete' | 'status' | null>(null);
@@ -168,10 +167,6 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 return 'bg-slate-100 text-slate-800 border-slate-200';
         }
     };
-
-    useEffect(() => {
-        setTotalContacts(totalItems);
-    }, [totalItems]);
 
     return (
         <div className="flex-1 min-w-0 flex flex-col h-full bg-slate-50/50">
