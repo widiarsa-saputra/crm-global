@@ -16,15 +16,17 @@ import {
 import { AddSegmentModal } from './AddSegmentModal';
 import { EditSegmentModal } from './EditSegmentModal';
 import { RemoveSegmentAlert } from './RemoveSegmentAlert';
+import { cn } from '@/lib/utils';
 
 interface SegmentSidebarProps {
     onSelectSegment: (id: string | null) => void;
     activeSegmentId: string | null;
+    totalContacts: number;
 }
 
 type DialogState = 'edit' | 'delete' | null;
 
-export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId }) => {
+export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment, activeSegmentId, totalContacts }) => {
     const { data: apiSegments, isLoading } = useIndexSegment({});
 
     const [selectedSegment, setSelectedSegment] = useState<SingleSegmentResponse | null>(null);
@@ -33,11 +35,11 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
     const segments = apiSegments?.data.map((s) => ({
         id: s.id?.toString() || Math.random().toString(),
         name: s.name,
-        count: s.contact_count ?? 0,
+        count: s.total_contact ?? 0,
         _raw: s,
     })) || [];
 
-    const totalContactsCount = apiSegments?.data.reduce((sum, segment) => sum + (segment.contact_count ?? 0), 0) ?? 0;
+    const totalContactsCount = apiSegments?.data.reduce((sum, segment) => sum + (segment.total_contact ?? 0), 0) ?? 0;
 
     const openDialog = (type: DialogState, segment: SingleSegmentResponse) => {
         setSelectedSegment(segment);
@@ -48,6 +50,8 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
         setDialog(null);
         setSelectedSegment(null);
     };
+
+    const unassignedContacts = totalContacts - totalContactsCount;
 
     return (
         <div className="w-72 shrink-0 border-r flex flex-col h-full">
@@ -80,8 +84,8 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                     >
                         <Users className="w-4 h-4 text-muted-foreground" />
                         <span className="flex-1 text-left">All Contacts</span>
-                        <Badge variant="secondary" className="ml-auto font-normal bg-background">
-                            {isLoading ? <Skeleton className="w-4 h-4" /> : totalContactsCount}
+                        <Badge variant="secondary" className={cn("ml-auto font-normal", activeSegmentId === null ? 'bg-background' : 'border bg-background border-slate-200')}>
+                            {isLoading ? <Skeleton className="w-4 h-4" /> : totalContacts}
                         </Badge>
                     </Button>
                     <Button
@@ -91,7 +95,9 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                     >
                         <Folder className="w-4 h-4 text-muted-foreground" />
                         <span className="flex-1 text-left">Unassigned</span>
-                        <Badge variant="secondary" className="ml-auto font-normal bg-background">0</Badge>
+                        <Badge variant="secondary" className={cn("ml-auto font-normal", activeSegmentId === 'unassigned' ? 'bg-background' : 'border bg-background border-slate-200')}>
+                            {isLoading ? <Skeleton className="w-4 h-4" /> : unassignedContacts}
+                        </Badge>
                     </Button>
                 </div>
             </div>
@@ -124,7 +130,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                                     >
                                         <span className="w-2 h-2 rounded-full bg-primary/40 shrink-0" />
                                         <span className="flex-1 text-left truncate">{segment.name}</span>
-                                        <Badge variant="secondary" className="ml-auto font-normal bg-background">
+                                        <Badge variant="secondary" className={cn("ml-auto font-normal", activeSegmentId === segment.id ? 'bg-background' : 'border bg-background border-slate-200')}>
                                             {segment.count}
                                         </Badge>
                                     </Button>

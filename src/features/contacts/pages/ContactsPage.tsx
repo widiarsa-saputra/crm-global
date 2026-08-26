@@ -5,6 +5,7 @@ import { ContactDirectory } from '../components/ContactDirectory';
 
 const ContactsPage: React.FC = () => {
     const [activeSegmentId, setActiveSegmentId] = useState<string | null>(null);
+    const [totalContacts, setTotalContacts] = useState(0);
 
     return (
         <AdminLayout>
@@ -13,10 +14,11 @@ const ContactsPage: React.FC = () => {
                 <SegmentSidebar 
                     activeSegmentId={activeSegmentId} 
                     onSelectSegment={setActiveSegmentId} 
+                    totalContacts={totalContacts}
                 />
                 
                 {/* Area Utama untuk Contact Directory */}
-                <ContactDirectory activeSegmentId={activeSegmentId} />
+                <ContactDirectory activeSegmentId={activeSegmentId} setTotalContacts={setTotalContacts} />
             </div>
         </AdminLayout>
     );

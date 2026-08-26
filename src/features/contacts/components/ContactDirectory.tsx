@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
-import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail, Upload, Download } from 'lucide-react';
+import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail, Upload, Download, Settings2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
+import { Slider } from '@/components/ui/slider';
+import { Modal } from '@/shared/components/modal/Modal';
+import { Input } from '@/components/ui/input';
 import {
-    useIndexContactInfinite,
+    useIndexContact,
     useImportContacts,
     downloadContactTemplate,
     downloadImportResult
 } from '@/services/contacts';
 import { SingleContactResponse } from '@/services/contacts';
-import { useInView } from 'react-intersection-observer';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -28,6 +30,7 @@ import { RemoveContactAlert } from './RemoveContactAlert';
 import { UpdateStatusModal } from './UpdateStatusModal';
 import { BaseTable } from '@/shared/components/table/BaseTable';
 import { getMetricColor } from '@/lib/utils';
+import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 
 export type MappedContact = {
     id: string;
@@ -47,14 +50,29 @@ export type MappedContact = {
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
+    setTotalContacts: (count: number) => void;
 }
 
-export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId }) => {
+export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmentId, setTotalContacts }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedContact, setSelectedContact] = useState<SingleContactResponse | null>(null);
     const [dialog, setDialog] = useState<'edit' | 'move' | 'delete' | 'status' | null>(null);
     const [sortBy, setSortBy] = useState<string>('created_at');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
+    
+    const [engagementRange, setEngagementRange] = useState<number[]>([0, 500]);
+    const [committedEngagementRange, setCommittedEngagementRange] = useState<number[]>([0, 500]);
+    const [isEngagementModalOpen, setIsEngagementModalOpen] = useState(false);
+    const [modalEngagementRange, setModalEngagementRange] = useState<number[]>([0, 500]);
+
+    const [currentPage, setCurrentPage] = useState(1);
+    const [itemsPerPage, setItemsPerPage] = useState(30);
+
+    useEffect(() => {
+        if (isEngagementModalOpen) {
+            setModalEngagementRange(engagementRange);
+        }
+    }, [isEngagementModalOpen]);
 
     const handleOpenDialog = (type: 'edit' | 'move' | 'delete' | 'status', contact: SingleContactResponse) => {
         setSelectedContact(contact);
@@ -104,33 +122,25 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         });
     };
 
-    const { ref: observerRef, inView } = useInView();
-
     const {
         data: apiResponse,
         isLoading,
-        fetchNextPage,
-        hasNextPage,
-        isFetchingNextPage
-    } = useIndexContactInfinite({
+    } = useIndexContact({
         params: {
-            filter: {
-                segment_id: activeSegmentId || undefined
-            },
+            'filter[segment_id]': activeSegmentId || undefined,
+            'filter[min_engagement]': committedEngagementRange[0] !== 0 ? committedEngagementRange[0] : undefined,
+            'filter[max_engagement]': committedEngagementRange[1] !== 500 ? committedEngagementRange[1] : undefined,
             search: searchTerm || undefined,
-            paginate: 50,
+            paginate: itemsPerPage,
+            page: currentPage,
             sort_by: sortBy,
             sort_dir: sortOrder
         },
     });
 
-    useEffect(() => {
-        if (inView && hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-        }
-    }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+    const totalItems = apiResponse?.pagination?.total || 0;
 
-    const contacts = apiResponse ? apiResponse.pages.flatMap((page) => page.data).map((c) => ({
+    const contacts = apiResponse ? apiResponse.data.map((c) => ({
         id: c.id.toString(),
         name: c.nama,
         email: c.email,
@@ -158,6 +168,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         }
     };
 
+    useEffect(() => {
+        setTotalContacts(totalItems);
+    }, [totalItems]);
+
     return (
         <div className="flex-1 min-w-0 flex flex-col h-full bg-slate-50/50">
             {/* Header */}
@@ -166,9 +180,68 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                     value={searchTerm}
                     onChange={setSearchTerm}
                     placeholder="Search name, email, or company..."
-                    className="flex-1 max-w-md"
+                    className="flex-1 max-w-sm"
                     inputClassName="bg-muted/50"
                 />
+
+                <div className="hidden lg:flex items-center gap-3 border-x px-4 shrink-0 mx-auto">
+                    <span className="text-xs font-semibold text-slate-500 whitespace-nowrap">Engagement</span>
+                    <Slider 
+                        value={engagementRange} 
+                        onValueChange={setEngagementRange} 
+                        onValueCommit={setCommittedEngagementRange} 
+                        min={0} 
+                        max={500} 
+                        minStepsBetweenThumbs={1} 
+                        className="w-[100px] xl:w-[150px]" 
+                    />
+                    <div className="text-xs font-medium w-14 text-center text-slate-600 whitespace-nowrap">
+                        {engagementRange[0]}% - {engagementRange[1]}%
+                    </div>
+                    <Modal
+                        open={isEngagementModalOpen}
+                        onOpenChange={setIsEngagementModalOpen}
+                        trigger={<Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 hover:bg-slate-100 text-slate-500"><Settings2 className="w-4 h-4" /></Button>}
+                        title="Set Engagement Range"
+                        size="sm"
+                        footer={
+                            <div className="flex justify-end gap-2 w-full">
+                                <Button variant="outline" onClick={() => setIsEngagementModalOpen(false)}>Cancel</Button>
+                                <Button onClick={() => {
+                                    setEngagementRange(modalEngagementRange);
+                                    setCommittedEngagementRange(modalEngagementRange);
+                                    setIsEngagementModalOpen(false);
+                                }}>Apply</Button>
+                            </div>
+                        }
+                    >
+                        <div className="space-y-4 py-4">
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-slate-700">Min Engagement (%)</label>
+                                    <Input 
+                                        type="number" 
+                                        min={0} 
+                                        max={modalEngagementRange[1] - 1} 
+                                        value={modalEngagementRange[0]} 
+                                        onChange={(e) => setModalEngagementRange([Number(e.target.value), modalEngagementRange[1]])} 
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <label className="text-xs font-medium text-slate-700">Max Engagement (%)</label>
+                                    <Input 
+                                        type="number" 
+                                        min={modalEngagementRange[0] + 1} 
+                                        max={500} 
+                                        value={modalEngagementRange[1]} 
+                                        onChange={(e) => setModalEngagementRange([modalEngagementRange[0], Number(e.target.value)])} 
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </Modal>
+                </div>
+
                 <div className="flex items-center gap-2">
                     {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
 
@@ -378,12 +451,15 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                         </div>
                     }
                 />
-                {isFetchingNextPage && (
-                    <div className="flex justify-center py-4">
-                        <Loader2 className="w-6 h-6 text-primary animate-spin" />
-                    </div>
+                {totalItems > 0 && (
+                    <PaginationWithShow
+                        totalItems={totalItems}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={setCurrentPage}
+                        onItemsPerPageChange={(n) => { setItemsPerPage(n); setCurrentPage(1); }}
+                    />
                 )}
-                <div ref={observerRef} className="h-4 w-full" />
             </div>
 
             {selectedContact && (
