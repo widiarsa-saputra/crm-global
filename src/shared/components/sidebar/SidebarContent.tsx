@@ -29,16 +29,13 @@ export const HeaderCompany = () => {
     return (
         <div className="flex items-center gap-2 max-[400px]:hidden">
             {/* <Logo className="w-auto h-8" /> */}
-            <div className="border rounded-full border-3 border-primary bg-white w-10 h-10 flex items-center justify-center">
-                {/* <UserRoundSearch className="w-4 h-4 rounded-full text-primary" /> */}
-                <img
-                    src="/logo/ic_logo.png"
-                    className='w-5 h-5 object-contain'
-                />
-            </div>
+            {/* <div className="border rounded-full border-3 border-primary bg-white w-10 h-10 flex items-center justify-center">
+                <UserRoundSearch className="w-4 h-4 rounded-full text-primary" />
+            </div> */}
+            <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div>
             <div className="flex flex-col">
                 <span className='h-fit text-lg uppercase text-primary'>CRM</span>
-                <span className='text-[10px] text-secondary/80 -mt-1'><span className='text-slate-300'>Nexus</span> Education</span>
+                <span className='text-[10px] text-secondary/80 -mt-1'>Customer relation management</span>
             </div>
         </div>
     )

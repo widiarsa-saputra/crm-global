@@ -9,8 +9,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
-import { truncateText } from '@/lib/utils'
-import { ChevronDown, LogOut, User2Icon } from 'lucide-react'
+import { LogOut, User2Icon } from 'lucide-react'
 import { userSections } from '@/router/routeConfig'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -40,10 +39,11 @@ interface SidebarUserSectionProps {
 
 export const UserSection = ({
     align = 'start',
-    side = 'top'
+    side = 'top',
 }: {
     align?: 'start' | 'end' | 'center',
-    side?: 'right' | 'left' | 'top' | 'bottom'
+    side?: 'right' | 'left' | 'top' | 'bottom',
+    theme?: 'light' | 'dark'
 }) => {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
@@ -63,12 +63,21 @@ export const UserSection = ({
                                     : <User2Icon />
                             }
                         </div>
-                        <div className="text-left max-[510px]:hidden">
-                            <p className="text-[11px] max-md:text-primary text-white group-hover:text-primary font-black uppercase tracking-tight">{truncateText(user?.name ?? '', 20, '...')}</p>
-                            <p className="text-[9px] text-white max-md:text-primary group-hover:text-primary font-bold tracking-tight">{truncateText(user?.email ?? '', 25, '...')}</p>
-                        </div>
+                        {/* <div className="text-left max-[510px]:hidden">
+                            <p className={cn(
+                                "text-[11px] max-md:text-primary group-hover:text-primary font-black uppercase tracking-tight",
+                                theme === 'dark' ? "text-white" : "text-slate-900"
+                            )}>{truncateText(user?.name ?? '', 20, '...')}</p>
+                            <p className={cn(
+                                "text-[9px] max-md:text-primary group-hover:text-primary font-bold tracking-tight",
+                                theme === 'dark' ? "text-white" : "text-slate-500"
+                            )}>{truncateText(user?.email ?? '', 25, '...')}</p>
+                        </div> */}
                     </div>
-                    <ChevronDown className="ml-1 h-3.5 w-3.5 opacity-50 max-[510px]:hidden group-hover:text-primary text-white" />
+                    {/* <ChevronDown className={cn(
+                        "ml-1 h-3.5 w-3.5 opacity-50 max-[510px]:hidden group-hover:text-primary",
+                        theme === 'dark' ? "text-white" : "text-slate-900"
+                    )} /> */}
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align={align} side={side} className="w-60 bg-popover border border-border rounded-md text-popover-foreground p-2 shadow-xl">

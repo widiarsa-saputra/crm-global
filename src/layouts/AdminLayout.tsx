@@ -17,6 +17,7 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from '@/components/ui/button'
+import { UserSection } from '@/shared/components/sidebar/SidebarUserSection'
 
 interface Props {
     children?: React.ReactNode
@@ -94,7 +95,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
                 <div className="flex h-16 items-center justify-between px-10 mx-auto w-full">
                     <div className="flex items-center">
                         <div className="mr-8 flex items-center">
-                            <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div>
+                            {/* <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div> */}
                             <h1 className="text-xl font-bold text-primary hidden md:block">CRM Global</h1>
                         </div>
                         
@@ -121,7 +122,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
                         </nav>
                     </div>
 
-                    <div className="flex items-center ml-4">
+                    <div className="flex items-center ml-4 gap-4 justify-end">
                         <div id="google_translate_element" style={{ display: 'none' }}></div>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -139,6 +140,11 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
+
+                        <div className="border-l h-6 mx-2 border-gray-300"></div>
+                        <div className="w-fit">
+                            <UserSection align="end" side="bottom" />
+                        </div>
                     </div>
                 </div>
             </header>

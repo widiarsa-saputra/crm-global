@@ -70,7 +70,7 @@ export const useIndexCampaignContact = (query?: IndexCampaignProps) =>
 
 export const useUpdateCampaign = () => {
     return useBaseUpdate<UpdateCampaignPayload, SingleCampaignResponseWrapped, SingleCampaignResponse>({
-        endpoint: `${API_VERSION}/blast-campaigns`,
+        endpoint: ({ id }) => `${API_VERSION}/blast-campaigns/${id}`,
         schema: SingleCampaignResponseSchema,
         queryKey: "campaign-list",
         query: {

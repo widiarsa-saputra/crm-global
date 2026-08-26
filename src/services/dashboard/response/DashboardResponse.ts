@@ -22,6 +22,7 @@ export const ContactDistributionSchema = z.object({
 export const RecentBlastCampaignSchema = z.object({
     id: z.string(),
     template_id: z.string().nullable().optional(),
+    message: z.string().nullable().optional(),
     target_segment_id: z.string().nullable().optional(),
     campaign_name: z.string(),
     email_subject: z.string(),
@@ -29,8 +30,8 @@ export const RecentBlastCampaignSchema = z.object({
     time: z.string().nullable().optional(),
     timezone: z.string().nullable().optional(),
     status: z.string(),
-    open_rate: z.string(),
-    click_rate: z.string(),
+    open_rate: z.coerce.number(),
+    click_rate: z.coerce.number(),
     created_at: z.string(),
     updated_at: z.string(),
     segment_name: z.string().nullable().optional(),

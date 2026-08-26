@@ -203,7 +203,7 @@ const CampaignContactsPage: React.FC = () => {
                         <div className="overflow-auto flex-1">
                             <BaseTable
                                 columns={[
-                                    { title: "Campaign Name", key: "name", render: (c: MappedCampaign) => (
+                                    { title: "Campaign Name", copyValue: false, key: "name", render: (c: MappedCampaign) => (
                                         <div className="flex flex-col">
                                             <span className="font-medium">{c.name}</span>
                                             <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
