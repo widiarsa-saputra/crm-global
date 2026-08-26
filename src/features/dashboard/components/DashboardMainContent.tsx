@@ -118,8 +118,8 @@ const DashboardMainContent: React.FC = () => {
                     <CardHeader>
                         <CardTitle className="text-lg">Contact Distribution</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-80 flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <CardContent className="min-h-[320px] flex items-center justify-center pb-8">
+                        <ResponsiveContainer width="100%" height={300}>
                             <PieChart>
                                 <Pie
                                     data={segmentDistributionData}
@@ -135,7 +135,10 @@ const DashboardMainContent: React.FC = () => {
                                     ))}
                                 </Pie>
                                 <Tooltip />
-                                <Legend verticalAlign="bottom" height={36} />
+                                <Legend 
+                                    verticalAlign="bottom" 
+                                    wrapperStyle={{ paddingTop: '20px', paddingBottom: '10px' }} 
+                                />
                             </PieChart>
                         </ResponsiveContainer>
                     </CardContent>
