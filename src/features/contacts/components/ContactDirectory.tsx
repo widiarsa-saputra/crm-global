@@ -134,7 +134,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             paginate: itemsPerPage,
             page: currentPage,
             sort_by: sortBy,
-            sort_dir: sortOrder
+            sort_order: sortOrder,
+            include: 'segment',
         },
     });
 
@@ -328,6 +329,24 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         },
                         {
+                            title: "Segment",
+                            key: "segment_id",
+                            sortable: true,
+                            render: (c: MappedContact) => (
+                                <Badge
+                                    title="Click to move segment"
+                                    variant="secondary"
+                                    className="font-medium bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors truncate max-w-full capitalize"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        if (c._raw) handleOpenDialog('move', c._raw);
+                                    }}
+                                >
+                                    {c.segment}
+                                </Badge>
+                            )
+                        },
+                        {
                             title: "Location",
                             key: "location",
                             render: (c: MappedContact) => (
@@ -368,23 +387,6 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             className: "text-center",
                             sortable: true,
                             render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_frequency || 0)}`}>{c.click_frequency} <span className="font-normal">times</span></span>
-                        },
-                        {
-                            title: "Segment",
-                            key: "segment",
-                            render: (c: MappedContact) => (
-                                <Badge
-                                    title="Click to move segment"
-                                    variant="secondary"
-                                    className="font-medium bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors truncate max-w-full"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        if (c._raw) handleOpenDialog('move', c._raw);
-                                    }}
-                                >
-                                    {c.segment}
-                                </Badge>
-                            )
                         },
                         {
                             title: "Status",
