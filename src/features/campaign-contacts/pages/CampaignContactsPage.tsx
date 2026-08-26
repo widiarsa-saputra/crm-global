@@ -167,8 +167,8 @@ const CampaignContactsPage: React.FC = () => {
                                             )
                                         )
                                     },
-                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.openFrequency)}`}>{c.openFrequency}</span> },
-                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.clickFrequency)}`}>{c.clickFrequency}</span> },
+                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.openFrequency)}`}>{c.openFrequency} <span className="font-normal">times</span></span> },
+                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.clickFrequency)}`}>{c.clickFrequency} <span className="font-normal">times</span></span> },
                                     { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
                                 ]}
                                 data={filteredContacts}
@@ -232,15 +232,15 @@ const CampaignContactsPage: React.FC = () => {
                                     },
                                     {
                                         title: "Total Delivered", key: "delivered", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className="flex items-center justify-end font-medium">
-                                                {c.delivered}
+                                            <div className="font-semibold">
+                                                {c.delivered} <span className="font-normal">mail</span>
                                             </div>
                                         )
                                     },
                                     {
                                         title: "Total Sent", key: "sent", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className="flex items-center justify-end font-medium">
-                                                {c.sent}
+                                            <div className="font-semibold">
+                                                {c.sent} <span className="font-normal">mail</span>
                                             </div>
                                         )
                                     },
