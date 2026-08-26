@@ -15,9 +15,8 @@ interface CampaignDetailModalProps {
 
 export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campaign, isOpen, onClose }) => {
     
-    // We'll calculate some mock numbers for display if they're not provided by the API
-    const totalTarget = campaign.campaign_contacts ? campaign.campaign_contacts.length : 0;
-    const totalSent = campaign.status === 'completed' || campaign.status === 'processing' ? totalTarget : 0;
+    const totalTarget = campaign.delivered || 0;
+    const totalSent = campaign.sent || 0;
     
     type CampaignTargetContact = NonNullable<SingleCampaignResponse['campaign_contacts']>[0];
 
@@ -86,8 +85,8 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                             <Users className="w-5 h-5 text-blue-600" />
                         </div>
-                        <div>
-                            <p className="text-sm text-muted-foreground font-medium">Total Target</p>
+                        <div className="flex flex-col">
+                            <p className="text-sm text-muted-foreground font-medium">Total Delivered</p>
                             <h3 className="text-2xl font-bold">{totalTarget}</h3>
                         </div>
                     </div>
@@ -96,7 +95,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center shrink-0">
                             <Send className="w-5 h-5 text-indigo-600" />
                         </div>
-                        <div>
+                        <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Total Sent</p>
                             <h3 className="text-2xl font-bold">{totalSent}</h3>
                         </div>
@@ -106,9 +105,10 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center shrink-0">
                             <MailOpen className="w-5 h-5 text-green-600" />
                         </div>
-                        <div>
+                        <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Open Rate</p>
                             <h3 className="text-2xl font-bold">{campaign.open_rate}%</h3>
+                            <p className="text-xs text-muted-foreground mt-1">Unique Opens: {campaign.unique_opened}</p>
                         </div>
                     </div>
 
@@ -116,9 +116,10 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center shrink-0">
                             <MousePointerClick className="w-5 h-5 text-orange-600" />
                         </div>
-                        <div>
+                        <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Click Rate</p>
                             <h3 className="text-2xl font-bold">{campaign.click_rate}%</h3>
+                            <p className="text-xs text-muted-foreground mt-1">Unique Clicks: {campaign.unique_clicked}</p>
                         </div>
                     </div>
                 </div>
