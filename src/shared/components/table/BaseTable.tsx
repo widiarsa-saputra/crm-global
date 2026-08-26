@@ -183,7 +183,7 @@ export function BaseTable<T extends { id?: string | number }>({
                         {columnToggleComponent || (enableColumnToggle && renderColumnToggle())}
                     </div>
                 )}
-                <div className="overflow-x-auto transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-sprimary/10" >
+                <div className="overflow-x-auto transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-prsimary/10" >
                     <Table className="w-full table-auto">
                         <TableHeader>
                             <TableRow className="border-b bg-primary/5">
@@ -255,12 +255,12 @@ export function BaseTable<T extends { id?: string | number }>({
                                     data.map((item, index) => (
                                         <TableRow 
                                             key={item.id || index} 
-                                            className={cn("transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-primary/5 h-px !p-0", rowClassName?.(item))}
+                                            className={cn("transition-colors duration-200 ease-in-out has-[.child:hover]:!bg-primary/10 h-px !p-0", rowClassName?.(item))}
                                             onClick={() => onRowClick?.(item)}
                                         >
                                             {filteredColumns.map((col, colIndex) => (
                                                 <TableCell key={(col.key as string) || colIndex} className={cn("!p-0 child transition-colors duration-200 ease-in-out whitespace-nowrap text-sm text-gray-900 group h-px", col.className)}>
-                                                    <div className="w-full h-full group-hover:rounded group-hover:!bg-white group-hover:shadow-md px-6 py-1 flex items-center" onClick={() => {
+                                                    <div className="w-full h-full group-hover:rounded hover:!bg-white px-6 py-1 flex items-center" onClick={() => {
                                                         if(col.copyValue === undefined || col.copyValue === true) {
                                                             onCopy(item[col.key as keyof T]?.toString() || "")
                                                         }

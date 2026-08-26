@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
-import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Printer } from 'lucide-react';
+import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useIndexContactInfinite } from '@/services/contacts';
 import { SingleContactResponse } from '@/services/contacts';
@@ -127,15 +126,19 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             key: "name",
                             render: (c: MappedContact) => (
                                 <div className="flex items-center gap-3">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarFallback className="bg-primary/10 text-primary text-xs uppercase">
-                                            {(c.name || 'U').split(' ').map((n: string) => n[0]).join('').substring(0, 2)}
-                                        </AvatarFallback>
-                                    </Avatar>
                                     <div className="flex flex-col">
                                         <span className="font-semibold text-sm">{c.name || 'Unknown'}</span>
-                                        <span className="text-xs text-muted-foreground">{c.email}</span>
                                     </div>
+                                </div>
+                            )
+                        },
+                         {
+                            title: "email",
+                            key: "email",
+                            render: (c: MappedContact) => (
+                                <div className="flex items-center gap-1.5 text-slate-600 text-sm">
+                                    <Mail className="w-3.5 h-3.5" />
+                                    <span className="truncate">{c.email}</span>
                                 </div>
                             )
                         },
@@ -165,8 +168,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             key: "fax",
                             render: (c: MappedContact) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
-                                    <Printer className="w-3.5 h-3.5" />
-                                    <span className="truncate max-w-[150px]">{c.fax || '-'}</span>
+                                    <Phone className="w-3.5 h-3.5" />
+                                    <span className="truncate">{c.fax || '-'}</span>
                                 </div>
                             )
                         },
