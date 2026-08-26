@@ -9,10 +9,7 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell
+  ResponsiveContainer
 } from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { useIndexDashboard } from '@/services/dashboard';
@@ -20,7 +17,6 @@ import { Loader2 } from 'lucide-react';
 import { CampaignCalendar } from './CampaignCalendar';
 import { BaseTable } from '@/shared/components/table/BaseTable';
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8B5CF6', '#F43F5E'];
 
 const DashboardMainContent: React.FC = () => {
     const { data: response, isLoading } = useIndexDashboard();
@@ -45,6 +41,9 @@ const DashboardMainContent: React.FC = () => {
         name: item.segment_name,
         value: item.total_contact
     })) || [];
+    
+    const sortedDistributionData = [...segmentDistributionData].sort((a, b) => b.value - a.value);
+    const totalDistributionContacts = sortedDistributionData.reduce((sum, item) => sum + item.value, 0);
     return (
         <div className="p-6 h-full overflow-auto bg-slate-50/50">
             <h1 className="text-2xl font-bold mb-6">CRM & Analytics Dashboard</h1>
@@ -100,16 +99,16 @@ const DashboardMainContent: React.FC = () => {
                     <CardHeader>
                         <CardTitle className="text-lg">Engagement per Segment (Opens vs Clicks %)</CardTitle>
                     </CardHeader>
-                    <CardContent className="h-80">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={segmentEngagementData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                                <XAxis dataKey="name" />
-                                <YAxis />
+                    <CardContent className="pr-4">
+                        <ResponsiveContainer width="100%" height={Math.max(300, segmentEngagementData.length * 60)}>
+                            <BarChart layout="vertical" data={segmentEngagementData} margin={{ top: 20, right: 30, left: 10, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={false} />
+                                <XAxis type="number" />
+                                <YAxis dataKey="name" type="category" width={120} tick={{ fontSize: 12 }} />
                                 <Tooltip />
                                 <Legend />
-                                <Bar dataKey="opened" name="Open Rate (%)" fill="#3b82f6" radius={[4, 4, 0, 0]} />
-                                <Bar dataKey="clicked" name="Click Rate (%)" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="opened" name="Open Rate (%)" fill="#3b82f6" radius={[0, 4, 4, 0]} />
+                                <Bar dataKey="clicked" name="Click Rate (%)" fill="#10b981" radius={[0, 4, 4, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </CardContent>
@@ -130,39 +129,45 @@ const DashboardMainContent: React.FC = () => {
 
             {/* Bottom Section: Distribution & Recent Activity */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                {/* Donut Chart */}
-                <Card className="shadow-sm">
+                <Card className="shadow-sm flex flex-col h-[400px]">
                     <CardHeader>
                         <CardTitle className="text-lg">Contact Distribution</CardTitle>
                     </CardHeader>
-                    <CardContent className="min-h-[320px] flex items-center justify-center pb-8">
-                        <ResponsiveContainer width="100%" height={300}>
-                            <PieChart>
-                                <Pie
-                                    data={segmentDistributionData}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={90}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {segmentDistributionData.map((_entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip />
-                                <Legend 
-                                    verticalAlign="bottom" 
-                                    wrapperStyle={{ paddingTop: '20px', paddingBottom: '10px' }} 
-                                />
-                            </PieChart>
-                        </ResponsiveContainer>
+                    <CardContent className="flex-1 p-0 overflow-y-auto">
+                        <div className="flex flex-col">
+                            {sortedDistributionData.map((item, index) => {
+                                const percentage = totalDistributionContacts > 0 ? (item.value / totalDistributionContacts) * 100 : 0;
+                                return (
+                                    <div key={index} className="flex items-center gap-4 px-6 py-3 border-b last:border-0 hover:bg-slate-50 transition-colors">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex justify-between items-center mb-1.5">
+                                                <span className="text-sm font-medium text-slate-700 truncate pr-2">{item.name}</span>
+                                                <span className="text-sm font-semibold text-slate-900">{item.value.toLocaleString('id-ID')}</span>
+                                            </div>
+                                            <div className="w-full bg-slate-100 rounded-full h-1.5">
+                                                <div 
+                                                    className="bg-primary h-1.5 rounded-full" 
+                                                    style={{ width: `${percentage}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="w-12 text-right shrink-0">
+                                            <span className="text-xs font-medium text-slate-500">{percentage.toFixed(1)}%</span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {sortedDistributionData.length === 0 && (
+                                <div className="p-6 text-center text-sm text-slate-500">
+                                    No data available.
+                                </div>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
 
                 {/* Recent Activity Log */}
-                <Card className="shadow-sm flex flex-col">
+                <Card className="shadow-sm flex flex-col h-[400px]">
                     <CardHeader>
                         <CardTitle className="text-lg">Recent Blast Campaigns</CardTitle>
                     </CardHeader>
