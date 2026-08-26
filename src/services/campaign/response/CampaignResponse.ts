@@ -28,6 +28,8 @@ export const SingleCampaignSchema = z.object({
     id: z.union([z.string(), z.number()]),
     template_id: z.union([z.string(), z.number()]).nullable().optional(),
     template_message: z.string().nullable().optional(),
+    message: z.string().nullable().optional(),
+    file_id: z.any().nullable().optional(),
     segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_name: z.string(),

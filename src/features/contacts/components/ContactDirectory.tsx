@@ -53,6 +53,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedContact, setSelectedContact] = useState<SingleContactResponse | null>(null);
     const [dialog, setDialog] = useState<'edit' | 'move' | 'delete' | 'status' | null>(null);
+    const [sortBy, setSortBy] = useState<string>('created_at');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
 
     const handleOpenDialog = (type: 'edit' | 'move' | 'delete' | 'status', contact: SingleContactResponse) => {
         setSelectedContact(contact);
@@ -116,7 +118,9 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 segment_id: activeSegmentId || undefined
             },
             search: searchTerm || undefined,
-            paginate: 50
+            paginate: 50,
+            sort_by: sortBy,
+            sort_dir: sortOrder
         },
     });
 
@@ -199,11 +203,18 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             <div className="flex-1 p-4 overflow-auto">
 
                 <BaseTable
-                    // rowClassName={() => "group"}
+                    sortBy={sortBy}
+                    sortOrder={sortOrder}
+                    onSort={(key, order) => {
+                        setSortBy(key);
+                        setSortOrder(order);
+                    }}
                     columns={[
                         {
                             title: "Contact",
                             key: "name",
+                            sortKey: "nama",
+                            sortable: true,
                             render: (c: MappedContact) => (
                                 <div className="flex items-center gap-3">
                                     <div className="flex flex-col">
@@ -215,6 +226,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                         {
                             title: "email",
                             key: "email",
+                            sortable: true,
                             render: (c: MappedContact) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Mail className="w-3.5 h-3.5" />
@@ -223,8 +235,16 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         },
                         {
+                            title: "Engagement",
+                            key: "engagement_rate",
+                            className: "text-center",
+                            sortable: true,
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
+                        },
+                        {
                             title: "Company",
                             key: "company",
+                            sortable: true,
                             render: (c: MappedContact) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Building className="w-3.5 h-3.5" />
@@ -257,25 +277,22 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             title: "Sent",
                             key: "total_sended",
                             className: "text-center",
-                            render: (c: MappedContact) => <span className="font-semibold text-slate-700">{c.total_sended}</span>
+                            sortable: true,
+                            render: (c: MappedContact) => <span className="font-semibold text-slate-700">{c.total_sended} <span className="font-normal">mail</span></span>
                         },
                         {
                             title: "Opens",
                             key: "open_frequency",
                             className: "text-center",
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_frequency || 0)}`}>{c.open_frequency}</span>
+                            sortable: true,
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_frequency || 0)}`}>{c.open_frequency} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Clicks",
                             key: "click_frequency",
                             className: "text-center",
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_frequency || 0)}`}>{c.click_frequency}</span>
-                        },
-                        {
-                            title: "Engagement",
-                            key: "engagement_rate",
-                            className: "text-center",
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
+                            sortable: true,
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_frequency || 0)}`}>{c.click_frequency} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Segment",

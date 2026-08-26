@@ -3,7 +3,7 @@ import { UseFormReturn, Controller, FieldValues, Path, PathValue, SubmitHandler 
 import { FloatingInput, FloatingDateInput } from '@/components/FloatingInput';
 import Combobox, { TimezoneCombobox } from '@/components/Combobox';
 import { SubmitLoading } from '@/components/SubmitLoading';
-import { Type, Mail, Calendar, Users, FileText, Clock, Link as LinkIcon } from 'lucide-react';
+import { Type, Mail, Calendar, Users, FileText, Clock } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
 import { useIndexTemplate } from '@/services/templates';
 import { useIndexContact } from '@/services/contacts';
@@ -317,7 +317,7 @@ export const CampaignMutationForm = <
                     )}
 
                     {/* File Upload Section */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex flex-col gap-4">
                         <Controller
                             control={control}
                             name={"file_id" as Path<TFieldValues>}
@@ -356,26 +356,7 @@ export const CampaignMutationForm = <
                             )}
                         />
 
-                        <Controller
-                            control={control}
-                            name={"file_url" as Path<TFieldValues>}
-                            render={({ field }) => (
-                                <div className="flex flex-col justify-end mt-1">
-                                    <FloatingInput
-                                        id="file_url"
-                                        label="File URL (Optional)"
-                                        icon={LinkIcon}
-                                        watch={watch('file_url' as Path<TFieldValues>) as string}
-                                        error={errors.file_url?.message as string}
-                                        inputProps={{
-                                            ...field,
-                                            placeholder: "Enter file URL",
-                                            value: field.value || "",
-                                        }}
-                                    />
-                                </div>
-                            )}
-                        />
+
                     </div>
                     {fileError && <p className="text-red-500 text-sm mt-1 mb-2 font-medium">{fileError}</p>}
                 </div>
