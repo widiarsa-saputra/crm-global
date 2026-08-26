@@ -1,11 +1,7 @@
-import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
-export const DeleteFileResponseSchema = z.object({
-    success: z.boolean(),
-    message: z.string(),
-    code: z.number(),
-});
+export const DeleteFileResponseSchema = GeneralResponseSchema;
 
 export type DeleteFileResponse = z.infer<typeof DeleteFileResponseSchema>;
 

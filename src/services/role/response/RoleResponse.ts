@@ -1,4 +1,4 @@
-import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
 export const RoleSchema = z.object({
@@ -31,7 +31,7 @@ export type UpdateRoleResponse = z.infer<typeof UpdateRoleResponseSchema>;
 
 export const CreateRoleResponseSchema = BaseResponseSchema(RoleSchema);
 
-export const DeleteRoleResponseSchema = BaseResponseSchema(RoleSchema);
+export const DeleteRoleResponseSchema = GeneralResponseSchema;
 
 export const ShowRoleResponseSchema = BaseResponseSchema(RoleSchema);
 

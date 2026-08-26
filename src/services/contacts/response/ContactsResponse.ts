@@ -1,5 +1,6 @@
-import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
+import { statusEmailType } from "@/services/contacts/schema/ContactsSchema";
 
 
 export type CreateContactResponse = z.infer<typeof CreateContactResponseSchema>;
@@ -11,7 +12,7 @@ export const DeleteContactDataSchema = z.nullable(
         email: z.string().email(),
         company: z.string().nullable(),
         segment_id: z.string().nullable(),
-        email_status: z.enum(["valid", "unsubscribed", "blocked"]),
+        email_status: z.enum(statusEmailType),
         location: z.string().nullable().optional(),
         fax: z.string().nullable().optional(),
         created_at: z.string(),
@@ -35,11 +36,15 @@ export const SingleContactSchema = z.object({
     nama: z.string(),
     email: z.string().email(),
     company: z.string().nullable(),
-    email_status: z.enum(["valid", "unsubscribed", "blocked"]),
+    email_status: z.enum(statusEmailType),
     location: z.string().nullable().optional(),
     fax: z.string().nullable().optional(),
     created_at: z.string(),
     updated_at: z.string(),
+    total_sended: z.number().optional(),
+    open_frequency: z.number().optional(),
+    click_frequency: z.number().optional(),
+    engagement_rate: z.number().optional(),
     segment: SegmentSchema.optional(),
 });
 
@@ -59,7 +64,7 @@ export type UpdateContactResponse = z.infer<typeof UpdateContactResponseSchema>;
 
 export const CreateContactResponseSchema = BaseResponseSchema(SingleContactSchema);
 
-export const DeleteContactResponseSchema = BaseResponseSchema(DeleteContactDataSchema);
+export const DeleteContactResponseSchema = GeneralResponseSchema;
 
 export const IndexContactResponseSchema = BaseResponseSchema(ContactListSchema);
 

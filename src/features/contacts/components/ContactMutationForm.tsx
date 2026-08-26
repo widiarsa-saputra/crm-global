@@ -53,6 +53,8 @@ export const ContactMutationForm = <
         { label: 'Valid', value: 'valid' },
         { label: 'Unsubscribed', value: 'unsubscribed' },
         { label: 'Blocked', value: 'blocked' },
+        { label: 'Invalid', value: 'invalid' },
+        { label: 'Affiliated', value: 'affiliated' },
     ];
 
     return (

@@ -1,4 +1,4 @@
-import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { PermissionSchema } from "@/services/permission";
 import { z } from "zod";
 
@@ -35,7 +35,7 @@ export type UpdateUserResponse = z.infer<typeof UpdateUserResponseSchema>;
 
 export const CreateUserResponseSchema = BaseResponseSchema(UserSchema);
 
-export const DeleteUserResponseSchema = BaseResponseSchema(UserSchema);
+export const DeleteUserResponseSchema = GeneralResponseSchema;
 
 export const IndexUserResponseSchema = BaseResponseSchema(z.array(UserSchema));
 

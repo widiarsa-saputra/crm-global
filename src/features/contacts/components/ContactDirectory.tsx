@@ -3,12 +3,11 @@ import { Button } from '@/components/ui/button';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 import { Plus, Building, Trash2, Edit2, Loader2, Users, MapPin, Phone, Mail, Upload, Download } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
-    useIndexContactInfinite, 
-    useImportContacts, 
-    downloadContactTemplate, 
-    downloadImportResult 
+import {
+    useIndexContactInfinite,
+    useImportContacts,
+    downloadContactTemplate,
+    downloadImportResult
 } from '@/services/contacts';
 import { SingleContactResponse } from '@/services/contacts';
 import { useInView } from 'react-intersection-observer';
@@ -28,6 +27,7 @@ import { MoveSegmentModal } from './MoveSegmentModal';
 import { RemoveContactAlert } from './RemoveContactAlert';
 import { UpdateStatusModal } from './UpdateStatusModal';
 import { BaseTable } from '@/shared/components/table/BaseTable';
+import { getMetricColor } from '@/lib/utils';
 
 export type MappedContact = {
     id: string;
@@ -38,6 +38,10 @@ export type MappedContact = {
     fax: string;
     segment: string;
     status: string;
+    total_sended?: number;
+    open_frequency?: number;
+    click_frequency?: number;
+    engagement_rate?: number;
     _raw?: SingleContactResponse;
 };
 
@@ -131,6 +135,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         fax: c.fax || '-',
         segment: c.segment?.name || 'Unassigned',
         status: c.email_status,
+        total_sended: c.total_sended || 0,
+        open_frequency: c.open_frequency || 0,
+        click_frequency: c.click_frequency || 0,
+        engagement_rate: c.engagement_rate || 0,
         _raw: c,
     })) : [];
 
@@ -139,13 +147,15 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             case 'valid': return 'bg-green-100 text-green-700 hover:bg-green-100';
             case 'blocked': return 'bg-red-100 text-red-700 hover:bg-red-100';
             case 'unsubscribed': return 'bg-orange-100 text-orange-700 hover:bg-orange-100';
+            case 'invalid': return 'bg-rose-100 text-rose-700 hover:bg-rose-100';
+            case 'affiliated': return 'bg-blue-100 text-blue-700 hover:bg-blue-100';
             default:
                 return 'bg-slate-100 text-slate-800 border-slate-200';
         }
     };
 
     return (
-        <div className="flex-1 flex flex-col h-full bg-slate-50/50">
+        <div className="flex-1 min-w-0 flex flex-col h-full bg-slate-50/50">
             {/* Header */}
             <div className="p-4 border-b flex items-center justify-between gap-x-4">
                 <DebouncedSearchInput
@@ -157,11 +167,11 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 />
                 <div className="flex items-center gap-2">
                     {isLoading && <Loader2 className="w-5 h-5 text-primary animate-spin mr-2" />}
-                    
-                    <input 
-                        type="file" 
-                        ref={fileInputRef} 
-                        className="hidden" 
+
+                    <input
+                        type="file"
+                        ref={fileInputRef}
+                        className="hidden"
                         accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
                         onChange={handleFileChange}
                     />
@@ -186,10 +196,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             </div>
 
             {/* Table Content */}
-            <ScrollArea className="flex-1 p-6">
+            <div className="flex-1 p-4 overflow-auto">
 
                 <BaseTable
-                    rowClassName={() => "group"}
+                    // rowClassName={() => "group"}
                     columns={[
                         {
                             title: "Contact",
@@ -202,7 +212,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                 </div>
                             )
                         },
-                         {
+                        {
                             title: "email",
                             key: "email",
                             render: (c: MappedContact) => (
@@ -244,6 +254,30 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         },
                         {
+                            title: "Sent",
+                            key: "total_sended",
+                            className: "text-center",
+                            render: (c: MappedContact) => <span className="font-semibold text-slate-700">{c.total_sended}</span>
+                        },
+                        {
+                            title: "Opens",
+                            key: "open_frequency",
+                            className: "text-center",
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_frequency || 0)}`}>{c.open_frequency}</span>
+                        },
+                        {
+                            title: "Clicks",
+                            key: "click_frequency",
+                            className: "text-center",
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_frequency || 0)}`}>{c.click_frequency}</span>
+                        },
+                        {
+                            title: "Engagement",
+                            key: "engagement_rate",
+                            className: "text-center",
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
+                        },
+                        {
                             title: "Segment",
                             key: "segment",
                             render: (c: MappedContact) => (
@@ -277,10 +311,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         },
                         {
-                            title: "",
+                            title: "Action",
                             key: "action",
                             render: (c: MappedContact) => (
-                                <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <div className="flex items-center justify-end gap-1">
                                     <Button
                                         variant="ghost"
                                         size="icon"
@@ -333,7 +367,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                     </div>
                 )}
                 <div ref={observerRef} className="h-4 w-full" />
-            </ScrollArea>
+            </div>
 
             {selectedContact && (
                 <>
@@ -360,8 +394,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 </>
             )}
 
-            <AlertDialog 
-                open={importAlertState.open} 
+            <AlertDialog
+                open={importAlertState.open}
                 onOpenChange={(open) => !open && setImportAlertState(prev => ({ ...prev, open: false }))}
             >
                 <AlertDialogContent>
@@ -370,8 +404,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             {importAlertState.status === 'success' ? 'Import Berhasil' : 'Import Gagal'}
                         </AlertDialogTitle>
                         <AlertDialogDescription>
-                            {importAlertState.status === 'success' 
-                                ? 'File import berhasil masuk antrean.' 
+                            {importAlertState.status === 'success'
+                                ? 'File import berhasil masuk antrean.'
                                 : 'Terjadi kesalahan saat mengimpor file. Silakan unduh template yang benar dan coba lagi.'}
                         </AlertDialogDescription>
                     </AlertDialogHeader>

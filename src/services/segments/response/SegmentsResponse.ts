@@ -1,4 +1,4 @@
-import { BaseResponseSchema } from "@/services/base/response/BaseResponseSchema";
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
 
@@ -40,7 +40,7 @@ export type UpdateSegmentResponse = z.infer<typeof UpdateSegmentResponseSchema>;
 
 export const CreateSegmentResponseSchema = BaseResponseSchema(SingleSegmentSchema);
 
-export const DeleteSegmentResponseSchema = BaseResponseSchema(DeleteSegmentDataSchema);
+export const DeleteSegmentResponseSchema = GeneralResponseSchema;
 
 export const IndexSegmentResponseSchema = BaseResponseSchema(SegmentListSchema);
 

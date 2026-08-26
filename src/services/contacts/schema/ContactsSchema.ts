@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { optionalEmailString, optionalTrimmedString } from "@/lib/zod";
 
-export const statusEmailType = ["valid", "unsubscribed", "blocked"] as const
+export const statusEmailType = ["valid", "unsubscribed", "blocked", "invalid", "affiliated"] as const;
 
 const CreateContactSchema = z.object({
     nama: z.string().min(1, "Name is required"),
