@@ -45,7 +45,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
     }, [isOpen, campaign, form]);
 
     const onSubmit = (data: UpdateCampaignPayload) => {
-        mutation.mutate({ id: Number(campaign.id), data }, {
+        mutation.mutate({ id: campaign.id, data }, {
             onSuccess: () => {
                 onClose();
             },
