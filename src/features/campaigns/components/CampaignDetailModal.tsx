@@ -66,6 +66,18 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                 
                 return <span>{dateStr}, {timeWithTz.replace('.', ':')}</span>;
             }
+        },
+        {
+            title: "Opens",
+            key: "open_frequency" as keyof CampaignTargetContact,
+            className: "text-center",
+            render: (contact) => <span className="font-medium">{contact.open_frequency || 0}</span>
+        },
+        {
+            title: "Clicks",
+            key: "click_frequency" as keyof CampaignTargetContact,
+            className: "text-center",
+            render: (contact) => <span className="font-medium">{contact.click_frequency || 0}</span>
         }
     ];
 
@@ -75,7 +87,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
             onOpenChange={(open) => !open && onClose()}
             title={`Campaign Report: ${campaign.campaign_name}`}
             description={`Blast will be executed on ${new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) || '-'} at ${campaign.time || '-'} (${campaign.timezone || '-'})`}
-            size='xl'
+            size='2xl'
         >
             <div className="flex flex-col gap-6 py-4">
                 
@@ -108,7 +120,6 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Open Rate</p>
                             <h3 className="text-2xl font-bold">{campaign.open_rate}%</h3>
-                            <p className="text-xs text-muted-foreground mt-1">Unique Opens: {campaign.unique_opened}</p>
                         </div>
                     </div>
 
@@ -119,12 +130,11 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Click Rate</p>
                             <h3 className="text-2xl font-bold">{campaign.click_rate}%</h3>
-                            <p className="text-xs text-muted-foreground mt-1">Unique Clicks: {campaign.unique_clicked}</p>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 items-start">
                     {/* Campaign Information Section */}
                     <div className="bg-white border rounded-xl overflow-hidden">
                         <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700">

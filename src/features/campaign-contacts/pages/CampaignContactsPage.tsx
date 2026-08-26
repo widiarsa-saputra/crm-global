@@ -72,6 +72,8 @@ const CampaignContactsPage: React.FC = () => {
         status: string;
         isOpen: boolean;
         isClicked: boolean;
+        openFrequency: number;
+        clickFrequency: number;
         sentAt: string;
         errorMessage?: string | null;
     };
@@ -103,6 +105,8 @@ const CampaignContactsPage: React.FC = () => {
         status: c.status || c.send_status || "queued",
         isOpen: !!c.opened_at || c.is_open || false,
         isClicked: !!c.clicked_at || c.is_clicked || false,
+        openFrequency: c.open_frequency || 0,
+        clickFrequency: c.click_frequency || 0,
         sentAt: c.sent_at ? new Date(c.sent_at).toLocaleDateString('id-ID') : "-",
         errorMessage: c.error_message
     }));
@@ -168,8 +172,8 @@ const CampaignContactsPage: React.FC = () => {
                                             )
                                         )
                                     },
-                                    { title: "Opened", key: "isOpen", className: "text-center", render: (c: MappedContact) => c.isOpen ? "Yes" : "No" },
-                                    { title: "Clicked", key: "isClicked", className: "text-center", render: (c: MappedContact) => c.isClicked ? "Yes" : "No" },
+                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className="font-medium">{c.openFrequency}</span> },
+                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className="font-medium">{c.clickFrequency}</span> },
                                     { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
                                 ]}
                                 data={filteredContacts}
