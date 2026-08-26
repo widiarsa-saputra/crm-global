@@ -16,10 +16,10 @@ interface CampaignDetailModalProps {
 export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campaign, isOpen, onClose }) => {
     
     // We'll calculate some mock numbers for display if they're not provided by the API
-    const totalTarget = campaign.target_contacts ? campaign.target_contacts.length : 0;
+    const totalTarget = campaign.campaign_contacts ? campaign.campaign_contacts.length : 0;
     const totalSent = campaign.status === 'completed' || campaign.status === 'processing' ? totalTarget : 0;
     
-    type CampaignTargetContact = NonNullable<SingleCampaignResponse['target_contacts']>[0];
+    type CampaignTargetContact = NonNullable<SingleCampaignResponse['campaign_contacts']>[0];
 
     const contactColumns: Column<CampaignTargetContact>[] = [
         {
@@ -27,8 +27,8 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
             key: "email",
             render: (contact) => (
                 <div className="flex flex-col">
-                    <span className="font-medium">{contact.email}</span>
-                    <span className="text-xs text-muted-foreground">{contact.nama}</span>
+                    <span className="font-medium">{contact.contact?.email ?? 'test@gmail.com'}</span>
+                    <span className="text-xs text-muted-foreground">{contact.contact?.nama ?? 'testing developer'}</span>
                 </div>
             )
         },
@@ -158,15 +158,15 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                     </div>
 
                     {/* Target Contacts Table Section */}
-                    <div className="bg-white border rounded-xl overflow-hidden flex flex-col h-full min-h-[400px]">
+                    <div className="bg-white border rounded-xl overflow-hidden flex flex-col h-full min-h-[100px]">
                         <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700 shrink-0">
                             Target Contacts List
                         </div>
                         <div className="overflow-auto flex-1 max-h-[500px]">
-                            {campaign.target_contacts && campaign.target_contacts.length > 0 ? (
+                            {campaign.campaign_contacts && campaign.campaign_contacts.length > 0 ? (
                                 <BaseTable 
                                     columns={contactColumns} 
-                                    data={campaign.target_contacts} 
+                                    data={campaign.campaign_contacts} 
                                     className="border-none"
                                 />
                             ) : (

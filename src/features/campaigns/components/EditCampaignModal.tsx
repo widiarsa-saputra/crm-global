@@ -25,7 +25,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
             date: campaign.date || '',
             template_id: campaign.template_id || '',
             message: campaign.template_message || '',
-            campaign_contacts: campaign.target_contacts?.map((c: { id: string | number }) => ({ contact_id: c.id.toString() })) || [],
+            campaign_contacts: campaign.campaign_contacts?.map((c) => ({ contact_id: c.contact_id.toString() })) || [],
             status: campaign.status || 'draft',
         },
     });
@@ -38,7 +38,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 date: campaign.date || '',
                 template_id: campaign.template_id || '',
                 message: campaign.template_message || '',
-                campaign_contacts: campaign.target_contacts?.map((c: { id: string | number }) => ({ contact_id: c.id.toString() })) || [],
+                campaign_contacts: campaign.campaign_contacts?.map((c) => ({ contact_id: c.contact_id.toString() })) || [],
                 status: campaign.status || 'draft',
             });
         }

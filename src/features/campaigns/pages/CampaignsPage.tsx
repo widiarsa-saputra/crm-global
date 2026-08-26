@@ -39,13 +39,14 @@ const CampaignsPage: React.FC = () => {
     const { data: apiCampaigns, isLoading } = useIndexCampaign({
         params: {
             page: currentPage,
-            limit: itemsPerPage, // Or per_page, depending on API
+            paginate: itemsPerPage, // Or per_page, depending on API
             search: searchTerm || undefined,
             filter: {
                 segment_id: activeSegmentId === 'unassigned' ? null : activeSegmentId || undefined,
                 schedule_date: scheduleDate ? `${scheduleDate.getFullYear()}-${String(scheduleDate.getMonth() + 1).padStart(2, '0')}-${String(scheduleDate.getDate()).padStart(2, '0')}` : undefined,
                 time: scheduleTime || undefined,
-            }
+            },
+            include: "campaignContacts"
         }
     });
     

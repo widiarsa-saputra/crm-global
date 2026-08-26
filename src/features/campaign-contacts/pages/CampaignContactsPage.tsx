@@ -124,7 +124,7 @@ const CampaignContactsPage: React.FC = () => {
         <AdminLayout>
             <div className="flex flex-col h-full bg-slate-50/50">
                 {/* TOP SECTION: Campaign Contacts Detail */}
-                {contacts.length > 0 && (
+                {(isContactsLoading || contacts.length > 0) && (
                     <div className="p-6 flex flex-col">
                         <div className="mb-4 flex items-center justify-between">
                             <div>
