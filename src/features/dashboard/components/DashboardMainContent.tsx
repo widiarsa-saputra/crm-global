@@ -1,26 +1,40 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Mail, Percent, MousePointerClick } from 'lucide-react';
+import { Percent, MousePointerClick } from 'lucide-react';
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer
+    BarChart,
+    Bar,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
 } from 'recharts';
-import { Badge } from '@/components/ui/badge';
 import { useIndexDashboard } from '@/services/dashboard';
 import { Loader2 } from 'lucide-react';
 import { CampaignCalendar } from './CampaignCalendar';
 import { BaseTable } from '@/shared/components/table/BaseTable';
+import { getStatusBadge } from '@/features/campaign-contacts/pages/CampaignContactsPage';
+import { getMetricColor } from '@/lib/utils';
 
+const DUMMY_TOP_CONTACTS = [
+    { id: 1, name: "Alexander Smith", email: "alex.smith@example.com", engagement: 98, opens: 145, clicks: 89 },
+    { id: 2, name: "Maria Garcia", email: "m.garcia@techcorp.com", engagement: 94, opens: 132, clicks: 81 },
+    { id: 3, name: "James Johnson", email: "jjohnson@startup.io", engagement: 89, opens: 110, clicks: 65 },
+    { id: 4, name: "Sarah Williams", email: "sarah.w@designstudio.net", engagement: 85, opens: 98, clicks: 54 },
+    { id: 5, name: "David Brown", email: "davidb@marketing.com", engagement: 82, opens: 90, clicks: 48 },
+    { id: 6, name: "Emily Davis", email: "emily.davis@retail.co", engagement: 79, opens: 85, clicks: 42 },
+    { id: 7, name: "Michael Wilson", email: "mwilson@finance.org", engagement: 75, opens: 78, clicks: 39 },
+    { id: 8, name: "Lisa Anderson", email: "lisa.a@healthcare.com", engagement: 72, opens: 70, clicks: 35 },
+    // { id: 9, name: "Robert Taylor", email: "rtaylor@logistics.net", engagement: 68, opens: 62, clicks: 30 },
+    // { id: 10, name: "Jennifer Thomas", email: "jthomas@education.edu", engagement: 65, opens: 55, clicks: 25 },
+    // { id: 11, name: "Jennifer Thomas", email: "jthomas@education.edu", engagement: 65, opens: 55, clicks: 25 },
+];
 
 const DashboardMainContent: React.FC = () => {
     const { data: response, isLoading } = useIndexDashboard();
-    
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center h-[90dvh]">
@@ -30,7 +44,7 @@ const DashboardMainContent: React.FC = () => {
     }
 
     const dashboardData = response?.data;
-    
+
     const segmentEngagementData = dashboardData?.engagement_per_segment.map(item => ({
         name: item.segment_name,
         opened: parseFloat(item.open_rate_pct),
@@ -41,55 +55,59 @@ const DashboardMainContent: React.FC = () => {
         name: item.segment_name,
         value: item.total_contact
     })) || [];
-    
+
     const sortedDistributionData = [...segmentDistributionData].sort((a, b) => b.value - a.value);
     const totalDistributionContacts = sortedDistributionData.reduce((sum, item) => sum + item.value, 0);
     return (
         <div className="p-6 h-full overflow-auto bg-slate-50/50">
             <h1 className="text-2xl font-bold mb-6">CRM & Analytics Dashboard</h1>
-            
-            {/* Top Metric Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Active Contacts</CardTitle>
-                        <Users className="w-4 h-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{dashboardData?.summary.active_contacts.toLocaleString('id-ID') || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1">Total active contacts</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Campaigns Sent</CardTitle>
-                        <Mail className="w-4 h-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{dashboardData?.summary.total_campaigns_sent.toLocaleString('id-ID') || 0}</div>
-                        <p className="text-xs text-muted-foreground mt-1">All time</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Avg Open Rate</CardTitle>
-                        <Percent className="w-4 h-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-green-600">{dashboardData?.summary.avg_open_rate || 0}%</div>
-                        <p className="text-xs text-muted-foreground mt-1">Global average</p>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">Avg Click Rate</CardTitle>
-                        <MousePointerClick className="w-4 h-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold text-blue-600">{dashboardData?.summary.avg_click_rate || 0}%</div>
-                        <p className="text-xs text-muted-foreground mt-1">Global average</p>
-                    </CardContent>
-                </Card>
+
+            {/* Top Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
+                {/* Left Column: Metric Cards */}
+                <div className="flex flex-col gap-4 lg:col-span-1 h-[320px]">
+                    <Card className="flex-1 flex flex-col justify-center shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Open Rate</CardTitle>
+                            <Percent className="w-4 h-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-green-600">{dashboardData?.summary.avg_open_rate || 0}%</div>
+                            <p className="text-xs text-muted-foreground mt-1">Global average</p>
+                        </CardContent>
+                    </Card>
+                    <Card className="flex-1 flex flex-col justify-center shadow-sm">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2 space-y-0">
+                            <CardTitle className="text-sm font-medium text-muted-foreground">Avg Click Rate</CardTitle>
+                            <MousePointerClick className="w-4 h-4 text-muted-foreground" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-3xl font-bold text-blue-600">{dashboardData?.summary.avg_click_rate || 0}%</div>
+                            <p className="text-xs text-muted-foreground mt-1">Global average</p>
+                        </CardContent>
+                    </Card>
+                </div>
+
+                {/* Right Column: Top Contacts Table */}
+                <section className="lg:col-span-3 border rounded p-3 flex flex-col space-y-2 bg-white">
+                    <header className=''>
+                        <h2 className="text-md font-medium text-muted-foreground">Top 8 Active Contacts (Engagement)</h2>
+                    </header>
+                    <article className="overflow-hidden flex-1 p-0">
+                        <BaseTable
+                            columns={[
+                                { title: "No.", key: "no", className: "w-10 text-center", render: (_, idx) => <span className="text-sm font-medium text-slate-500">{idx + 1}</span> },
+                                { title: "Contact", key: "name", render: (c) => <span className="font-semibold text-sm leading-tight">{c.name}</span> },
+                                { title: "Email", key: "email", render: (c) => <span className="text-sm text-slate-500">{c.email}</span> },
+                                { title: "Engagement", key: "engagement", render: (c) => <div className="text-xs font-bold text-indigo-600 bg-indigo-50 w-fit px-2 py-0.5 rounded-md">{c.engagement}%</div> },
+                                { title: "Opens", key: "opens", className: "text-right", render: (c) => <div className="text-sm text-right font-semibold">{c.opens} <span className="font-normal">times</span></div> },
+                                { title: "Clicks", key: "clicks", className: "text-right", render: (c) => <div className="text-sm text-right font-semibold">{c.clicks} <span className="font-normal">times</span></div> }
+                            ]}
+                            data={DUMMY_TOP_CONTACTS}
+                            emptyMessage="No top contacts found"
+                        />
+                    </article>
+                </section>
             </div>
 
             {/* Charts Area */}
@@ -145,8 +163,8 @@ const DashboardMainContent: React.FC = () => {
                                                 <span className="text-sm font-semibold text-slate-900">{item.value.toLocaleString('id-ID')}</span>
                                             </div>
                                             <div className="w-full bg-slate-100 rounded-full h-1.5">
-                                                <div 
-                                                    className="bg-primary h-1.5 rounded-full" 
+                                                <div
+                                                    className="bg-primary h-1.5 rounded-full"
                                                     style={{ width: `${percentage}%` }}
                                                 />
                                             </div>
@@ -172,15 +190,31 @@ const DashboardMainContent: React.FC = () => {
                         <CardTitle className="text-lg">Recent Blast Campaigns</CardTitle>
                     </CardHeader>
                     <CardContent className="overflow-hidden flex-1 p-0">
-                        <BaseTable 
+                        <BaseTable
                             columns={[
                                 { title: "Campaign", key: "campaign_name", render: (c) => <span className="font-semibold text-xs leading-tight">{c.campaign_name}</span> },
-                                { title: "Status", key: "status", render: (c) => (
-                                    <Badge variant={c.status === 'completed' ? 'default' : 'secondary'} className={c.status === 'completed' ? 'bg-green-100 text-green-700 hover:bg-green-100 border-green-200 capitalize text-[10px]' : 'capitalize text-[10px]'}>
-                                        {c.status}
-                                    </Badge>
-                                )},
-                                { title: "Date", key: "date", render: (c) => <div className="text-[10px] leading-tight text-slate-500 font-medium whitespace-nowrap">{new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</div> }
+                                { title: "Status", key: "status", render: (c) => getStatusBadge(c.status) },
+                                { title: "Date", key: "date", render: (c) => <div className="text-[10px] leading-tight text-slate-500 font-medium whitespace-nowrap">{new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'short' })}</div> },
+                                {
+                                    title: "Open Rate",
+                                    key: "open_rate",
+                                    className: "text-right",
+                                    render: (campaign) => (
+                                        <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(campaign.open_rate)}`}>
+                                            {campaign.open_rate} <Percent className="w-3 h-3 opacity-70" />
+                                        </div>
+                                    )
+                                },
+                                {
+                                    title: "Click Rate",
+                                    key: "click_rate",
+                                    className: "text-right",
+                                    render: (campaign) => (
+                                        <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(campaign.click_rate)}`}>
+                                            {campaign.click_rate} <Percent className="w-3 h-3 opacity-70" />
+                                        </div>
+                                    )
+                                },
                             ]}
                             data={dashboardData?.recent_blast_campaigns || []}
                             emptyMessage="No recent campaigns"
