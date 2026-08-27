@@ -37,11 +37,21 @@ export const RecentBlastCampaignSchema = z.object({
     segment_name: z.string().nullable().optional(),
 });
 
+export const TopContactSchema = z.object({
+    id: z.union([z.string(), z.number()]),
+    name: z.string(),
+    email: z.string(),
+    engagement: z.number(),
+    opens: z.number(),
+    clicks: z.number(),
+});
+
 export const DashboardDataSchema = z.object({
     summary: DashboardSummarySchema,
     engagement_per_segment: z.array(EngagementPerSegmentSchema),
     contact_distribution: z.array(ContactDistributionSchema),
     recent_blast_campaigns: z.array(RecentBlastCampaignSchema),
+    top_contacts: z.array(TopContactSchema).optional(),
 });
 
 export const DashboardResponseSchema = BaseResponseSchema(DashboardDataSchema);

@@ -18,20 +18,6 @@ import { BaseTable } from '@/shared/components/table/BaseTable';
 import { getStatusBadge } from '@/features/campaign-contacts/pages/CampaignContactsPage';
 import { getMetricColor } from '@/lib/utils';
 
-const DUMMY_TOP_CONTACTS = [
-    { id: 1, name: "Alexander Smith", email: "alex.smith@example.com", engagement: 98, opens: 145, clicks: 89 },
-    { id: 2, name: "Maria Garcia", email: "m.garcia@techcorp.com", engagement: 94, opens: 132, clicks: 81 },
-    { id: 3, name: "James Johnson", email: "jjohnson@startup.io", engagement: 89, opens: 110, clicks: 65 },
-    { id: 4, name: "Sarah Williams", email: "sarah.w@designstudio.net", engagement: 85, opens: 98, clicks: 54 },
-    { id: 5, name: "David Brown", email: "davidb@marketing.com", engagement: 82, opens: 90, clicks: 48 },
-    { id: 6, name: "Emily Davis", email: "emily.davis@retail.co", engagement: 79, opens: 85, clicks: 42 },
-    { id: 7, name: "Michael Wilson", email: "mwilson@finance.org", engagement: 75, opens: 78, clicks: 39 },
-    { id: 8, name: "Lisa Anderson", email: "lisa.a@healthcare.com", engagement: 72, opens: 70, clicks: 35 },
-    // { id: 9, name: "Robert Taylor", email: "rtaylor@logistics.net", engagement: 68, opens: 62, clicks: 30 },
-    // { id: 10, name: "Jennifer Thomas", email: "jthomas@education.edu", engagement: 65, opens: 55, clicks: 25 },
-    // { id: 11, name: "Jennifer Thomas", email: "jthomas@education.edu", engagement: 65, opens: 55, clicks: 25 },
-];
-
 const DashboardMainContent: React.FC = () => {
     const { data: response, isLoading } = useIndexDashboard();
 
@@ -60,7 +46,6 @@ const DashboardMainContent: React.FC = () => {
     const totalDistributionContacts = sortedDistributionData.reduce((sum, item) => sum + item.value, 0);
     return (
         <div className="p-6 h-full overflow-auto bg-slate-50/50">
-            <h1 className="text-2xl font-bold mb-6">CRM & Analytics Dashboard</h1>
 
             {/* Top Section */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">
@@ -103,7 +88,7 @@ const DashboardMainContent: React.FC = () => {
                                 { title: "Opens", key: "opens", className: "text-right", render: (c) => <div className="text-sm text-right font-semibold">{c.opens} <span className="font-normal">times</span></div> },
                                 { title: "Clicks", key: "clicks", className: "text-right", render: (c) => <div className="text-sm text-right font-semibold">{c.clicks} <span className="font-normal">times</span></div> }
                             ]}
-                            data={DUMMY_TOP_CONTACTS}
+                            data={dashboardData?.top_contacts || []}
                             emptyMessage="No top contacts found"
                         />
                     </article>
