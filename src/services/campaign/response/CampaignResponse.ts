@@ -38,8 +38,8 @@ export const SingleCampaignSchema = z.object({
     timezone: z.string().nullable().optional(),
     open_rate: z.coerce.number().optional().default(0),
     click_rate: z.coerce.number().optional().default(0),
-    sent: z.coerce.number().optional().default(0),
-    delivered: z.coerce.number().optional().default(0),
+    total_email: z.coerce.number().optional().default(0),
+    total_success: z.coerce.number().optional().default(0),
 
     created_at: z.string().optional(),
     updated_at: z.string().optional(),

@@ -33,14 +33,14 @@ const CampaignContactsPage: React.FC = () => {
     const [campaignSearch, setCampaignSearch] = useState('');
 
     // API Query for Master Campaign List
-    const { data: apiCampaignsRes, isError: isCampaignsError, isFetching: isCampaignsLoading } = useIndexCampaign();
-    const apiCampaigns = apiCampaignsRes?.data || [];
+    const { data: apiCampaignsRes, isFetching: isCampaignsLoading } = useIndexCampaign();
+    const campaigns = apiCampaignsRes?.data || [];
 
     useEffect(() => {
-        if (!selectedCampaignId && apiCampaigns.length > 0) {
-            setSelectedCampaignId(apiCampaigns[0].id);
+        if (!selectedCampaignId && campaigns.length > 0) {
+            setSelectedCampaignId(campaigns[0].id);
         }
-    }, [apiCampaigns, selectedCampaignId]);
+    }, [campaigns, selectedCampaignId]);
 
     // API Query for Campaign Contacts Details
     const { data: apiContactsRes, isFetching: isContactsLoading } = useIndexCampaignContact({
@@ -56,35 +56,13 @@ const CampaignContactsPage: React.FC = () => {
     const apiContacts = apiContactsRes?.data || [];
     const contactMeta = apiContactsRes?.pagination;
 
-    type MappedCampaign = {
-        id: string | number;
-        name: string;
-        segment: string;
-        date: string;
-        status: string;
-        openRate: number;
-        clickRate: number;
-        delivered: number;
-        sent: number;
-    };
 
-    const campaigns: MappedCampaign[] = isCampaignsError || !apiCampaigns ? [] : apiCampaigns.map((c: SingleCampaignResponse) => ({
-        id: c.id,
-        name: c.campaign_name,
-        segment: c.segment_name || "-",
-        date: c.date,
-        status: c.status,
-        openRate: c.open_rate,
-        clickRate: c.click_rate,
-        delivered: c.delivered || 0,
-        sent: c.sent || 0
-    }));
 
     const selectedCampaign = campaigns.find((c) => c.id === selectedCampaignId);
 
     const filteredCampaigns = campaigns.filter((c) =>
-        c.name.toLowerCase().includes(campaignSearch.toLowerCase()) ||
-        c.segment.toLowerCase().includes(campaignSearch.toLowerCase())
+        c.campaign_name.toLowerCase().includes(campaignSearch.toLowerCase()) ||
+        c.segment_name?.toLowerCase().includes(campaignSearch.toLowerCase())
     );
 
     const paginatedCampaigns = filteredCampaigns.slice(
@@ -104,7 +82,7 @@ const CampaignContactsPage: React.FC = () => {
                                 {(isContactsLoading || isCampaignsLoading) && <Loader2 className="w-5 h-5 text-primary animate-spin" />}
                                 {selectedCampaign && (
                                     <Badge className="ml-2 font-normal">
-                                        Campaign: {selectedCampaign.name}
+                                        Campaign: {selectedCampaign.campaign_name}
                                     </Badge>
                                 )}
                             </h2>
@@ -189,9 +167,9 @@ const CampaignContactsPage: React.FC = () => {
                             <BaseTable
                                 columns={[
                                     {
-                                        title: "Campaign Name", copyValue: false, key: "name", render: (c: MappedCampaign) => (
+                                        title: "Campaign Name", copyValue: false, key: "name", render: (c: SingleCampaignResponse) => (
                                             <div className="flex flex-col">
-                                                <span className="font-medium">{c.name}</span>
+                                                <span className="font-medium">{c.campaign_name}</span>
                                                 <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                                                     <FileText className="w-3 h-3" /> Template linked
                                                 </span>
@@ -199,54 +177,54 @@ const CampaignContactsPage: React.FC = () => {
                                         )
                                     },
                                     {
-                                        title: "Target Segment", key: "segment", render: (c: MappedCampaign) => (
+                                        title: "Target Segment", key: "segment", render: (c: SingleCampaignResponse) => (
                                             <div className="flex items-center gap-2">
                                                 <Users className="w-4 h-4 text-muted-foreground" />
-                                                {c.segment}
+                                                {c.segment_name}
                                             </div>
                                         )
                                     },
-                                    { title: "Status", key: "status", render: (c: MappedCampaign) => getStatusBadge(c.status) },
+                                    { title: "Status", key: "status", render: (c: SingleCampaignResponse) => getStatusBadge(c.status) },
                                     {
-                                        title: "Date", key: "date", render: (c: MappedCampaign) => (
+                                        title: "Date", key: "date", render: (c: SingleCampaignResponse) => (
                                             <span className="text-muted-foreground">
                                                 {c.date ? new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
                                             </span>
                                         )
                                     },
                                     {
-                                        title: "Total Delivered", key: "delivered", className: "text-right", render: (c: MappedCampaign) => (
+                                        title: "Total Success", key: "total_delivered", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className="font-semibold">
-                                                {c.delivered} <span className="font-normal">mail</span>
+                                                {c.total_success} <span className="font-normal">mail</span>
                                             </div>
                                         )
                                     },
                                     {
-                                        title: "Total Sent", key: "sent", className: "text-right", render: (c: MappedCampaign) => (
+                                        title: "Total Email", key: "total_sent", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className="font-semibold">
-                                                {c.sent} <span className="font-normal">mail</span>
+                                                {c.total_email} <span className="font-normal">mail</span>
                                             </div>
                                         )
                                     },
                                     {
-                                        title: "Open Rate", key: "openRate", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.openRate)}`}>
-                                                {c.openRate} <Percent className="w-3 h-3 opacity-70" />
+                                        title: "Open Rate", key: "open_rate", className: "text-right", render: (c: SingleCampaignResponse) => (
+                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.open_rate)}`}>
+                                                {c.open_rate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
                                         )
                                     },
                                     {
-                                        title: "Click Rate", key: "clickRate", className: "text-right", render: (c: MappedCampaign) => (
-                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.clickRate)}`}>
-                                                {c.clickRate} <Percent className="w-3 h-3 opacity-70" />
+                                        title: "Click Rate", key: "click_rate", className: "text-right", render: (c: SingleCampaignResponse) => (
+                                            <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.click_rate)}`}>
+                                                {c.click_rate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
                                         )
                                     }
                                 ]}
                                 data={paginatedCampaigns}
                                 isLoading={isCampaignsLoading}
-                                onRowClick={(c: MappedCampaign) => setSelectedCampaignId(c.id)}
-                                rowClassName={(c: MappedCampaign) => `cursor-pointer ${selectedCampaignId === c.id ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-slate-50'}`}
+                                onRowClick={(c: SingleCampaignResponse) => setSelectedCampaignId(c.id)}
+                                rowClassName={(c: SingleCampaignResponse) => `cursor-pointer ${selectedCampaignId === c.id ? 'bg-primary/5 hover:bg-primary/10' : 'hover:bg-slate-50'}`}
                             />
                         </div>
                         <PaginationWithShow
