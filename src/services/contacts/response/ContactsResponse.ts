@@ -41,11 +41,11 @@ export const SingleContactSchema = z.object({
     fax: z.string().nullable().optional(),
     created_at: z.string(),
     updated_at: z.string(),
-    total_sended: z.number().optional(),
+    total_sent: z.number().optional(),
     engagement_rate: z.number().optional(),
     segment: SegmentSchema.optional().nullable(),
-    open_freq: z.number().optional(),
-    click_freq: z.number().optional(),
+    total_opens: z.number().optional(),
+    total_clicks: z.number().optional(),
 });
 
 export const ContactListSchema = z.array(SingleContactSchema);

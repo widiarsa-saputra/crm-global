@@ -31,22 +31,7 @@ import { UpdateStatusModal } from './UpdateStatusModal';
 import { BaseTable } from '@/shared/components/table/BaseTable';
 import { getMetricColor } from '@/lib/utils';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
-
-export type MappedContact = {
-    id: string;
-    name: string;
-    email: string;
-    company: string;
-    location: string;
-    fax: string;
-    segment: string;
-    status: string;
-    total_sended?: number;
-    open_freq?: number;
-    click_freq?: number;
-    engagement_rate?: number;
-    _raw?: SingleContactResponse;
-};
+import PrintJson from '@/lib/printjson';
 
 interface ContactDirectoryProps {
     activeSegmentId: string | null;
@@ -73,7 +58,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         }
     }, [isEngagementModalOpen]);
 
-    const handleOpenDialog = (type: 'edit' | 'move' | 'delete' | 'status', contact: SingleContactResponse) => {
+    const handleOpenDialog = (type: 'edit' | 'move' | 'delete' | 'status' , contact: SingleContactResponse) => {
         setSelectedContact(contact);
         setDialog(type);
     };
@@ -140,21 +125,6 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
     const totalItems = apiResponse?.pagination?.total || 0;
 
-    const contacts = apiResponse ? apiResponse.data.map((c) => ({
-        id: c.id.toString(),
-        name: c.nama,
-        email: c.email,
-        company: c.company || '-',
-        location: c.location || '-',
-        fax: c.fax || '-',
-        segment: c.segment?.name || 'Unassigned',
-        status: c.email_status,
-        total_sended: c.total_sended || 0,
-        open_rate: c.open_freq || 0,
-        is_clicked: c.click_freq || 0,
-        engagement_rate: c.engagement_rate || 0,
-        _raw: c,
-    })) : [];
 
     const getStatusColor = (status: string) => {
         switch (status) {
@@ -272,6 +242,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
             {/* Table Content */}
             <div className="flex-1 p-4 pr-0 overflow-auto">
+            <PrintJson data={apiResponse?.data ?? []}/>
 
                 <BaseTable
                     sortBy={sortBy}
@@ -286,10 +257,10 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             key: "name",
                             sortKey: "nama",
                             sortable: true,
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center gap-3">
                                     <div className="flex flex-col">
-                                        <span className="font-semibold text-sm">{c.name || 'Unknown'}</span>
+                                        <span className="font-semibold text-sm">{c.nama || 'Unknown'}</span>
                                     </div>
                                 </div>
                             )
@@ -298,7 +269,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             title: "email",
                             key: "email",
                             sortable: true,
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Mail className="w-3.5 h-3.5" />
                                     <span className="truncate">{c.email}</span>
@@ -310,13 +281,13 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             key: "engagement_rate",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
+                            render: (c: SingleContactResponse) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
                         },
                         {
                             title: "Company",
                             key: "company",
                             sortable: true,
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Building className="w-3.5 h-3.5" />
                                     <span className="">{c.company || '-'}</span>
@@ -327,24 +298,24 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             title: "Segment",
                             key: "segment_id",
                             sortable: true,
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <Badge
                                     title="Click to move segment"
                                     variant="secondary"
                                     className="font-medium bg-slate-100 hover:bg-slate-200 cursor-pointer transition-colors truncate max-w-full capitalize"
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        if (c._raw) handleOpenDialog('move', c._raw);
+                                        handleOpenDialog('move', c)
                                     }}
                                 >
-                                    {c.segment}
+                                    {c.segment?.name}
                                 </Badge>
                             )
                         },
                         {
                             title: "Location",
                             key: "location",
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <MapPin className="w-3.5 h-3.5" />
                                     <span className="truncate max-w-[150px]">{c.location || '-'}</span>
@@ -355,7 +326,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                         {
                             title: "Fax",
                             key: "fax",
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center gap-1.5 text-slate-600 text-sm">
                                     <Phone className="w-3.5 h-3.5" />
                                     <span className="truncate">{c.fax || '-'}</span>
@@ -367,42 +338,43 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             key: "total_sended",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className="font-semibold text-slate-700">{c.total_sended} <span className="font-normal">mail</span></span>
+                            render: (c: SingleContactResponse) => <span className="font-semibold text-slate-700">{c.total_sent} <span className="font-normal">mail</span></span>
                         },
                         {
                             title: "Opens",
-                            key: "open_freq",
+                            key: "total_opens",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_freq || 0)}`}>{c.open_freq} <span className="font-normal">times</span></span>
+                            render: (c: SingleContactResponse) => <span className={`font-semibold ${getMetricColor(c.total_opens || 0)}`}>{c.total_opens} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Clicks",
-                            key: "click_freq",
+                            key: "total_clicks",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_freq || 0)}`}>{c.click_freq} <span className="font-normal">times</span></span>
+                            render: (c: SingleContactResponse) => <span className={`font-semibold ${getMetricColor(c.total_clicks || 0)}`}>{c.total_clicks} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Status",
-                            key: "status",
-                            render: (c: MappedContact) => (
+                            key: "email_status",
+                            render: (c: SingleContactResponse) => (
                                 <Badge
-                                    title="Click to update status"
-                                    className={`${getStatusColor(c.status)} cursor-pointer hover:opacity-80 transition-opacity`}
+                                    title="Click to update email_status"
+                                    className={`${getStatusColor(c.email_status)} cursor-pointer hover:opacity-80 transition-opacity`}
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        if (c._raw) handleOpenDialog('status', c._raw);
+                                        // handleOpenDialog('email_status', c)
+                                        // if (c._raw) handleOpenDialog('email_status', c._raw);
                                     }}
                                 >
-                                    {c.status}
+                                    {c.email_status}
                                 </Badge>
                             )
                         },
                         {
                             title: "Action",
                             key: "action",
-                            render: (c: MappedContact) => (
+                            render: (c: SingleContactResponse) => (
                                 <div className="flex items-center justify-end gap-1">
                                     <Button
                                         variant="ghost"
@@ -410,7 +382,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                         className="h-8 w-8 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (c._raw) handleOpenDialog('edit', c._raw);
+                                            handleOpenDialog('edit', c)
+                                            // if (c._raw) handleOpenDialog('edit', c._raw);
                                         }}
                                         title="Edit Contact"
                                     >
@@ -422,7 +395,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                         className="h-8 w-8 text-red-600 hover:bg-red-50 hover:text-red-700"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            if (c._raw) handleOpenDialog('delete', c._raw);
+                                            handleOpenDialog('delete', c)
+                                            // if (c._raw) handleOpenDialog('delete', c._raw);
                                         }}
                                         title="Delete Contact"
                                     >
@@ -432,7 +406,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         }
                     ]}
-                    data={contacts}
+                    data={apiResponse?.data ?? []}
                     isLoading={isLoading}
                     emptyMessage={
                         <div className="flex flex-col items-center justify-center py-20 text-center">
