@@ -42,8 +42,8 @@ export type MappedContact = {
     segment: string;
     status: string;
     total_sended?: number;
-    open_frequency?: number;
-    click_frequency?: number;
+    open_freq?: number;
+    click_freq?: number;
     engagement_rate?: number;
     _raw?: SingleContactResponse;
 };
@@ -150,8 +150,8 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         segment: c.segment?.name || 'Unassigned',
         status: c.email_status,
         total_sended: c.total_sended || 0,
-        open_frequency: c.open_frequency || 0,
-        click_frequency: c.click_frequency || 0,
+        open_rate: c.open_freq || 0,
+        is_clicked: c.click_freq || 0,
         engagement_rate: c.engagement_rate || 0,
         _raw: c,
     })) : [];
@@ -371,17 +371,17 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                         },
                         {
                             title: "Opens",
-                            key: "open_frequency",
+                            key: "open_freq",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_frequency || 0)}`}>{c.open_frequency} <span className="font-normal">times</span></span>
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.open_freq || 0)}`}>{c.open_freq} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Clicks",
-                            key: "click_frequency",
+                            key: "click_freq",
                             className: "text-center",
                             sortable: true,
-                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_frequency || 0)}`}>{c.click_frequency} <span className="font-normal">times</span></span>
+                            render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.click_freq || 0)}`}>{c.click_freq} <span className="font-normal">times</span></span>
                         },
                         {
                             title: "Status",

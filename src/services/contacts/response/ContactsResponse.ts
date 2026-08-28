@@ -42,10 +42,10 @@ export const SingleContactSchema = z.object({
     created_at: z.string(),
     updated_at: z.string(),
     total_sended: z.number().optional(),
-    open_frequency: z.number().optional(),
-    click_frequency: z.number().optional(),
     engagement_rate: z.number().optional(),
     segment: SegmentSchema.optional(),
+    open_freq: z.number().optional(),
+    click_freq: z.number().optional(),
 });
 
 export const ContactListSchema = z.array(SingleContactSchema);

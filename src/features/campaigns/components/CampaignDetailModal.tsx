@@ -69,15 +69,15 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
         },
         {
             title: "Opens",
-            key: "open_frequency" as keyof CampaignTargetContact,
+            key: "open_freq" as keyof CampaignTargetContact,
             className: "text-center",
-            render: (contact) => <span className="font-medium">{contact.open_frequency || 0}</span>
+            render: (contact) => <span className="font-medium">{contact.is_open || 0}</span>
         },
         {
             title: "Clicks",
-            key: "click_frequency" as keyof CampaignTargetContact,
+            key: "click_freq" as keyof CampaignTargetContact,
             className: "text-center",
-            render: (contact) => <span className="font-medium">{contact.click_frequency || 0}</span>
+            render: (contact) => <span className="font-medium">{contact.is_clicked || 0}</span>
         }
     ];
 

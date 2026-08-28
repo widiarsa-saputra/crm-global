@@ -20,8 +20,6 @@ export const CampaignContactSchema = z.object({
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
     contact: SingleContactSchema.optional(),
-    open_frequency: z.number().optional().default(0),
-    click_frequency: z.number().optional().default(0),
 });
 
 export const SingleCampaignSchema = z.object({

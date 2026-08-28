@@ -10,7 +10,7 @@ import { useIndexCampaign, useIndexCampaignContact } from '@/services/campaign/h
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput';
 
-import { SingleCampaignResponse } from '@/services/campaign';
+import { SingleCampaignResponse, SingleCampaignContactResponse } from '@/services/campaign';
 import { getMetricColor } from '@/lib/utils';
 
 export const getStatusBadge = (status: string) => {
@@ -43,7 +43,7 @@ const CampaignContactsPage: React.FC = () => {
     }, [apiCampaigns, selectedCampaignId]);
 
     // API Query for Campaign Contacts Details
-    const { data: apiContactsRes, isError: isContactsError, isFetching: isContactsLoading } = useIndexCampaignContact({
+    const { data: apiContactsRes, isFetching: isContactsLoading } = useIndexCampaignContact({
         params: {
             'filter[campaign_id]': selectedCampaignId,
             page: contactPage,
@@ -68,19 +68,6 @@ const CampaignContactsPage: React.FC = () => {
         sent: number;
     };
 
-    type MappedContact = {
-        id: string | number;
-        name: string;
-        email: string;
-        status: string;
-        isOpen: boolean;
-        isClicked: boolean;
-        openFrequency: number;
-        clickFrequency: number;
-        sentAt: string;
-        errorMessage?: string | null;
-    };
-
     const campaigns: MappedCampaign[] = isCampaignsError || !apiCampaigns ? [] : apiCampaigns.map((c: SingleCampaignResponse) => ({
         id: c.id,
         name: c.campaign_name,
@@ -93,22 +80,7 @@ const CampaignContactsPage: React.FC = () => {
         sent: c.sent || 0
     }));
 
-    const contacts: MappedContact[] = isContactsError || !apiContacts ? [] : apiContacts.map((c) => ({
-        id: c.id,
-        name: c.contact?.nama || "Unknown",
-        email: c.contact?.email || c.email || c.contact_email || "Unknown",
-        status: c.status || c.send_status || "queued",
-        isOpen: !!c.opened_at || c.is_open || false,
-        isClicked: !!c.clicked_at || c.is_clicked || false,
-        openFrequency: c.open_frequency || 0,
-        clickFrequency: c.click_frequency || 0,
-        sentAt: c.sent_at ? new Date(c.sent_at).toLocaleDateString('id-ID') : "-",
-        errorMessage: c.error_message
-    }));
-
     const selectedCampaign = campaigns.find((c) => c.id === selectedCampaignId);
-
-    const filteredContacts = contacts; // server-side filtering applied
 
     const filteredCampaigns = campaigns.filter((c) =>
         c.name.toLowerCase().includes(campaignSearch.toLowerCase()) ||
@@ -149,29 +121,38 @@ const CampaignContactsPage: React.FC = () => {
                         <div className="overflow-auto">
                             <BaseTable
                                 columns={[
-                                    { title: "Contact Name", key: "name", render: (c: MappedContact) => <span className="font-medium">{c.name}</span> },
-                                    { title: "Email", key: "email", render: (c: MappedContact) => <span className="text-muted-foreground">{c.email}</span> },
+                                    { title: "Contact Name", key: "contact_name", render: (c: SingleCampaignContactResponse) => <span className="font-medium">{c.contact?.nama || "Unknown"}</span> },
+                                    { title: "Email", key: "email", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.contact?.email || c.email || c.contact_email || "Unknown"}</span> },
                                     {
-                                        title: "Status", key: "status", render: (c: MappedContact) => (
-                                            c.status === 'sent' ? (
+                                        title: "Status", key: "status", render: (c: SingleCampaignContactResponse) => {
+                                            const status = c.status || c.send_status || "queued";
+                                            return status === 'sent' ? (
                                                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
-                                            ) : c.status === 'failed' ? (
+                                            ) : status === 'failed' ? (
                                                 <Badge
-                                                    title={c.errorMessage || "Failed to send"}
+                                                    title={c.error_message || "Failed to send"}
                                                     className="bg-red-100 text-red-700 hover:bg-red-100 border-red-200 cursor-help"
                                                 >
                                                     Failed
                                                 </Badge>
                                             ) : (
                                                 <Badge className="bg-orange-100 text-orange-700 hover:bg-orange-100 border-orange-200">Queued</Badge>
-                                            )
-                                        )
+                                            );
+                                        }
                                     },
-                                    { title: "Opens", key: "openFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.openFrequency)}`}>{c.openFrequency} <span className="font-normal">times</span></span> },
-                                    { title: "Clicks", key: "clickFrequency", className: "text-center", render: (c: MappedContact) => <span className={`font-semibold ${getMetricColor(c.clickFrequency)}`}>{c.clickFrequency} <span className="font-normal">times</span></span> },
-                                    { title: "Sent Time", key: "sentAt", className: "text-right", render: (c: MappedContact) => <span className="text-muted-foreground">{c.sentAt}</span> }
+                                    {
+                                        title: "Opened", key: "is_open", className: "text-center", render: (c: SingleCampaignContactResponse) => <span className={`font-semibold`}>
+                                            {c.is_open || 0}
+                                            <span className="font-normal">times</span></span>
+                                    },
+                                    {
+                                        title: "Clicked", key: "is_clicked", className: "text-center", render: (c: SingleCampaignContactResponse) => <span className={`font-semibold`}>
+                                            {c.is_clicked ? 1 : 0}
+                                            <span className="font-normal">times</span></span>
+                                    },
+                                    { title: "Sent Time", key: "sent_at", className: "text-right", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleDateString('id-ID') : "-"}</span> }
                                 ]}
-                                data={filteredContacts}
+                                data={apiContacts}
                                 isLoading={isContactsLoading || isCampaignsLoading}
                                 rowClassName={() => "hover:bg-slate-50"}
                                 emptyMessage="Tidak ada data contact untuk selected campaign"
