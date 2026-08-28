@@ -43,7 +43,7 @@ export const SingleContactSchema = z.object({
     updated_at: z.string(),
     total_sended: z.number().optional(),
     engagement_rate: z.number().optional(),
-    segment: SegmentSchema.optional(),
+    segment: SegmentSchema.optional().nullable(),
     open_freq: z.number().optional(),
     click_freq: z.number().optional(),
 });
