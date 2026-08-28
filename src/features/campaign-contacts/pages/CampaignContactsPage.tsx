@@ -96,7 +96,7 @@ const CampaignContactsPage: React.FC = () => {
         <AdminLayout>
             <div className="flex flex-col h-full bg-slate-50/50">
                 {/* TOP SECTION: Campaign Contacts Detail */}
-                <div className="p-6 flex flex-col">
+                <div className="py-4 flex flex-col">
                     <div className="mb-4 flex items-center justify-between">
                         <div>
                             <h2 className="text-xl font-bold flex items-center gap-2">

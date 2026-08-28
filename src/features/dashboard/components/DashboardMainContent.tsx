@@ -45,7 +45,7 @@ const DashboardMainContent: React.FC = () => {
     const sortedDistributionData = [...segmentDistributionData].sort((a, b) => b.value - a.value);
     const totalDistributionContacts = sortedDistributionData.reduce((sum, item) => sum + item.value, 0);
     return (
-        <div className="p-6 h-full overflow-auto bg-slate-50/50">
+        <div className="py-4 h-full overflow-auto bg-slate-50/50">
 
             {/* Top Section */}
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-6">

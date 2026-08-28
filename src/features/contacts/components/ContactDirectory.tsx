@@ -171,7 +171,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
     return (
         <div className="flex-1 min-w-0 flex flex-col h-full bg-slate-50/50">
             {/* Header */}
-            <header className="p-3 px-4 border-b flex items-center justify-between gap-x-4">
+            <header className="p-3 pl-4 pr-0 border-b flex items-center justify-between gap-x-4">
                 <div className="flex gap-2">
                     <DebouncedSearchInput
                         value={searchTerm}
@@ -271,7 +271,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
             </header>
 
             {/* Table Content */}
-            <div className="flex-1 p-4 overflow-auto">
+            <div className="flex-1 p-4 pr-0 overflow-auto">
 
                 <BaseTable
                     sortBy={sortBy}

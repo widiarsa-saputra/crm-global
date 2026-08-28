@@ -56,7 +56,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
 
     return (
         <div className="w-72 shrink-0 border-r flex flex-col h-full">
-            <div className="p-4 border-b">
+            <div className="p-4 pl-0 border-b">
                 <AddSegmentModal
                     trigger={
                         <Button className="w-full justify-start gap-2">
@@ -67,7 +67,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                 />
             </div>
 
-            <div className="p-4 border-b space-y-4">
+            <div className="p-4 pl-0 border-b space-y-4">
                 <DebouncedSearchInput
                     value={search}
                     onChange={setSearch}

@@ -91,8 +91,8 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
     return (
         <div className="flex flex-col min-h-[100dvh] bg-gray-50">
             {/* Top Navigation Bar */}
-            <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm px-4">
-                <div className="flex h-16 items-center justify-between px-10 mx-auto w-full">
+            <header className="sticky top-0 z-40 w-full border-b bg-white shadow-sm">
+                <div className="flex h-16 items-center justify-between px-12 mx-auto w-full">
                     <div className="mr-8 flex items-center">
                         {/* <div className="bg-primary text-white p-2 rounded-md font-black mr-2">CG</div> */}
                         <h1 className="text-xl font-bold text-primary hidden md:block">CRM Portal</h1>
@@ -156,7 +156,7 @@ const AdminLayout: React.FC<Props> = ({ children }) => {
 
             {/* Main Content Area */}
             <main className="flex-1 flex flex-col w-full mx-auto bg-gray-50/50">
-                <div className="flex-1 w-full flex flex-col overflow-x-hidden px-10">
+                <div className="flex-1 w-full flex flex-col overflow-x-hidden px-12">
                     {children}
                 </div>
             </main>

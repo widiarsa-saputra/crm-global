@@ -173,7 +173,7 @@ const CampaignsPage: React.FC = () => {
                             Create Campaign
                         </Button>
                     </header> */}
-                    <header className="p-3 px-4 border-b flex items-center justify-between gap-x-4">
+                    <header className="p-3 pl-4 pr-0 border-b flex items-center justify-between gap-x-4">
                         {/* Filters */}
                         <div className="flex gap-4 shrink-0">
                             <div className="relative flex-1 max-w-md">
@@ -223,7 +223,7 @@ const CampaignsPage: React.FC = () => {
 
 
                     {/* Table */}
-                    <div className="p-4 flex-1 flex flex-col">
+                    <div className="p-4 pr-0 flex-1 flex flex-col">
                         <div className="bg-white border rounded overflow-hidden flex-1 flex flex-col">
                             <div className="overflow-auto flex-1">
                                 <BaseTable

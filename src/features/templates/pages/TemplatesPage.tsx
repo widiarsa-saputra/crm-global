@@ -131,16 +131,19 @@ const TemplatesPage: React.FC = () => {
                 successMessage="Template berhasil dihapus!"
                 errorMessage="Gagal menghapus template."
             />
-            <div className="p-6 h-full flex flex-col bg-background">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold">Email Templates</h1>
+            <div className="py-4 h-full flex flex-col bg-background">
+                <header className="flex justify-between items-center mb-6">
+                    <div>
+                        <h1 className="text-2xl font-bold">Email Templates</h1>
+                        <p className="text-sm text-muted-foreground mt-1">Kelola dan buat template pesan untuk kampanye email Anda.</p>
+                    </div>
                     <div className="flex items-center gap-2">
                         <Button onClick={handleCreateNew} className="flex items-center gap-2">
                             <FilePlus className="w-4 h-4" />
                             Create Message Template
                         </Button>
                     </div>
-                </div>
+                </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 flex-1 h-[calc(100vh-140px)]">
                     {/* Left: Template List */}
