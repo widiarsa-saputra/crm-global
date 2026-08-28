@@ -117,14 +117,17 @@ const CampaignContactsPage: React.FC = () => {
                         />
                     </div>
 
-                    <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
+                    <div className="rounded overflow-hidden flex flex-col">
                         <div className="overflow-auto">
                             <BaseTable
                                 columns={[
                                     { title: "Contact Name", key: "contact_name", render: (c: SingleCampaignContactResponse) => <span className="font-medium">{c.contact?.nama || "Unknown"}</span> },
                                     { title: "Email", key: "email", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.contact?.email || c.email || c.contact_email || "Unknown"}</span> },
                                     {
-                                        title: "Status", key: "status", render: (c: SingleCampaignContactResponse) => {
+                                        title: "Status", 
+                                        key: "status", 
+                                        copyValue: false,
+                                        render: (c: SingleCampaignContactResponse) => {
                                             const status = c.status || c.send_status || "queued";
                                             return status === 'sent' ? (
                                                 <Badge className="bg-green-100 text-green-700 hover:bg-green-100 border-green-200">Sent</Badge>
@@ -169,7 +172,7 @@ const CampaignContactsPage: React.FC = () => {
                 </div>
 
                 {/* BOTTOM SECTION: Master Campaign List */}
-                <div className="flex-none border-t flex flex-col p-6 gap-4">
+                <div className="flex-none border-t flex flex-col py-2 gap-4">
                     <div className="flex items-center justify-between">
                         <h3 className="font-semibold flex items-center gap-2">
                             Select Campaign to View
@@ -181,7 +184,7 @@ const CampaignContactsPage: React.FC = () => {
                             placeholder="Search campaign..."
                         />
                     </div>
-                    <div className="bg-white border rounded shadow-sm overflow-hidden flex flex-col">
+                    <div className="rounded overflow-hidden flex flex-col">
                         <div className="overflow-auto flex-1">
                             <BaseTable
                                 columns={[

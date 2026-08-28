@@ -40,7 +40,7 @@ export const FloatingInput = ({
                     {...restInputProps}
                     placeholder={isFloating ? placeholder ?? undefined : undefined}
                     className={cn(
-                        "h-11 rounded tracking-wide bg-slate-50/30 focus:bg-white",
+                        "h-11 rounded tracking-wide bg-slate-50/30 focus:bg-white bg-white",
                         Icon ? "pl-10 pr-10" : "px-3",
                         restInputProps?.className
                     )}
