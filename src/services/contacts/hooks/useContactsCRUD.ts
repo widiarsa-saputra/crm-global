@@ -1,7 +1,6 @@
 import { useBaseCreate } from "@/services/base/hooks/useBaseCreate";
 import { useBaseDelete } from "@/services/base/hooks/useBaseDelete";
 import useBaseIndex from "@/services/base/hooks/useBaseIndex";
-import useBaseInfiniteIndex from "@/services/base/hooks/useBaseInfiniteIndex";
 import useBaseShow from "@/services/base/hooks/useBaseShow";
 import { useBaseUpdate } from "@/services/base/hooks/useBaseUpdate";
 import {
@@ -21,6 +20,7 @@ import {
 } from "../response/ContactsResponse";
 import { CreateContact, UpdateContact, ImportContact } from "../schema/ContactsSchema";
 import { privateApi } from "@/api/api";
+import useBaseInfiniteIndex from "@/services/base/hooks/useBaseInfiniteIndex";
 
 const API_VERSION = "v1";
 

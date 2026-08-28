@@ -31,7 +31,7 @@ export const RemoveCampaignAlert: React.FC<RemoveCampaignAlertProps> = ({ campai
     const handleConfirm = (e: React.MouseEvent) => {
         e.preventDefault();
         mutation.mutate(
-            { id: Number(campaign.id) },
+            { id: campaign.id },
             {
                 onSuccess: () => {
                     setTimeout(() => {

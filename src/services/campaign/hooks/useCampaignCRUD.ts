@@ -22,7 +22,7 @@ export const useCreateCampaign = () => {
 const API_VERSION = "v1";
 
 interface DeleteCampaignParams {
-    id: number;
+    id: number | string;
 }
 
 export const useDeleteCampaign = () => {
