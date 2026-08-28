@@ -60,12 +60,12 @@ export const CampaignMutationForm = <
         params: {
             ...(
                 watchedSegmentId && watchedSegmentId !== 'all'
-                    ? { 'filter[segment_id]': watchedSegmentId, paginate: 1000 }
+                    ? { 'filter[segment_id]': watchedSegmentId }
                     : watchedSegmentId === 'all'
-                        ? { paginate: 1000 }
+                        ? {  }
                         : {}
             ),
-            'filter[email_status_not]': 'unsubscribed'
+            'filter[email_status]': 'valid'
         }
     });
 
