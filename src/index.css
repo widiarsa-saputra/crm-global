@@ -220,3 +220,47 @@
 .os-theme-custom.os-scrollbar-vertical {
   width: 5px;
 }
+
+/* Kembalikan list style pada area preview react-md-editor */
+.wmde-markdown ol {
+  list-style-type: decimal !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.wmde-markdown ul {
+  list-style-type: disc !important;
+  padding-left: 1.5rem !important;
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.wmde-markdown li {
+  display: list-item !important;
+  margin-bottom: 0.25rem !important;
+}
+
+/* Mengatur container editor utama */
+.w-md-editor {
+  height: auto !important;
+}
+
+/* Mengatur area teks input (textarea) & markdown preview agar melar mengikuti isi */
+.w-md-editor-content {
+  height: auto !important;
+  min-height: 200px;
+}
+
+.w-md-editor-input,
+.w-md-editor-preview {
+  height: auto !important;
+  min-height: 200px;
+}
+
+/* Menghilangkan scrollbar internal agar scroll menggunakan halaman induk */
+.w-md-editor-text,
+.w-md-editor-text-pre,
+.w-md-editor-text-input {
+  min-height: 200px !important;
+}

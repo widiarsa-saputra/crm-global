@@ -1,4 +1,4 @@
-import React, { useState, useEffect, startTransition } from 'react';
+import React, { useState, useEffect, useRef, startTransition } from 'react';
 import AdminLayout from '@/layouts/AdminLayout';
 import { InputRichText } from '@/components/InputRichText';
 import { FloatingInput } from '@/components/FloatingInput';
@@ -20,6 +20,58 @@ const TemplatesPage: React.FC = () => {
     const [name, setName] = useState('');
     const [content, setContent] = useState('');
     const [isCreating, setIsCreating] = useState(false);
+
+    /**
+     * Ref to the wrapper div that contains InputRichText / MDEditor.
+     * Used to locate the underlying <textarea> for cursor-aware tag insertion.
+     */
+    const editorContainerRef = useRef<HTMLDivElement>(null);
+
+    /**
+     * Returns the MDEditor internal textarea element, or null if not found.
+     * @uiw/react-md-editor renders a <textarea class="w-md-editor-text-input …">.
+     */
+    const getEditorTextarea = (): HTMLTextAreaElement | null =>
+        editorContainerRef.current?.querySelector<HTMLTextAreaElement>(
+            'textarea.w-md-editor-text-input',
+        ) ?? null;
+
+    /**
+     * Insert `tag` at the current cursor position (or replace the current
+     * selection) inside the MDEditor textarea, then move the caret to
+     * immediately after the inserted text.
+     *
+     * Tag buttons use `onMouseDown` + `e.preventDefault()` so the textarea
+     * never loses focus before this function runs — meaning selectionStart /
+     * selectionEnd always reflect the user's last intended position.
+     */
+    const insertTagAtCursor = (tag: string) => {
+        const textarea = getEditorTextarea();
+
+        if (!textarea) {
+            // Fallback: append to end when the textarea cannot be located.
+            setContent((prev) => `${prev} ${tag} `);
+            return;
+        }
+
+        const { selectionStart, selectionEnd } = textarea;
+        const insertion = ` ${tag} `;
+        const before = content.substring(0, selectionStart);
+        const after = content.substring(selectionEnd);
+        const newContent = before + insertion + after;
+        const newCursorPos = selectionStart + insertion.length;
+
+        setContent(newContent);
+
+        // Restore focus and caret after React re-renders the controlled value.
+        requestAnimationFrame(() => {
+            const ta = getEditorTextarea();
+            if (ta) {
+                ta.focus();
+                ta.setSelectionRange(newCursorPos, newCursorPos);
+            }
+        });
+    };
 
     const { data: indexRes, isLoading } = useIndexTemplate();
     const templates = indexRes?.data ?? [];
@@ -215,20 +267,39 @@ const TemplatesPage: React.FC = () => {
                                 <div className="flex flex-col gap-2 mt-2">
                                     <label className="text-sm font-semibold">Dynamic Tags</label>
                                     <div className="flex flex-wrap gap-2">
-                                        <Button variant="outline" size="sm" onClick={() => setContent(content + ' {{nama}} ')} className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            /* Prevent focus from leaving the editor textarea before onClick fires */
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => insertTagAtCursor('{{nama}}')}
+                                            className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
+                                        >
                                             + {`{{nama}}`}
                                         </Button>
-                                        <Button variant="outline" size="sm" onClick={() => setContent(content + ' {{company}} ')} className="bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => insertTagAtCursor('{{company}}')}
+                                            className="bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200"
+                                        >
                                             + {`{{company}}`}
                                         </Button>
-                                        <Button variant="outline" size="sm" onClick={() => setContent(content + ' {{email}} ')} className="bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200">
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onMouseDown={(e) => e.preventDefault()}
+                                            onClick={() => insertTagAtCursor('{{email}}')}
+                                            className="bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200"
+                                        >
                                             + {`{{email}}`}
                                         </Button>
                                     </div>
-                                    <p className="text-xs text-muted-foreground">Click a tag above to insert it into the editor at the end of the text.</p>
+                                    <p className="text-xs text-muted-foreground">Place the cursor in the editor, then click a tag to insert it at that position.</p>
                                 </div>
 
-                                <div className="flex-1 flex flex-col mt-2">
+                                <div className="flex-1 flex flex-col mt-2" ref={editorContainerRef}>
                                     <InputRichText
                                         id="template-content"
                                         label="Message Content"
