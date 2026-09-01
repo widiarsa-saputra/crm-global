@@ -123,15 +123,15 @@ const CampaignContactsPage: React.FC = () => {
                                     },
                                     {
                                         title: "Opened", key: "is_open", className: "text-center", render: (c: SingleCampaignContactResponse) => <span className={`font-semibold flex items-center gap-2`}>
-                                            {c.is_open || 0}
-                                            <span className="font-normal">times</span></span>
+                                            {c.is_open ? 'yes' : 'no'}
+                                        </span>
                                     },
                                     {
                                         title: "Clicked", key: "is_clicked", className: "text-center", render: (c: SingleCampaignContactResponse) => <span className={`font-semibold flex items-center gap-2`}>
-                                            {c.is_clicked ? 1 : 0}
-                                            <span className="font-normal">times</span></span>
+                                            {c.is_clicked ? 'yes' : 'no'}
+                                        </span>
                                     },
-                                    { title: "Sent Time", key: "sent_at", className: "text-right", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleDateString('id-ID') : "-"}</span> }
+                                    { title: "Sent Time", key: "sent_at", className: "text-right", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "-"}</span> }
                                 ]}
                                 data={apiContacts}
                                 isLoading={isContactsLoading || isCampaignsLoading}
