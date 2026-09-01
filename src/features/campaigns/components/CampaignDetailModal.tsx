@@ -15,8 +15,8 @@ interface CampaignDetailModalProps {
 
 export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campaign, isOpen, onClose }) => {
     
-    const totalTarget = campaign.delivered || 0;
-    const totalSent = campaign.sent || 0;
+    const totalTarget = campaign.total_email || 0;
+    const totalSent = campaign.total_success || 0;
     
     type CampaignTargetContact = NonNullable<SingleCampaignResponse['campaign_contacts']>[0];
 
