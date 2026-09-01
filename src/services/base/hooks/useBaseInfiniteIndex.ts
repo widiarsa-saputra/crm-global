@@ -1,8 +1,6 @@
 import { useInfiniteQuery, UseInfiniteQueryOptions } from "@tanstack/react-query";
-import { privateApi } from "../../../../../crm-global/src/api/api";
 import { AxiosRequestConfig } from "axios";
 
-import { BaseResponse } from "../../../../../crm-global/src/services/base/response/BaseResponseSchema";
 
 interface RequestConfig extends Partial<AxiosRequestConfig> {
     endpoint: string;
@@ -16,6 +14,8 @@ export interface InfiniteQueryConfig<T> extends Omit<
 }
 
 import { ZodType, ZodTypeDef } from "zod";
+import { BaseResponse } from "../response/BaseResponseSchema";
+import { privateApi } from "@/api/api";
 
 interface UseBaseInfiniteIndexProps<T> {
     request: RequestConfig;
