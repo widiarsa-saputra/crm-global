@@ -14,6 +14,7 @@ import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.bubble.css';
 import DOMPurify from 'dompurify';
 import { InputRichText } from '@/components/InputRichText';
+import { Button } from '@/components/ui/button';
 
 export interface CampaignMutationFormProps<
     TFieldValues extends FieldValues,
@@ -55,6 +56,62 @@ export const CampaignMutationForm = <
     const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number }[];
     const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : null);
     const [fileError, setFileError] = useState<string | null>(null);
+
+    /**
+     * Ref to the wrapper div around the Custom Message InputRichText.
+     * Used to locate the underlying @uiw/react-md-editor textarea for
+     * cursor-aware dynamic tag insertion.
+     */
+    const messageEditorContainerRef = useRef<HTMLDivElement>(null);
+
+    /** Locate the MDEditor internal textarea inside the message editor. */
+    const getMessageTextarea = (): HTMLTextAreaElement | null =>
+        messageEditorContainerRef.current?.querySelector<HTMLTextAreaElement>(
+            'textarea.w-md-editor-text-input',
+        ) ?? null;
+
+    /**
+     * Insert `tag` at the cursor/selection inside the Custom Message editor,
+     * then restore focus and move the caret to immediately after the tag.
+     *
+     * Button `onMouseDown` calls `e.preventDefault()` so the textarea keeps
+     * focus — meaning selectionStart/selectionEnd are still accurate when
+     * this function runs inside `onClick`.
+     */
+    const insertTagAtCursorInMessage = (tag: string) => {
+        const textarea = getMessageTextarea();
+        const currentValue = (watch('message' as Path<TFieldValues>) as string) ?? '';
+
+        if (!textarea) {
+            // Fallback: append to end when the textarea cannot be located.
+            setValue(
+                'message' as Path<TFieldValues>,
+                `${currentValue} ${tag} ` as PathValue<TFieldValues, Path<TFieldValues>>,
+            );
+            return;
+        }
+
+        const { selectionStart, selectionEnd } = textarea;
+        const insertion = ` ${tag} `;
+        const before = currentValue.substring(0, selectionStart);
+        const after = currentValue.substring(selectionEnd);
+        const newContent = before + insertion + after;
+        const newCursorPos = selectionStart + insertion.length;
+
+        setValue(
+            'message' as Path<TFieldValues>,
+            newContent as PathValue<TFieldValues, Path<TFieldValues>>,
+        );
+
+        // Restore focus and caret after React re-renders the controlled value.
+        requestAnimationFrame(() => {
+            const ta = getMessageTextarea();
+            if (ta) {
+                ta.focus();
+                ta.setSelectionRange(newCursorPos, newCursorPos);
+            }
+        });
+    };
 
     const { data: apiContacts, isLoading: contactsLoading } = useIndexContact({
         params: {
@@ -300,20 +357,65 @@ export const CampaignMutationForm = <
                             </div>
                         )
                     ) : (
-                        <Controller
-                            control={control}
-                            name={"message" as Path<TFieldValues>}
-                            render={({ field }) => (
-                                <InputRichText
-                                    id="message"
-                                    label="Custom Message"
-                                    required
-                                    value={field.value as string}
-                                    onChange={field.onChange}
-                                    error={errors.message?.message as string}
+                        <>
+                            {/* Dynamic Tags — always visible when using a custom message */}
+                            <div className="flex flex-col gap-2">
+                                <label className="text-sm font-medium text-slate-700">Dynamic Tags</label>
+                                <div className="flex flex-wrap gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={() => insertTagAtCursorInMessage('{{nama}}')}
+                                        className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
+                                    >
+                                        + {`{{nama}}`}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={() => insertTagAtCursorInMessage('{{company}}')}
+                                        className="bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200"
+                                    >
+                                        + {`{{company}}`}
+                                    </Button>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="sm"
+                                        onMouseDown={(e) => e.preventDefault()}
+                                        onClick={() => insertTagAtCursorInMessage('{{email}}')}
+                                        className="bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200"
+                                    >
+                                        + {`{{email}}`}
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-muted-foreground">
+                                    Place the cursor in the editor, then click a tag to insert it at that position.
+                                </p>
+                            </div>
+
+                            {/* Custom Message editor */}
+                            <div ref={messageEditorContainerRef}>
+                                <Controller
+                                    control={control}
+                                    name={"message" as Path<TFieldValues>}
+                                    render={({ field }) => (
+                                        <InputRichText
+                                            id="message"
+                                            label="Custom Message"
+                                            required
+                                            value={field.value as string}
+                                            onChange={field.onChange}
+                                            error={errors.message?.message as string}
+                                        />
+                                    )}
                                 />
-                            )}
-                        />
+                            </div>
+                        </>
                     )}
 
                     {/* File Upload Section */}
