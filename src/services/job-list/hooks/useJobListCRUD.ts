@@ -12,7 +12,7 @@ const API_VERSION = "v1";
 export const useDeleteJobList = () => {
     return useBaseDelete<{ id: number }, DeleteJobListResponse, JobList>({
         queryKey: 'job-list',
-        endpoint: ({ id }) => `${API_VERSION}/job-lists/${id}`,
+        endpoint: ({ id }) => `${API_VERSION}/engagement/jobs/${id}`,
         schema: DeleteJobListResponseSchema,
         query: {
             onSuccess: (data) => data,
@@ -30,7 +30,7 @@ interface IndexJobListProps {
 export const useIndexJobList = (query: IndexJobListProps = {}) =>
     useBaseIndex({
         request: {
-            endpoint: `${API_VERSION}/job-lists`,
+            endpoint: `${API_VERSION}/engagement/jobs`,
             params: query.params,
         },
         query: {

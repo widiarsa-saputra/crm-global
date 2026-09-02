@@ -36,7 +36,7 @@ export const SingleContactSchema = z.object({
     nama: z.string(),
     email: z.string().email(),
     company: z.string().nullable(),
-    email_status: z.enum(statusEmailType),
+    email_status: z.string(),
     location: z.string().nullable().optional(),
     fax: z.string().nullable().optional(),
     created_at: z.string(),

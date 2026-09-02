@@ -1,38 +1,37 @@
+import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/response/BaseResponseSchema";
 import { z } from "zod";
 
-export const JobListObjectSchema = z.object({
-    id: z.number(),
+export const UserObjectSchema = z.object({
+    id: z.string(),
     name: z.string(),
-    description: z.string().nullable().optional(),
-    status: z.string().optional(),
+    email: z.string().email(),
+    email_verified_at: z.string().nullable().optional(),
+    phone: z.string().nullable().optional(),
     created_at: z.string().optional(),
     updated_at: z.string().optional(),
 });
 
+export const JobListObjectSchema = z.object({
+    id: z.number(),
+    triggered_by: z.string(),
+    status: z.string(),
+    total_contacts: z.number(),
+    processed_contacts: z.number(),
+    started_at: z.string().nullable().optional(),
+    completed_at: z.string().nullable().optional(),
+    error_message: z.string().nullable().optional(),
+    created_at: z.string().optional(),
+    updated_at: z.string().optional(),
+    user: UserObjectSchema.optional().nullable(),
+});
+
 export type JobList = z.infer<typeof JobListObjectSchema>;
 
-const BaseResponseSchema = z.object({
-    message: z.string(),
-    statusCode: z.number(),
-});
 
 
-export const IndexJobListResponseSchema = BaseResponseSchema.extend({
-    data: z.array(JobListObjectSchema),
-    pagination: z.object({
-        total: z.number(),
-        count: z.number(),
-        per_page: z.number(),
-        current_page: z.number(),
-        total_pages: z.number(),
-    }).optional(),
-});
+export const IndexJobListResponseSchema = BaseResponseSchema(z.array(JobListObjectSchema));
 export type IndexJobListResponse = z.infer<typeof IndexJobListResponseSchema>;
 
 
-export const DeleteJobListResponseSchema = BaseResponseSchema.extend({
-    data: z.object({
-        id: z.number(),
-    }).optional(),
-});
+export const DeleteJobListResponseSchema = GeneralResponseSchema;
 export type DeleteJobListResponse = z.infer<typeof DeleteJobListResponseSchema>;

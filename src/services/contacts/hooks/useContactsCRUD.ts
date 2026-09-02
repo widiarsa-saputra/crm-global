@@ -189,7 +189,7 @@ export const useCountBayesianEngagement = () => {
     const queryClient = useQueryClient();
     return useMutation<unknown, Error, void>({
         mutationFn: async () => {
-            const response = await privateApi.post(`/${API_VERSION}/contacts/count-bayesian-engagement`);
+            const response = await privateApi.post(`/${API_VERSION}/engagement/calculate`);
             return response.data;
         },
         onSuccess: () => {
