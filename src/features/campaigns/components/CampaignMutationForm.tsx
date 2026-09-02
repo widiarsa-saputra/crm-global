@@ -9,38 +9,27 @@ import { useIndexTemplate } from '@/services/templates';
 import { useIndexContact } from '@/services/contacts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { UseMutationResult } from '@tanstack/react-query';
 import 'react-quill-new/dist/quill.bubble.css';
 import { InputRichText } from '@/components/InputRichText';
 import { Button } from '@/components/ui/button';
 
 export interface CampaignMutationFormProps<
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 > {
     formId: string;
     form: UseFormReturn<TFieldValues>;
     onSubmit: SubmitHandler<TFieldValues>;
-    mutation?: UseMutationResult<TData, TError, TVariables, TContext>;
     initialSegmentId?: string | number | null;
 }
 
 export const CampaignMutationForm = <
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 >({
     formId,
     form,
     onSubmit,
-    mutation,
     initialSegmentId
-}: CampaignMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
+}: CampaignMutationFormProps<TFieldValues>) => {
     const { control, handleSubmit, formState: { errors }, watch, setValue } = form;
     const { data: apiSegments, isLoading: isSegmentsLoading } = useIndexSegment({});
     const { data: apiTemplates, isLoading: isTemplatesLoading } = useIndexTemplate({});

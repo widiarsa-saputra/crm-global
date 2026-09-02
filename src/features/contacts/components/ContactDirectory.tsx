@@ -443,30 +443,26 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                 )}
             </div>
 
-            {selectedContact && (
-                <>
-                    <EditContactModal
-                        contact={selectedContact}
-                        isOpen={dialog === 'edit'}
-                        onClose={handleCloseDialog}
-                    />
-                    <MoveSegmentModal
-                        contact={selectedContact}
-                        isOpen={dialog === 'move'}
-                        onClose={handleCloseDialog}
-                    />
-                    <UpdateStatusModal
-                        contact={selectedContact}
-                        isOpen={dialog === 'status'}
-                        onClose={handleCloseDialog}
-                    />
-                    <RemoveContactAlert
-                        contact={selectedContact}
-                        isOpen={dialog === 'delete'}
-                        onClose={handleCloseDialog}
-                    />
-                </>
-            )}
+            <EditContactModal
+                contact={selectedContact}
+                isOpen={dialog === 'edit'}
+                onClose={handleCloseDialog}
+            />
+            <MoveSegmentModal
+                contact={selectedContact}
+                isOpen={dialog === 'move'}
+                onClose={handleCloseDialog}
+            />
+            <UpdateStatusModal
+                contact={selectedContact}
+                isOpen={dialog === 'status'}
+                onClose={handleCloseDialog}
+            />
+            <RemoveContactAlert
+                contact={selectedContact}
+                isOpen={dialog === 'delete'}
+                onClose={handleCloseDialog}
+            />
 
             <AlertDialog
                 open={importAlertState.open}

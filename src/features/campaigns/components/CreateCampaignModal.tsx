@@ -67,7 +67,6 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
                     formId="create-campaign-form"
                     form={form}
                     onSubmit={onSubmit}
-                    mutation={mutation}
                 />
             </Modal>
             <SubmitLoading mutation={mutation} successMessage="Campaign berhasil dibuat!" errorMessage="Gagal membuat campaign!" />

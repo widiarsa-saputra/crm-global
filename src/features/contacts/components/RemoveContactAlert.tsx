@@ -1,5 +1,5 @@
 import React from 'react';
-import { createPortal } from 'react-dom';
+
 import AlertDialog from '@/shared/components/alert-dialog/AlertDialog';
 import { useDeleteContact } from '@/services/contacts/hooks/useContactsCRUD';
 import { SingleContactResponse } from '@/services/contacts';
@@ -28,27 +28,18 @@ export const RemoveContactAlert: React.FC<RemoveContactAlertProps> = ({ contact,
                 setIsAlertOpen(false);
                 queryClient.invalidateQueries({ queryKey: ['contact-list'] });
                 queryClient.invalidateQueries({ queryKey: ['contact-list-infinite'] });
-                setTimeout(() => {
-                    onClose();
-                }, 2000);
+                onClose();
             }
         });
     };
 
     return (
         <>
-            {typeof window !== 'undefined' && document.body
-                ? createPortal(
-                      <div className="relative z-[100]">
-                          <SubmitLoading 
-                              mutation={deleteContactMutation as UseMutationResult}
-                              successMessage="Contact berhasil dihapus"
-                              errorMessage="Gagal menghapus contact"
-                          />
-                      </div>,
-                      document.body
-                  )
-                : null}
+            <SubmitLoading 
+                mutation={deleteContactMutation as UseMutationResult}
+                successMessage="Contact berhasil dihapus"
+                errorMessage="Gagal menghapus contact"
+            />
             <AlertDialog
                 open={isAlertOpen}
                 onOpenChange={(open) => {

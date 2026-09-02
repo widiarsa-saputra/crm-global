@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useCreateContact } from '@/services/contacts/hooks/useContactsCRUD';
 import { CreateContactSchema, CreateContact } from '@/services/contacts/schema/ContactsSchema';
 import { ContactMutationForm } from './ContactMutationForm';
+import { SubmitLoading } from '@/components/SubmitLoading';
 
 interface AddContactModalProps {
     trigger?: React.ReactNode;
@@ -43,29 +44,31 @@ export const AddContactModal: React.FC<AddContactModalProps> = ({ trigger }) => 
     };
 
     return (
-        <Modal
-            open={isOpen}
-            onOpenChange={handleOpenChange}
-            trigger={trigger}
-            title="Add New Contact"
-            description="Create a new contact and assign them to a segment."
-            footer={
-                <div className="flex justify-end gap-2 w-full">
-                    <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={createContactMutation.isPending}>
-                        Cancel
-                    </Button>
-                    <Button type="submit" form="add-contact-form" disabled={createContactMutation.isPending}>
-                        {createContactMutation.isPending ? 'Saving...' : 'Save Contact'}
-                    </Button>
-                </div>
-            }
-        >
-            <ContactMutationForm
-                formId="add-contact-form"
-                form={form}
-                onSubmit={onSubmit}
-                mutation={createContactMutation}
-            />
-        </Modal>
+        <>
+            <Modal
+                open={isOpen}
+                onOpenChange={handleOpenChange}
+                trigger={trigger}
+                title="Add New Contact"
+                description="Create a new contact and assign them to a segment."
+                footer={
+                    <div className="flex justify-end gap-2 w-full">
+                        <Button type="button" variant="ghost" onClick={() => handleOpenChange(false)} disabled={createContactMutation.isPending}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" form="add-contact-form" disabled={createContactMutation.isPending}>
+                            {createContactMutation.isPending ? 'Saving...' : 'Save Contact'}
+                        </Button>
+                    </div>
+                }
+            >
+                <ContactMutationForm
+                    formId="add-contact-form"
+                    form={form}
+                    onSubmit={onSubmit}
+                />
+            </Modal>
+            <SubmitLoading mutation={createContactMutation} successMessage="Contact berhasil dibuat!" errorMessage="Gagal membuat contact!" />
+        </>
     );
 };

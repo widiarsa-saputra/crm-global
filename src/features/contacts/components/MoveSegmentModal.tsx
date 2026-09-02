@@ -8,7 +8,7 @@ import { useIndexSegment } from '@/services/segments';
 import { Users } from 'lucide-react';
 
 interface MoveSegmentModalProps {
-    contact: SingleContactResponse | null;
+    contact?: SingleContactResponse | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -35,7 +35,7 @@ export const MoveSegmentModal: React.FC<MoveSegmentModalProps> = ({ contact, isO
     const handleConfirm = () => {
         if (!contact) return;
         updateContact({ 
-            id: contact.id, 
+            id: contact?.id ?? '',
             data: { segment_id: selectedSegmentId } 
         }, {
             onSuccess: () => {
@@ -44,14 +44,14 @@ export const MoveSegmentModal: React.FC<MoveSegmentModalProps> = ({ contact, isO
         });
     };
 
-    if (!contact) return null;
+
 
     return (
         <Modal
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title="Move to Segment"
-            description={`Change segment for ${contact.nama}`}
+            description={`Change segment for ${contact?.nama ?? ''}`}
             footer={
                 <div className="flex justify-end gap-2 w-full">
                     <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>

@@ -7,7 +7,7 @@ import Combobox from '@/components/Combobox';
 import { ShieldCheck } from 'lucide-react';
 
 interface UpdateStatusModalProps {
-    contact: SingleContactResponse | null;
+    contact?: SingleContactResponse | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -31,7 +31,7 @@ export const UpdateStatusModal: React.FC<UpdateStatusModalProps> = ({ contact, i
     const handleConfirm = () => {
         if (!contact) return;
         updateContact({ 
-            id: contact.id, 
+            id: contact?.id ?? '',
             data: { email_status: selectedStatus as (typeof statusEmailType)[number] } 
         }, {
             onSuccess: () => {
@@ -40,14 +40,14 @@ export const UpdateStatusModal: React.FC<UpdateStatusModalProps> = ({ contact, i
         });
     };
 
-    if (!contact) return null;
+
 
     return (
         <Modal
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
             title="Update Status"
-            description={`Change email status for ${contact.nama}`}
+            description={`Change email status for ${contact?.nama ?? ''}`}
             footer={
                 <div className="flex justify-end gap-2 w-full">
                     <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>

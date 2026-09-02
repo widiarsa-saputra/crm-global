@@ -1,35 +1,24 @@
 
 import { Controller, UseFormReturn, FieldValues, Path, SubmitHandler } from 'react-hook-form';
 import { FloatingInput } from '@/components/FloatingInput';
-import { SubmitLoading } from '@/components/SubmitLoading';
+
 import { Tag } from 'lucide-react';
-import { UseMutationResult } from '@tanstack/react-query';
 
 export interface SegmentMutationFormProps<
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 > {
     formId: string;
     form: UseFormReturn<TFieldValues>;
     onSubmit: SubmitHandler<TFieldValues>;
-    mutation?: UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
 export const SegmentMutationForm = <
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 >({
     formId,
     form,
-    onSubmit,
-    mutation
-}: SegmentMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
+    onSubmit
+}: SegmentMutationFormProps<TFieldValues>) => {
     const { control, handleSubmit, formState: { errors }, watch } = form;
 
     const watchedName = watch('name' as Path<TFieldValues>);
@@ -55,7 +44,7 @@ export const SegmentMutationForm = <
                 )}
             />
 
-            {mutation && <SubmitLoading mutation={mutation} successMessage="Segment berhasil disimpan!" errorMessage="Gagal menyimpan segment!" />}
+
         </form>
     );
 };

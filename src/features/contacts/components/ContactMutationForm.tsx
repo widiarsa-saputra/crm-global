@@ -2,36 +2,25 @@ import { useMemo } from 'react';
 import { Controller, UseFormReturn, FieldValues, Path, SubmitHandler } from 'react-hook-form';
 import { FloatingInput } from '@/components/FloatingInput';
 import Combobox from '@/components/Combobox';
-import { SubmitLoading } from '@/components/SubmitLoading';
+
 import { Mail, User, Building, ShieldCheck, Users, MapPin, Phone } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
-import { UseMutationResult } from '@tanstack/react-query';
 
 export interface ContactMutationFormProps<
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 > {
     formId: string;
     form: UseFormReturn<TFieldValues>;
     onSubmit: SubmitHandler<TFieldValues>;
-    mutation?: UseMutationResult<TData, TError, TVariables, TContext>;
 }
 
 export const ContactMutationForm = <
-    TFieldValues extends FieldValues,
-    TData = unknown,
-    TError = unknown,
-    TVariables = unknown,
-    TContext = unknown
+    TFieldValues extends FieldValues
 >({
     formId,
     form,
-    onSubmit,
-    mutation
-}: ContactMutationFormProps<TFieldValues, TData, TError, TVariables, TContext>) => {
+    onSubmit
+}: ContactMutationFormProps<TFieldValues>) => {
     const { control, handleSubmit, formState: { errors }, watch } = form;
     const { data: apiSegments } = useIndexSegment({});
 
@@ -191,7 +180,7 @@ export const ContactMutationForm = <
                 />
             </div>
 
-            {mutation && <SubmitLoading mutation={mutation} successMessage="Contact berhasil disimpan!" errorMessage="Gagal menyimpan contact!" />}
+
         </form>
     );
 };

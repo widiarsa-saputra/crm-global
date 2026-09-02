@@ -149,21 +149,17 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                 </div>
             </ScrollArea>
 
-            {selectedSegment && dialog === 'edit' && (
-                <EditSegmentModal
-                    segment={selectedSegment}
-                    isOpen={dialog === 'edit'}
-                    onClose={closeDialog}
-                />
-            )}
+            <EditSegmentModal
+                segment={selectedSegment}
+                isOpen={dialog === 'edit'}
+                onClose={closeDialog}
+            />
 
-            {selectedSegment && dialog === 'delete' && (
-                <RemoveSegmentAlert
-                    segment={selectedSegment}
-                    isOpen={dialog === 'delete'}
-                    onClose={closeDialog}
-                />
-            )}
+            <RemoveSegmentAlert
+                segment={selectedSegment}
+                isOpen={dialog === 'delete'}
+                onClose={closeDialog}
+            />
         </div>
     );
 };
