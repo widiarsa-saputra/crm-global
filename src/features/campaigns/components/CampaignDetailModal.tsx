@@ -26,8 +26,8 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
             key: "email",
             render: (contact) => (
                 <div className="flex flex-col">
-                    <span className="font-medium">{contact.contact?.email ?? 'test@gmail.com'}</span>
-                    <span className="text-xs text-muted-foreground">{contact.contact?.nama ?? 'testing developer'}</span>
+                    <span className="font-medium">{contact.contact_email ?? 'test@gmail.com'}</span>
+                    <span className="text-xs text-muted-foreground">{contact.contact_name ?? 'testing developer'}</span>
                 </div>
             )
         },
@@ -158,10 +158,10 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Message</span>
                                 <div className="font-medium bg-slate-50 rounded border min-h-[100px] text-sm overflow-hidden">
-                                    {campaign.message || campaign.template_message ? (
+                                    {campaign.message || campaign.message ? (
                                         <div 
                                             className="p-3 prose prose-sm max-w-none text-slate-700"
-                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign.message || campaign.template_message || '') }}
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign.message || campaign.message || '') }}
                                         />
                                     ) : (
                                         <div className="p-3">

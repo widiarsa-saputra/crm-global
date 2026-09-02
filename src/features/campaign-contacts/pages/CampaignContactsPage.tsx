@@ -49,7 +49,6 @@ const CampaignContactsPage: React.FC = () => {
             page: contactPage,
             paginate: contactItemsPerPage,
             search: contactSearch || undefined,
-            include: 'contact'
         },
         enabled: !!selectedCampaignId
     });
@@ -99,8 +98,8 @@ const CampaignContactsPage: React.FC = () => {
                         <div className="overflow-auto">
                             <BaseTable
                                 columns={[
-                                    { title: "Contact Name", key: "contact_name", render: (c: SingleCampaignContactResponse) => <span className="font-medium">{c.contact?.nama || "Unknown"}</span> },
-                                    { title: "Email", key: "email", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.contact?.email || c.email || c.contact_email || "Unknown"}</span> },
+                                    { title: "Contact Name", key: "contact_name", render: (c: SingleCampaignContactResponse) => <span className="font-medium">{c.contact_name || "Unknown"}</span> },
+                                    { title: "Email", key: "email", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.contact_email || c.contact_email || "Unknown"}</span> },
                                     {
                                         title: "Status", 
                                         key: "status", 
