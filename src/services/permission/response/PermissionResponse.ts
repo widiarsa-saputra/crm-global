@@ -2,13 +2,13 @@ import { BaseResponseSchema, GeneralResponseSchema } from "@/services/base/respo
 import { z } from "zod";
 
 export const PermissionSchema = z.object({
-    guard_name: z.string(),
+    guard_name: z.string().nullable().optional(),
     display_name: z.string(),
     group: z.string(),
     name: z.string(),
     updated_at: z.string(),
     created_at: z.string(),
-    id: z.string(),
+    id: z.coerce.string(),
 });
 
 

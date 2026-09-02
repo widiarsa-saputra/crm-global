@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import AddPermissionModal from './AddPermissionModal'
 import DebouncedSearchInput from '@/shared/components/search/DebouncedSearchInput'
-import { useIndexPermission } from '@/services/permission';
+import { SinglePermissionResponse, useIndexPermission } from '@/services/permission';
 import { Download, Search } from 'lucide-react';
 import FilterDropdown from '@/shared/components/utility/FilterDropdown';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -50,13 +50,14 @@ const PermissionPageContent: React.FC = () => {
         {
             title: "Actions",
             key: "actions",
-            render: (item: any) => (
+            render: (item: SinglePermissionResponse) => (
                 <>
                     <EditPermissionModal permission={item} />
                     <RemovePermission permission={item} />
                 </>
             ),
             className: "text-right",
+            copyValue: false
         },
     ];
 
