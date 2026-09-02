@@ -18,7 +18,7 @@ import ContactsPage from "@/features/contacts/pages/ContactsPage";
 import CampaignsPage from "@/features/campaigns/pages/CampaignsPage";
 import CampaignContactsPage from "@/features/campaign-contacts/pages/CampaignContactsPage";
 import TemplatesPage from "@/features/templates/pages/TemplatesPage";
-
+import JobListPage from "@/features/job-list/pages/JobListPage";
 
 type ProtectedRoute = {
     path: string;
@@ -145,6 +145,13 @@ const APP_ROUTES: Record<string, AppRoute> = {
         roles: [],
         permissions: [],
     },    
+    JOB_LIST: {
+        path: "/job-list",
+        element: <JobListPage />,
+        protected: true,
+        roles: [],
+        permissions: [],
+    },
 
     LOGIN: {
         path: "/authentication",

@@ -123,7 +123,7 @@ export const SegmentSidebar: React.FC<SegmentSidebarProps> = ({ onSelectSegment,
                                         onClick={() => onSelectSegment(segment.id)}
                                     >
                                         <span className="w-2 h-2 rounded-full bg-primary/40 shrink-0" />
-                                        <span className="flex-1 text-left truncate">{segment.name}</span>
+                                        <span className="flex-1 text-left truncate capitalize">{segment.name}</span>
                                         <Badge variant="secondary" className={cn("ml-auto font-normal", activeSegmentId === segment.id ? 'bg-background' : 'border bg-background border-slate-200')}>
                                             {segment.count}
                                         </Badge>

@@ -1,5 +1,5 @@
 import React, { ElementType } from "react";
-import { Folder, Lock, ShieldCheck, UserCircle, Users } from "lucide-react";
+import { Folder, Lock, ShieldCheck, UserCircle, Users, List } from "lucide-react";
 
 export interface MenuItem {
     icon: React.ElementType;
@@ -33,6 +33,7 @@ export const ROUTES = {
     CHANGE_PASSWORD: { path: "/profil/ganti-kata-sandi" },
     NOTIFICATIONS: { path: "/notifikasi" },
     FILE_MANAGER: { path: "/manajer-berkas" },
+    JOB_LIST: { path: "/job-list" },
     LOGIN: { path: "/authentication" },
     FORBIDDEN: { path: "/terlarang" },
     NOT_FOUND: { path: "*" },
@@ -55,6 +56,12 @@ export const userSections: MenuSection[] = [
         label: "Manajemen Sistem",
         icon: Folder as ElementType,
         items: [
+            {
+                text: "Job List",
+                url: ROUTES.JOB_LIST.path,
+                icon: List,
+                permissions: [],
+            },
             {
                 text: "Manajer Berkas",
                 url: ROUTES.FILE_MANAGER.path,

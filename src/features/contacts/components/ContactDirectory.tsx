@@ -7,6 +7,7 @@ import { Slider } from '@/components/ui/slider';
 import {
     useIndexContact,
     useImportContacts,
+    useCountBayesianEngagement,
     downloadContactTemplate,
     downloadImportResult
 } from '@/services/contacts';
@@ -60,6 +61,7 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
     const fileInputRef = React.useRef<HTMLInputElement>(null);
     const { mutate: importContacts, isPending: isImporting } = useImportContacts();
+    const { mutate: countBayesian, isPending: isCountingBayesian } = useCountBayesianEngagement();
     const [importAlertState, setImportAlertState] = useState<{
         open: boolean;
         status: 'success' | 'error' | null;
@@ -179,6 +181,16 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
 
                             Import
                         </span>
+                    </Button>
+                    <Button
+                        variant="outline"
+                        onClick={() => countBayesian()}
+                        disabled={isCountingBayesian}
+                        className="flex items-center gap-2"
+                        title="Hitung ulang Bayesian Engagement untuk semua kontak"
+                    >
+                        {isCountingBayesian ? <Loader2 className="w-4 h-4 animate-spin" /> : <Users className="w-4 h-4" />}
+                        <span className="max-2xl:hidden">Count Bayesian</span>
                     </Button>
 
                     <AddContactModal

@@ -1,3 +1,4 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useBaseCreate } from "@/services/base/hooks/useBaseCreate";
 import { useBaseDelete } from "@/services/base/hooks/useBaseDelete";
 import useBaseIndex from "@/services/base/hooks/useBaseIndex";
@@ -182,3 +183,17 @@ export const useUpdateContact = () =>
             },
         },
     });
+
+
+export const useCountBayesianEngagement = () => {
+    const queryClient = useQueryClient();
+    return useMutation<unknown, Error, void>({
+        mutationFn: async () => {
+            const response = await privateApi.post(`/${API_VERSION}/contacts/count-bayesian-engagement`);
+            return response.data;
+        },
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["contact-list"] });
+        },
+    });
+};
