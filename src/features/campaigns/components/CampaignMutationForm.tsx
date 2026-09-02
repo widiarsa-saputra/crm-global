@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { UseFormReturn, Controller, FieldValues, Path, PathValue, SubmitHandler } from 'react-hook-form';
 import { FloatingInput, FloatingDateInput } from '@/components/FloatingInput';
 import Combobox, { TimezoneCombobox } from '@/components/Combobox';
-import { SubmitLoading } from '@/components/SubmitLoading';
+
 import { Type, Mail, Calendar, Users, FileText, Clock } from 'lucide-react';
 import { useIndexSegment } from '@/services/segments';
 import { useIndexTemplate } from '@/services/templates';
@@ -526,7 +526,7 @@ export const CampaignMutationForm = <
                 </div>
             </div>
 
-            {mutation && <SubmitLoading mutation={mutation} successMessage="Campaign berhasil disimpan!" errorMessage="Gagal menyimpan campaign!" />}
+
         </form>
     );
 };

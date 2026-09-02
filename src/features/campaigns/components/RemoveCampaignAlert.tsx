@@ -11,10 +11,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { useDeleteCampaign, SingleCampaignResponse } from '@/services/campaign';
 import { SubmitLoading } from '@/components/SubmitLoading';
-import { createPortal } from 'react-dom';
 
 interface RemoveCampaignAlertProps {
-    campaign: SingleCampaignResponse;
+    campaign?: SingleCampaignResponse | null;
     isOpen: boolean;
     onClose: () => void;
 }
@@ -31,13 +30,11 @@ export const RemoveCampaignAlert: React.FC<RemoveCampaignAlertProps> = ({ campai
     const handleConfirm = (e: React.MouseEvent) => {
         e.preventDefault();
         mutation.mutate(
-            { id: campaign.id },
+            { id: campaign?.id ?? '' },
             {
                 onSuccess: () => {
-                    setTimeout(() => {
-                        setIsAlertOpen(false);
-                        onClose();
-                    }, 2000); // matching behavior from RemoveContactAlert
+                    setIsAlertOpen(false);
+                    onClose();
                 },
             }
         );
@@ -55,7 +52,7 @@ export const RemoveCampaignAlert: React.FC<RemoveCampaignAlertProps> = ({ campai
                     <AlertDialogHeader>
                         <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                         <AlertDialogDescription>
-                            This will permanently delete the campaign <strong>{campaign.campaign_name}</strong> and remove all its data.
+                            This will permanently delete the campaign <strong>{campaign?.campaign_name}</strong> and remove all its data.
                             This action cannot be undone.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
@@ -74,12 +71,7 @@ export const RemoveCampaignAlert: React.FC<RemoveCampaignAlertProps> = ({ campai
                 </AlertDialogContent>
             </AlertDialog>
             
-            {createPortal(
-                <div className="z-[100] relative">
-                    <SubmitLoading mutation={mutation} />
-                </div>,
-                document.body
-            )}
+            <SubmitLoading mutation={mutation} successMessage="Campaign berhasil dihapus!" errorMessage="Gagal menghapus campaign!" />
         </>
     );
 };

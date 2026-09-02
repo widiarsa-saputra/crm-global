@@ -2,6 +2,7 @@
 import React from 'react';
 import { Modal } from '@/shared/components/modal/Modal';
 import { Button } from '@/components/ui/button';
+import { SubmitLoading } from '@/components/SubmitLoading';
 import { CampaignMutationForm } from './CampaignMutationForm';
 import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -44,29 +45,32 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
     const pastDateTime = isPastDateTime(form.watch('date') ?? '', form.watch('time') ?? '');
 
     return (
-        <Modal
-            open={isOpen}
-            onOpenChange={(open) => !open && onClose()}
-            title="Create New Campaign"
-            size='2xl'
-            description="Set up a new email campaign to engage with your contacts."
-            footer={
-                <div className="flex justify-end gap-2 w-full">
-                    <Button type="button" variant="ghost" onClick={onClose} disabled={mutation.isPending}>
-                        Cancel
-                    </Button>
-                    <Button type="submit" form="create-campaign-form" disabled={mutation.isPending || pastDateTime}>
-                        {mutation.isPending ? 'Creating...' : 'Create Campaign'}
-                    </Button>
-                </div>
-            }
-        >
-            <CampaignMutationForm
-                formId="create-campaign-form"
-                form={form}
-                onSubmit={onSubmit}
-                mutation={mutation}
-            />
-        </Modal>
+        <>
+            <Modal
+                open={isOpen}
+                onOpenChange={(open) => !open && onClose()}
+                title="Create New Campaign"
+                size='2xl'
+                description="Set up a new email campaign to engage with your contacts."
+                footer={
+                    <div className="flex justify-end gap-2 w-full">
+                        <Button type="button" variant="ghost" onClick={onClose} disabled={mutation.isPending}>
+                            Cancel
+                        </Button>
+                        <Button type="submit" form="create-campaign-form" disabled={mutation.isPending || pastDateTime}>
+                            {mutation.isPending ? 'Creating...' : 'Create Campaign'}
+                        </Button>
+                    </div>
+                }
+            >
+                <CampaignMutationForm
+                    formId="create-campaign-form"
+                    form={form}
+                    onSubmit={onSubmit}
+                    mutation={mutation}
+                />
+            </Modal>
+            <SubmitLoading mutation={mutation} successMessage="Campaign berhasil dibuat!" errorMessage="Gagal membuat campaign!" />
+        </>
     );
 };

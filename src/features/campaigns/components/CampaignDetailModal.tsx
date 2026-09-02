@@ -8,15 +8,15 @@ import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
 
 interface CampaignDetailModalProps {
-    campaign: SingleCampaignResponse;
+    campaign?: SingleCampaignResponse | null;
     isOpen: boolean;
     onClose: () => void;
 }
 
 export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campaign, isOpen, onClose }) => {
     
-    const totalTarget = campaign.total_email || 0;
-    const totalSent = campaign.total_success || 0;
+    const totalTarget = campaign?.total_email || 0;
+    const totalSent = campaign?.total_success || 0;
     
     type CampaignTargetContact = NonNullable<SingleCampaignResponse['campaign_contacts']>[0];
 
@@ -91,8 +91,8 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
         <Modal
             open={isOpen}
             onOpenChange={(open) => !open && onClose()}
-            title={`Campaign Report: ${campaign.campaign_name}`}
-            description={`Blast will be executed on ${new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) || '-'} at ${campaign.time || '-'} (${campaign.timezone || '-'})`}
+            title={`Campaign Report: ${campaign?.campaign_name}`}
+            description={`Blast will be executed on ${new Date(campaign?.date ?? '').toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) || '-'} at ${campaign?.time || '-'} (${campaign?.timezone || '-'})`}
             size='2xl'
         >
             <div className="flex flex-col gap-6 py-4">
@@ -125,7 +125,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         </div>
                         <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Open Rate</p>
-                            <h3 className="text-2xl font-bold">{campaign.open_rate}%</h3>
+                            <h3 className="text-2xl font-bold">{campaign?.open_rate}%</h3>
                         </div>
                     </div>
 
@@ -135,7 +135,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         </div>
                         <div className="flex flex-col">
                             <p className="text-sm text-muted-foreground font-medium">Click Rate</p>
-                            <h3 className="text-2xl font-bold">{campaign.click_rate}%</h3>
+                            <h3 className="text-2xl font-bold">{campaign?.click_rate}%</h3>
                         </div>
                     </div>
                 </div>
@@ -149,19 +149,19 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                         <div className="p-4 grid gap-4">
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Mail className="w-4 h-4" /> Email Subject</span>
-                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.email_subject || '-'}</span>
+                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign?.email_subject || '-'}</span>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm text-muted-foreground flex items-center gap-1.5"><Tags className="w-4 h-4" /> Target Segment</span>
-                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.segment_name || 'All Contacts'}</span>
+                                <span className="font-medium bg-slate-50 p-2 rounded border">{campaign?.segment_name || 'All Contacts'}</span>
                             </div>
                             <div className="flex flex-col gap-1">
                                 <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Message</span>
                                 <div className="font-medium bg-slate-50 rounded border min-h-[100px] text-sm overflow-hidden">
-                                    {campaign.message || campaign.message ? (
+                                    {campaign?.message || campaign?.message ? (
                                         <div 
                                             className="p-3 prose prose-sm max-w-none text-slate-700"
-                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign.message || campaign.message || '') }}
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign?.message || campaign?.message || '') }}
                                         />
                                     ) : (
                                         <div className="p-3">
@@ -179,15 +179,15 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                             Target Contacts List
                         </div>
                         <div className="overflow-auto flex-1 max-h-[500px]">
-                            {campaign.campaign_contacts && campaign.campaign_contacts.length > 0 ? (
+                            {campaign?.campaign_contacts && campaign?.campaign_contacts.length > 0 ? (
                                 <BaseTable 
                                     columns={contactColumns} 
-                                    data={campaign.campaign_contacts} 
+                                    data={campaign?.campaign_contacts} 
                                     className="border-none"
                                 />
                             ) : (
                                 <div className="p-8 text-center text-muted-foreground h-full flex items-center justify-center">
-                                    No target contacts found for this campaign.
+                                    No target contacts found for this campaign?.
                                 </div>
                             )}
                         </div>
