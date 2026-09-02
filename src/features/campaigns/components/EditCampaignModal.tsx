@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { UpdateCampaignSchema, UpdateCampaignPayload } from '@/services/campaign/schema/CampaignSchema';
 import { useUpdateCampaign } from '@/services/campaign/hooks/useCampaignCRUD';
 import { SingleCampaignResponse } from '@/services/campaign';
+import PrintJson from '@/lib/printjson';
 
 interface EditCampaignModalProps {
     campaign: SingleCampaignResponse;
@@ -74,6 +75,7 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 </div>
             }
         >
+            <PrintJson data={form.watch()}/>
             <CampaignMutationForm
                 formId="edit-campaign-form"
                 form={form}

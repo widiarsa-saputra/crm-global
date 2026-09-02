@@ -7,6 +7,7 @@ import { Resolver, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateCampaignSchema, CreateCampaignPayload } from '@/services/campaign/schema/CampaignSchema';
 import { useCreateCampaign } from '@/services/campaign/hooks/useCampaignCRUD';
+import { isPastDateTime } from '@/lib/utils';
 
 interface CreateCampaignModalProps {
     isOpen: boolean;
@@ -40,6 +41,8 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
         });
     };
 
+    const pastDateTime = isPastDateTime(form.watch('time') ?? '', form.watch('date'))
+
     return (
         <Modal
             open={isOpen}
@@ -52,8 +55,8 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
                     <Button type="button" variant="ghost" onClick={onClose} disabled={mutation.isPending}>
                         Cancel
                     </Button>
-                    <Button type="submit" form="create-campaign-form" disabled={mutation.isPending}>
-                        {mutation.isPending ? 'Creating...' : 'Create Campaign'}
+                    <Button type="submit" form="create-campaign-form" disabled={mutation.isPending || pastDateTime}>
+                        {mutation.isPending ? 'Creating...' : 'Create Campaign'} {pastDateTime ? 'true' : 'false'}
                     </Button>
                 </div>
             }

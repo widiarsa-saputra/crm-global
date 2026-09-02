@@ -52,7 +52,7 @@ export const CampaignMutationForm = <
     const watchedTime = watch('time' as Path<TFieldValues>);
     const watchedTimezone = watch('timezone' as Path<TFieldValues>);
     const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number }[];
-    const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : null);
+    const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : 'all');
     const [fileError, setFileError] = useState<string | null>(null);
 
     /**
@@ -460,8 +460,7 @@ export const CampaignMutationForm = <
                             <label className="text-sm font-medium text-slate-700">Target Contacts</label>
                             {contactsLoading ? (
                                 <p className="text-sm text-slate-500">Loading contacts...</p>
-                            ) : segmentContacts.length > 0 ? (
-                                <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col">
+                            ) : <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col">
                                     <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
                                         <div className="flex items-center space-x-2">
                                             <Checkbox
@@ -506,10 +505,7 @@ export const CampaignMutationForm = <
                                             ))}
                                         </div>
                                     </ScrollArea>
-                                </div>
-                            ) : (
-                                <p className="text-sm text-slate-500 bg-slate-50 p-3 rounded-md border border-slate-200">No contacts found for this segment.</p>
-                            )}
+                                </div>}
                             {errors.campaign_contacts && (
                                 <p className="text-xs text-red-500 mt-1">{errors.campaign_contacts.message as string}</p>
                             )}

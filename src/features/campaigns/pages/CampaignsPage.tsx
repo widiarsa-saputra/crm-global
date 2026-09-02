@@ -129,7 +129,7 @@ const CampaignsPage: React.FC = () => {
                         <Eye className="w-4 h-4" />
                     </Button>
 
-                    {campaign.status === 'draft' && (
+                    {campaign.status !== 'completed' && (
                         <Button
                             variant="ghost"
                             size="icon"

@@ -157,3 +157,18 @@ export const getMetricColor = (val: number) => {
   if (val >= 100) return 'text-green-600';
   return 'text-orange-500';
 };
+
+export function isPastDateTime(date: string, time: string): boolean {
+  // Jika salah satu belum diisi, kembalikan false (atau sesuaikan kebutuhan)
+  if (!date || !time) return false;
+
+  // Gabungkan date ("YYYY-MM-DD") dan time ("HH:mm") -> "YYYY-MM-DDTHH:mm"
+  const selected = new Date(`${date}T${time}`);
+  const now = new Date();
+
+  // Validasi jika format tanggal/jam tidak valid
+  if (isNaN(selected.getTime())) return false;
+
+  // Lebih kecil berarti waktu tersebut sudah lewat (masa lalu)
+  return selected.getTime() < now.getTime();
+}
