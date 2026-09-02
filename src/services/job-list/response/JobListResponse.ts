@@ -16,10 +16,6 @@ const BaseResponseSchema = z.object({
     statusCode: z.number(),
 });
 
-export const CreateJobListResponseSchema = BaseResponseSchema.extend({
-    data: JobListObjectSchema,
-});
-export type CreateJobListResponse = z.infer<typeof CreateJobListResponseSchema>;
 
 export const IndexJobListResponseSchema = BaseResponseSchema.extend({
     data: z.array(JobListObjectSchema),
@@ -33,10 +29,6 @@ export const IndexJobListResponseSchema = BaseResponseSchema.extend({
 });
 export type IndexJobListResponse = z.infer<typeof IndexJobListResponseSchema>;
 
-export const UpdateJobListResponseSchema = BaseResponseSchema.extend({
-    data: JobListObjectSchema,
-});
-export type UpdateJobListResponse = z.infer<typeof UpdateJobListResponseSchema>;
 
 export const DeleteJobListResponseSchema = BaseResponseSchema.extend({
     data: z.object({

@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { DataPageTemplate } from '@/components/ui/data-page-template';
 import { Column } from '@/shared/components/table/BaseTable';
-import { useIndexJobList, useCreateJobList, useUpdateJobList, useDeleteJobList, JobList, CreateJobListSchema, UpdateJobListSchema, CreateJobList, UpdateJobList } from '@/services/job-list';
-import { JobListForm } from './JobListForm';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useIndexJobList, useDeleteJobList, JobList } from '@/services/job-list';
 import { Badge } from '@/components/ui/badge';
 
 const JobListContent: React.FC = () => {
@@ -17,8 +15,6 @@ const JobListContent: React.FC = () => {
         }
     });
 
-    const createMutation = useCreateJobList();
-    const updateMutation = useUpdateJobList();
     const deleteMutation = useDeleteJobList();
 
     const jobLists = Array.isArray(response?.data) ? response.data : [];
@@ -40,7 +36,7 @@ const JobListContent: React.FC = () => {
     ];
 
     return (
-        <DataPageTemplate<JobList, any>
+        <DataPageTemplate<JobList>
             title="Job List"
             description="Manage your job lists here"
             columns={columns}
@@ -51,33 +47,7 @@ const JobListContent: React.FC = () => {
             totalItems={totalItems}
             onPageChange={setCurrentPage}
             onItemsPerPageChange={setItemsPerPage}
-            mutationMode="modal"
-            mutationForm={{
-                component: JobListForm,
-                resolver: zodResolver(CreateJobListSchema),
-                emptyValues: {
-                    name: '',
-                    description: '',
-                    status: 'active',
-                },
-                defaultValues: (item) => ({
-                    id: item.id,
-                    name: item.name,
-                    description: item.description || '',
-                    status: item.status || 'active',
-                })
-            }}
             submitActions={{
-                add: {
-                    onConfirm: async (data: CreateJobList) => {
-                        await createMutation.mutateAsync(data);
-                    },
-                },
-                edit: {
-                    onConfirm: async (item: JobList, data: UpdateJobList) => {
-                        await updateMutation.mutateAsync({ ...data, id: item.id });
-                    },
-                },
                 delete: {
                     onConfirm: async (item: JobList) => {
                         await deleteMutation.mutateAsync({ id: item.id });
