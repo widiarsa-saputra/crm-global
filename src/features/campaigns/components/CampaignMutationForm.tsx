@@ -526,7 +526,7 @@ export const CampaignMutationForm = <
                 </div>
             </div>
 
-            {mutation && <SubmitLoading mutation={mutation} />}
+            {mutation && <SubmitLoading mutation={mutation} successMessage="Campaign berhasil disimpan!" errorMessage="Gagal menyimpan campaign!" />}
         </form>
     );
 };

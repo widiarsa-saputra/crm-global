@@ -55,7 +55,7 @@ export const SegmentMutationForm = <
                 )}
             />
 
-            {mutation && <SubmitLoading mutation={mutation} />}
+            {mutation && <SubmitLoading mutation={mutation} successMessage="Segment berhasil disimpan!" errorMessage="Gagal menyimpan segment!" />}
         </form>
     );
 };

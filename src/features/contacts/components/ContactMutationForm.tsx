@@ -191,7 +191,7 @@ export const ContactMutationForm = <
                 />
             </div>
 
-            {mutation && <SubmitLoading mutation={mutation} />}
+            {mutation && <SubmitLoading mutation={mutation} successMessage="Contact berhasil disimpan!" errorMessage="Gagal menyimpan contact!" />}
         </form>
     );
 };
