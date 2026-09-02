@@ -6,6 +6,7 @@ import { BaseTable, Column } from '@/shared/components/table/BaseTable';
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.bubble.css';
 import DOMPurify from 'dompurify';
+import { cn } from '@/lib/utils';
 
 interface CampaignDetailModalProps {
     campaign: SingleCampaignResponse;
@@ -69,15 +70,21 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
         },
         {
             title: "Opens",
-            key: "open_freq" as keyof CampaignTargetContact,
+            key: "is_open" as keyof CampaignTargetContact,
             className: "text-center",
-            render: (contact) => <span className="font-medium">{contact.is_open || 0}</span>
+            render: (contact) => <span className={cn(
+                "font-medium capitalize",
+                contact.is_open ? 'text-green-600' : 'text-red-600'
+            )}>{contact.is_open ? 'opened' : 'not opened'}</span>
         },
         {
             title: "Clicks",
-            key: "click_freq" as keyof CampaignTargetContact,
+            key: "is_clicked" as keyof CampaignTargetContact,
             className: "text-center",
-            render: (contact) => <span className="font-medium">{contact.is_clicked || 0}</span>
+            render: (contact) => <span className={cn(
+                "font-medium capitalize",
+                contact.is_clicked ? 'text-green-600' : 'text-red-600'
+            )}>{contact.is_clicked ? 'clicked' : 'not clicked'}</span>
         }
     ];
 
