@@ -152,30 +152,36 @@ const CampaignContactsPage: React.FC = () => {
 
                 {/* BOTTOM SECTION: Master Campaign List */}
                 <div className="flex-none border-t flex flex-col py-2 gap-4">
-                    <div className="flex items-center justify-between">
-                        <h3 className="font-semibold flex items-center gap-2">
-                            Select Campaign to View
-                            {isCampaignsLoading && <Loader2 className="w-4 h-4 text-primary animate-spin" />}
-                        </h3>
+                    <hgroup className="flex items-center justify-between">
+                        <div className="flex flex-col">
+                            <h3 className="font-semibold flex items-center gap-2">
+                                Select Campaign to View
+                                {isCampaignsLoading && <Loader2 className="w-4 h-4 text-primary animate-spin" />}
+                            </h3>
+                            <p className="text-sm text-muted-foreground mt-0.5">
+                                Please click a row in the table below to load and view the contacts for that campaign.
+                            </p>
+                        </div>
                         <DebouncedSearchInput
                             value={campaignSearch}
                             onChange={(v) => { setCampaignSearch(v); setCampaignPage(1); }}
                             placeholder="Search campaign..."
                         />
-                    </div>
+                    </hgroup>
                     <div className="rounded overflow-hidden flex flex-col">
                         <div className="overflow-auto flex-1">
                             <BaseTable
                                 columns={[
                                     {
-                                        title: "Campaign Name", copyValue: false, key: "name", render: (c: SingleCampaignResponse) => (
+                                        title: "Campaign Name", key: "name", render: (c: SingleCampaignResponse) => (
                                             <div className="flex flex-col">
                                                 <span className="font-medium">{c.campaign_name}</span>
                                                 <span className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
                                                     <FileText className="w-3 h-3" /> Template linked
                                                 </span>
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     {
                                         title: "Target Segment", key: "segment", render: (c: SingleCampaignResponse) => (
@@ -183,7 +189,8 @@ const CampaignContactsPage: React.FC = () => {
                                                 <Users className="w-4 h-4 text-muted-foreground" />
                                                 {c.segment_name}
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     { title: "Status", key: "status", render: (c: SingleCampaignResponse) => getStatusBadge(c.status) },
                                     {
@@ -191,35 +198,40 @@ const CampaignContactsPage: React.FC = () => {
                                             <span className="text-muted-foreground">
                                                 {c.date ? new Date(c.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}
                                             </span>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     {
                                         title: "Total Success", key: "total_delivered", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className="font-semibold">
                                                 {c.total_success} <span className="font-normal">mail</span>
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     {
                                         title: "Total Email", key: "total_sent", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className="font-semibold">
                                                 {c.total_email} <span className="font-normal">mail</span>
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     {
                                         title: "Open Rate", key: "open_rate", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.open_rate)}`}>
                                                 {c.open_rate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     },
                                     {
                                         title: "Click Rate", key: "click_rate", className: "text-right", render: (c: SingleCampaignResponse) => (
                                             <div className={`flex items-center justify-end gap-1 font-semibold ${getMetricColor(c.click_rate)}`}>
                                                 {c.click_rate} <Percent className="w-3 h-3 opacity-70" />
                                             </div>
-                                        )
+                                        ),
+                                        copyValue: false
                                     }
                                 ]}
                                 data={paginatedCampaigns}
