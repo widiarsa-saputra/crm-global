@@ -43,7 +43,7 @@ export const SingleContactSchema = z.object({
     updated_at: z.string(),
     total_sent: z.number().optional(),
     raw_engagement: z.number().optional(),
-    bayesian_engagement: z.number().optional(),
+    bayesian_engagement: z.coerce.number().optional(),
     last_engagement_count_date: z.string().nullable().optional(),
     segment: SegmentSchema.optional().nullable(),
     total_opens: z.number().optional(),

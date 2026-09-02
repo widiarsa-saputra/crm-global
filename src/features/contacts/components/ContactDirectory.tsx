@@ -68,6 +68,9 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
         downloadId?: string;
     }>({ open: false, status: null });
 
+    const [bayesianAlertOpen, setBayesianAlertOpen] = useState(false);
+    const [bayesianAlertDate, setBayesianAlertDate] = useState<Date | null>(null);
+
     const handleImportClick = () => {
         fileInputRef.current?.click();
     };
@@ -184,7 +187,12 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                     </Button>
                     <Button
                         variant="outline"
-                        onClick={() => countBayesian()}
+                        onClick={() => countBayesian(undefined, {
+                            onSuccess: () => {
+                                setBayesianAlertDate(new Date());
+                                setBayesianAlertOpen(true);
+                            }
+                        })}
                         disabled={isCountingBayesian}
                         className="flex items-center gap-2"
                         title="Hitung ulang Bayesian Engagement untuk semua kontak"
@@ -491,6 +499,25 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                 </AlertDialogAction>
                             </>
                         )}
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            <AlertDialog
+                open={bayesianAlertOpen}
+                onOpenChange={setBayesianAlertOpen}
+            >
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Kalkulasi Bayesian Berhasil Dimulai</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Proses hitung ulang Bayesian Engagement telah berhasil dipicu pada {bayesianAlertDate?.toLocaleString()}.
+                            <br /><br />
+                            Silakan cek path <strong>/job-list</strong> untuk melihat status semua cron job.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogAction onClick={() => setBayesianAlertOpen(false)}>Tutup</AlertDialogAction>
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
