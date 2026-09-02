@@ -41,7 +41,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
         });
     };
 
-    const pastDateTime = isPastDateTime(form.watch('time') ?? '', form.watch('date'))
+    const pastDateTime = isPastDateTime(form.watch('date') ?? '', form.watch('time') ?? '');
 
     return (
         <Modal
@@ -56,7 +56,7 @@ export const CreateCampaignModal: React.FC<CreateCampaignModalProps> = ({ isOpen
                         Cancel
                     </Button>
                     <Button type="submit" form="create-campaign-form" disabled={mutation.isPending || pastDateTime}>
-                        {mutation.isPending ? 'Creating...' : 'Create Campaign'} {pastDateTime ? 'true' : 'false'}
+                        {mutation.isPending ? 'Creating...' : 'Create Campaign'}
                     </Button>
                 </div>
             }

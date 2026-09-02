@@ -6,7 +6,9 @@ export const CreateCampaignSchema = z.object({
     message: z.string().optional(),
     target_segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_contacts: z.array(z.object({
-        contact_id: z.union([z.string(), z.number()])
+        contact_id: z.union([z.string(), z.number()]),
+        contact_name: z.string().optional(),
+        contact_email: z.string().optional()
     })).optional(),
     campaign_name: z.string().min(1, "Campaign name is required"),
     email_subject: z.string().min(1, "Email subject is required"),
@@ -27,7 +29,9 @@ export const UpdateCampaignSchema = z.object({
     time: optionalTrimmedString(),
     timezone: optionalTrimmedString(),
     campaign_contacts: z.array(z.object({
-        contact_id: z.union([z.string(), z.number()])
+        contact_id: z.union([z.string(), z.number()]),
+        contact_name: z.string().optional(),
+        contact_email: z.string().optional()
     })).optional(),
     status: z.enum(['draft', 'processing', 'completed', 'failed']).optional(),
 });

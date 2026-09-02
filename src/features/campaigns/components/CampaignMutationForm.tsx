@@ -51,8 +51,8 @@ export const CampaignMutationForm = <
     const watchedDate = watch('date' as Path<TFieldValues>);
     const watchedTime = watch('time' as Path<TFieldValues>);
     const watchedTimezone = watch('timezone' as Path<TFieldValues>);
-    const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number }[];
-    const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : 'all');
+    const watchedCampaignContacts = (watch('campaign_contacts' as Path<TFieldValues>) || []) as { contact_id: string | number, contact_name?: string, contact_email?: string }[];
+    const [watchedSegmentId, setWatchedSegmentId] = useState<string | null>(initialSegmentId ? String(initialSegmentId) : null);
     const [fileError, setFileError] = useState<string | null>(null);
 
     /**
@@ -455,33 +455,39 @@ export const CampaignMutationForm = <
                         isLoading={isSegmentsLoading}
                     />
 
-                    {watchedSegmentId ? (
+                    {watchedSegmentId || watchedCampaignContacts.length > 0 ? (
                         <div className="flex flex-col gap-2 h-full mt-4">
                             <label className="text-sm font-medium text-slate-700">Target Contacts</label>
-                            {contactsLoading ? (
+                            {contactsLoading && watchedSegmentId ? (
                                 <p className="text-sm text-slate-500">Loading contacts...</p>
                             ) : <div className="border border-slate-200 rounded-md overflow-hidden bg-white flex flex-col">
                                     <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
                                         <div className="flex items-center space-x-2">
-                                            <Checkbox
-                                                id="select-all"
-                                                checked={watchedCampaignContacts.length === segmentContacts.length && segmentContacts.length > 0}
-                                                onCheckedChange={(checked) => {
-                                                    if (checked) {
-                                                        setValue('campaign_contacts' as Path<TFieldValues>, segmentContacts.map(c => ({ contact_id: c.id.toString() })) as PathValue<TFieldValues, Path<TFieldValues>>);
-                                                    } else {
-                                                        setValue('campaign_contacts' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
-                                                    }
-                                                }}
-                                            />
-                                            <label htmlFor="select-all" className="text-sm font-medium leading-none cursor-pointer">
-                                                Select All ({segmentContacts.length})
-                                            </label>
+                                            {watchedSegmentId ? (
+                                                <>
+                                                    <Checkbox
+                                                        id="select-all"
+                                                        checked={watchedCampaignContacts.length === segmentContacts.length && segmentContacts.length > 0}
+                                                        onCheckedChange={(checked) => {
+                                                            if (checked) {
+                                                                setValue('campaign_contacts' as Path<TFieldValues>, segmentContacts.map(c => ({ contact_id: c.id.toString(), contact_name: c.nama, contact_email: c.email })) as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                            } else {
+                                                                setValue('campaign_contacts' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <label htmlFor="select-all" className="text-sm font-medium leading-none cursor-pointer">
+                                                        Select All ({segmentContacts.length})
+                                                    </label>
+                                                </>
+                                            ) : (
+                                                <span className="text-sm font-medium text-slate-700">Selected Contacts ({watchedCampaignContacts.length})</span>
+                                            )}
                                         </div>
                                     </div>
                                     <ScrollArea className="flex-1">
                                         <div className="p-3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                            {segmentContacts.map((contact) => (
+                                            {(watchedSegmentId ? segmentContacts.map(c => ({ id: c.id, nama: c.nama, email: c.email })) : watchedCampaignContacts.map(c => ({ id: c.contact_id, nama: c.contact_name, email: c.contact_email }))).map((contact) => (
                                                 <div key={contact.id} className="flex items-start space-x-3 min-w-0">
                                                     <Checkbox
                                                         id={`contact-${contact.id}`}
@@ -490,16 +496,15 @@ export const CampaignMutationForm = <
                                                         onCheckedChange={(checked) => {
                                                             const currentContacts = watchedCampaignContacts || [];
                                                             if (checked) {
-                                                                setValue('campaign_contacts' as Path<TFieldValues>, [...currentContacts, { contact_id: contact.id.toString() }] as PathValue<TFieldValues, Path<TFieldValues>>);
+                                                                setValue('campaign_contacts' as Path<TFieldValues>, [...currentContacts, { contact_id: contact.id.toString(), contact_name: contact.nama, contact_email: contact.email }] as PathValue<TFieldValues, Path<TFieldValues>>);
                                                             } else {
                                                                 setValue('campaign_contacts' as Path<TFieldValues>, currentContacts.filter(c => c.contact_id.toString() !== contact.id.toString()) as PathValue<TFieldValues, Path<TFieldValues>>);
                                                             }
                                                         }}
                                                     />
                                                     <label htmlFor={`contact-${contact.id}`} className="text-sm leading-none cursor-pointer flex flex-col min-w-0">
-                                                        <span className="font-medium text-slate-700">{contact.nama}</span>
-                                                        <span className="text-xs text-slate-500 mt-1 truncate max-w-full" title={contact.email}>{contact.email}
-                                                        </span>
+                                                        <span className="font-medium text-slate-700">{contact.nama || 'Unknown'}</span>
+                                                        <span className="text-xs text-slate-500 mt-1 truncate max-w-full" title={contact.email || ''}>{contact.email || 'Unknown'}</span>
                                                     </label>
                                                 </div>
                                             ))}

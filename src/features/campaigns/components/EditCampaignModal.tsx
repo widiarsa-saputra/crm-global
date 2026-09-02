@@ -28,7 +28,11 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
             timezone: campaign.timezone || '',
             message: campaign.message || '',
             target_segment_id: campaign.segment_id ? String(campaign.segment_id) : null,
-            campaign_contacts: campaign.campaign_contacts?.map((c) => ({ contact_id: c.contact_id.toString() })) || [],
+            campaign_contacts: campaign.campaign_contacts?.map((c) => ({ 
+                contact_id: c.contact_id.toString(),
+                contact_name: c.contact_name || c.contact?.nama || 'Unknown',
+                contact_email: c.contact_email || c.email || c.contact?.email || 'Unknown'
+            })) || [],
             status: campaign.status || 'draft',
         },
     });
@@ -43,7 +47,11 @@ export const EditCampaignModal: React.FC<EditCampaignModalProps> = ({ campaign, 
                 timezone: campaign.timezone || '',
                 message: campaign.message || '',
                 target_segment_id: campaign.segment_id ? String(campaign.segment_id) : null,
-                campaign_contacts: campaign.campaign_contacts?.map((c) => ({ contact_id: c.contact_id.toString() })) || [],
+                campaign_contacts: campaign.campaign_contacts?.map((c) => ({ 
+                    contact_id: c.contact_id.toString(),
+                    contact_name: c.contact_name || c.contact?.nama || 'Unknown',
+                    contact_email: c.contact_email || c.email || c.contact?.email || 'Unknown'
+                })) || [],
                 status: campaign.status || 'draft',
             });
         }
