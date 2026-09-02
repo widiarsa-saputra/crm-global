@@ -231,11 +231,26 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                             )
                         },
                         {
-                            title: "Engagement",
-                            key: "engagement_rate",
+                            title: "Raw Engagement",
+                            key: "raw_engagement",
                             className: "text-center",
                             sortable: true,
-                            render: (c: SingleContactResponse) => <span className={`font-semibold ${getMetricColor(c.engagement_rate || 0)}`}>{c.engagement_rate}%</span>
+                            render: (c: SingleContactResponse) => (
+                                <span className={`font-semibold ${getMetricColor(c.raw_engagement ?? 0)}`}>
+                                    {c.raw_engagement != null ? `${c.raw_engagement.toFixed(1)}%` : '-'}
+                                </span>
+                            )
+                        },
+                        {
+                            title: "Bayesian Engagement",
+                            key: "bayesian_engagement",
+                            className: "text-center",
+                            sortable: true,
+                            render: (c: SingleContactResponse) => (
+                                <span className={`font-semibold ${getMetricColor(c.bayesian_engagement ?? 0)}`}>
+                                    {c.bayesian_engagement != null ? `${c.bayesian_engagement.toFixed(1)}%` : '-'}
+                                </span>
+                            )
                         },
                         {
                             title: "Company",
@@ -291,6 +306,19 @@ export const ContactDirectory: React.FC<ContactDirectoryProps> = ({ activeSegmen
                                     <Phone className="w-3.5 h-3.5" />
                                     <span className="truncate">{c.fax || '-'}</span>
                                 </div>
+                            )
+                        },
+                        {
+                            title: "Last Counted",
+                            key: "last_engagement_count_date",
+                            className: "text-center",
+                            sortable: true,
+                            render: (c: SingleContactResponse) => (
+                                <span className="text-sm text-slate-600">
+                                    {c.last_engagement_count_date
+                                        ? new Date(c.last_engagement_count_date).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' })
+                                        : '-'}
+                                </span>
                             )
                         },
                         {

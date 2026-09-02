@@ -9,8 +9,8 @@
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
 
-  <link rel="icon" type="image/png" href="/logo/ic_logo.png" />
-  <link rel="apple-touch-icon" href="/logo/ic_logo.png" />
+  <link rel="icon" type="image/png" href="/logo/logo-1.png" />
+  <link rel="apple-touch-icon" href="/logo/logo-1.png" />
   <link rel="manifest" href="/manifest.json" />
   <meta name="theme-color" content="#001944" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -43,7 +43,7 @@
       // 2. Cek file version.json ke server
       // Menggunakan "?t=" agar file JSON dipaksa ambil baru dari server, bukan cache
       fetch('/version.json?t=' + Date.now())
-        .then(function (response) { 
+        .then(function (response) {
           return response.text();
         })
         .then(function (text) {

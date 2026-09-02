@@ -78,7 +78,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ collapsed, toggleSideba
                         <div className="border rounded-full border-3 border-primary bg-white w-10 h-10 flex items-center justify-center">
                             {/* <UserRoundSearch className="w-4 h-4 rounded-full text-primary" /> */}
                             <img
-                                src="/logo/ic_logo.png"
+                                src="/logo/logo-1.png"
                                 className='w-5 h-5 object-contain'
                             />
                         </div>
