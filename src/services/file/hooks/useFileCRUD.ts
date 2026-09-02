@@ -99,10 +99,6 @@ export const useForceDeleteFile = () => {
     });
 };
 
-
-
-
-
 interface IndexFileProps {
     params?: { 
         search?: string;
