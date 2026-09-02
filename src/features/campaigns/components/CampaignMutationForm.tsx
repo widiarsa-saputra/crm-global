@@ -10,9 +10,7 @@ import { useIndexContact } from '@/services/contacts';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { UseMutationResult } from '@tanstack/react-query';
-import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.bubble.css';
-import DOMPurify from 'dompurify';
 import { InputRichText } from '@/components/InputRichText';
 import { Button } from '@/components/ui/button';
 
@@ -49,7 +47,7 @@ export const CampaignMutationForm = <
 
     const watchedCampaignName = watch('campaign_name' as Path<TFieldValues>);
     const watchedEmailSubject = watch('email_subject' as Path<TFieldValues>);
-    const watchedTemplateId = watch('template_id' as Path<TFieldValues>);
+    const [selectedTemplateId, setSelectedTemplateId] = useState<string>('');
     const watchedDate = watch('date' as Path<TFieldValues>);
     const watchedTime = watch('time' as Path<TFieldValues>);
     const watchedTimezone = watch('timezone' as Path<TFieldValues>);
@@ -185,13 +183,7 @@ export const CampaignMutationForm = <
         ];
     }, [apiTemplates]);
 
-    const selectedMessage = useMemo(() => {
-        if (!watchedTemplateId || !apiTemplates?.data) return '';
-        const template = (apiTemplates.data as { id: string | number; message: string }[]).find(
-            (t) => String(t.id) === String(watchedTemplateId)
-        );
-        return template?.message || '';
-    }, [watchedTemplateId, apiTemplates]);
+
 
     const [isEmailSubjectFocused, setIsEmailSubjectFocused] = useState(false);
 
@@ -326,97 +318,81 @@ export const CampaignMutationForm = <
                         )}
                     />
 
-                    <Controller
-                        control={control}
-                        name={"template_id" as Path<TFieldValues>}
-                        render={({ field }) => (
-                            <Combobox
-                                id="template_id"
-                                label="Template (Optional)"
-                                icon={FileText}
-                                options={templateOptions}
-                                value={field.value ? String(field.value) : null}
-                                onChange={(option) => field.onChange(option.value)}
-                                error={errors.template_id?.message as string}
-                                isLoading={isTemplatesLoading}
-                            />
-                        )}
+                    <Combobox
+                        id="template_id"
+                        label="Template (Optional)"
+                        icon={FileText}
+                        options={templateOptions}
+                        value={selectedTemplateId}
+                        onChange={(option) => {
+                            setSelectedTemplateId(option.value);
+                            if (option.value) {
+                                const template = (apiTemplates?.data as { id: string | number; message: string }[])?.find(t => String(t.id) === String(option.value));
+                                if (template) {
+                                    setValue('message' as Path<TFieldValues>, template.message as PathValue<TFieldValues, Path<TFieldValues>>);
+                                }
+                            }
+                        }}
+                        isLoading={isTemplatesLoading}
                     />
 
-                    {watchedTemplateId ? (
-                        selectedMessage && (
-                            <div className="bg-slate-50 text-slate-700 text-sm rounded border border-slate-200 overflow-hidden">
-                                <div className="p-3 border-b border-slate-200 bg-slate-100">
-                                    <p className="font-medium text-[10px] text-slate-500 uppercase tracking-wider">Template Preview</p>
-                                </div>
-                                <ReactQuill
-                                    value={DOMPurify.sanitize(selectedMessage)}
-                                    readOnly={true}
-                                    theme="bubble"
-                                />
-                            </div>
-                        )
-                    ) : (
-                        <>
-                            {/* Dynamic Tags — always visible when using a custom message */}
-                            <div className="flex flex-col gap-2">
-                                <label className="text-sm font-medium text-slate-700">Dynamic Tags</label>
-                                <div className="flex flex-wrap gap-2">
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => insertTagAtCursorInMessage('{{nama}}')}
-                                        className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
-                                    >
-                                        + {`{{nama}}`}
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => insertTagAtCursorInMessage('{{company}}')}
-                                        className="bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200"
-                                    >
-                                        + {`{{company}}`}
-                                    </Button>
-                                    <Button
-                                        type="button"
-                                        variant="outline"
-                                        size="sm"
-                                        onMouseDown={(e) => e.preventDefault()}
-                                        onClick={() => insertTagAtCursorInMessage('{{email}}')}
-                                        className="bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200"
-                                    >
-                                        + {`{{email}}`}
-                                    </Button>
-                                </div>
-                                <p className="text-xs text-muted-foreground">
-                                    Place the cursor in the editor, then click a tag to insert it at that position.
-                                </p>
-                            </div>
+                    {/* Dynamic Tags and Custom Message editor are always visible */}
+                    <div className="flex flex-col gap-2">
+                        <label className="text-sm font-medium text-slate-700">Dynamic Tags</label>
+                        <div className="flex flex-wrap gap-2">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => insertTagAtCursorInMessage('{{nama}}')}
+                                className="bg-blue-50 text-blue-700 hover:bg-blue-100 border-blue-200"
+                            >
+                                + {`{{nama}}`}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => insertTagAtCursorInMessage('{{company}}')}
+                                className="bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200"
+                            >
+                                + {`{{company}}`}
+                            </Button>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                onMouseDown={(e) => e.preventDefault()}
+                                onClick={() => insertTagAtCursorInMessage('{{email}}')}
+                                className="bg-amber-50 text-amber-700 hover:bg-amber-100 border-amber-200"
+                            >
+                                + {`{{email}}`}
+                            </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                            Place the cursor in the editor, then click a tag to insert it at that position.
+                        </p>
+                    </div>
 
-                            {/* Custom Message editor */}
-                            <div ref={messageEditorContainerRef}>
-                                <Controller
-                                    control={control}
-                                    name={"message" as Path<TFieldValues>}
-                                    render={({ field }) => (
-                                        <InputRichText
-                                            id="message"
-                                            label="Custom Message"
-                                            required
-                                            value={field.value as string}
-                                            onChange={field.onChange}
-                                            error={errors.message?.message as string}
-                                        />
-                                    )}
+                    {/* Custom Message editor */}
+                    <div ref={messageEditorContainerRef}>
+                        <Controller
+                            control={control}
+                            name={"message" as Path<TFieldValues>}
+                            render={({ field }) => (
+                                <InputRichText
+                                    id="message"
+                                    label="Custom Message"
+                                    required
+                                    value={field.value as string}
+                                    onChange={field.onChange}
+                                    error={errors.message?.message as string}
                                 />
-                            </div>
-                        </>
-                    )}
+                            )}
+                        />
+                    </div>
 
                     {/* File Upload Section */}
                     <div className="flex flex-col gap-4">
@@ -473,6 +449,7 @@ export const CampaignMutationForm = <
                         value={watchedSegmentId}
                         onChange={(option) => {
                             setWatchedSegmentId(option.value);
+                            setValue('target_segment_id' as Path<TFieldValues>, (option.value === 'all' || !option.value ? null : option.value) as PathValue<TFieldValues, Path<TFieldValues>>);
                             setValue('campaign_contacts' as Path<TFieldValues>, [] as PathValue<TFieldValues, Path<TFieldValues>>);
                         }}
                         isLoading={isSegmentsLoading}

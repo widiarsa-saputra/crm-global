@@ -2,9 +2,9 @@ import { z } from "zod";
 import { optionalTrimmedString } from "@/lib/zod";
 
 export const CreateCampaignSchema = z.object({
-    template_id: z.union([z.string(), z.number()]).nullable().optional(),
     file_id: z.any().nullable().optional(),
     message: z.string().optional(),
+    target_segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     campaign_contacts: z.array(z.object({
         contact_id: z.union([z.string(), z.number()])
     })).optional(),
@@ -17,10 +17,9 @@ export const CreateCampaignSchema = z.object({
 });
 
 export const UpdateCampaignSchema = z.object({
-    template_id: z.union([z.string(), z.number()]).nullable().optional(),
     file_id: z.any().nullable().optional(),
     message: optionalTrimmedString(),
-    segment_id: z.union([z.string(), z.number()]).nullable().optional(),
+    target_segment_id: z.union([z.string(), z.number()]).nullable().optional(),
     target_contact_ids: z.array(z.union([z.string(), z.number()])).optional(),
     campaign_name: optionalTrimmedString(),
     email_subject: optionalTrimmedString(),

@@ -3,7 +3,6 @@ import { Modal } from '@/shared/components/modal/Modal';
 import { SingleCampaignResponse } from '@/services/campaign';
 import { Users, Send, MousePointerClick, MailOpen, Mail, AlignLeft, Tags } from 'lucide-react';
 import { BaseTable, Column } from '@/shared/components/table/BaseTable';
-import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.bubble.css';
 import DOMPurify from 'dompurify';
 import { cn } from '@/lib/utils';
@@ -141,9 +140,9 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-[auto_1fr] gap-6 items-start">
+                <div className="flex flex-col md:flex-row gap-6 items-start">
                     {/* Campaign Information Section */}
-                    <div className="bg-white border rounded-xl overflow-hidden">
+                    <div className="w-full md:w-[350px] shrink-0 bg-white border rounded-xl overflow-hidden">
                         <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700">
                             Campaign Information
                         </div>
@@ -157,17 +156,16 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                                 <span className="font-medium bg-slate-50 p-2 rounded border">{campaign.segment_name || 'All Contacts'}</span>
                             </div>
                             <div className="flex flex-col gap-1">
-                                <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Template Message</span>
+                                <span className="text-sm text-muted-foreground flex items-center gap-1.5"><AlignLeft className="w-4 h-4" /> Message</span>
                                 <div className="font-medium bg-slate-50 rounded border min-h-[100px] text-sm overflow-hidden">
-                                    {campaign.template_message ? (
-                                        <ReactQuill 
-                                            value={DOMPurify.sanitize(campaign.template_message)}
-                                            readOnly={true}
-                                            theme="bubble"
+                                    {campaign.message || campaign.template_message ? (
+                                        <div 
+                                            className="p-3 prose prose-sm max-w-none text-slate-700"
+                                            dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(campaign.message || campaign.template_message || '') }}
                                         />
                                     ) : (
                                         <div className="p-3">
-                                            <span className="text-muted-foreground italic">No template message available</span>
+                                            <span className="text-muted-foreground italic">No message available</span>
                                         </div>
                                     )}
                                 </div>
@@ -176,7 +174,7 @@ export const CampaignDetailModal: React.FC<CampaignDetailModalProps> = ({ campai
                     </div>
 
                     {/* Target Contacts Table Section */}
-                    <div className="bg-white border rounded-xl overflow-hidden flex flex-col h-full min-h-[100px]">
+                    <div className="w-full flex-1 bg-white border rounded-xl overflow-hidden flex flex-col h-full min-h-[100px]">
                         <div className="bg-slate-50 border-b px-4 py-3 font-semibold text-slate-700 shrink-0">
                             Target Contacts List
                         </div>

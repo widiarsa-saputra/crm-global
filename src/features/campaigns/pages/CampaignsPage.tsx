@@ -83,6 +83,11 @@ const CampaignsPage: React.FC = () => {
             render: (campaign) => getStatusBadge(campaign.status)
         },
         {
+            title: "Total email",
+            key: "total_email",
+            render: (campaign) => campaign.total_email
+        },
+        {
             title: "Schedule Date",
             key: "date",
             render: (campaign) => <span className="text-muted-foreground">{campaign.date ? new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}</span>
