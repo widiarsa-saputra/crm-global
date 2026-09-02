@@ -102,7 +102,7 @@ const RolePageContent: React.FC = () => {
                                     size="icon"
                                     variant="outline"
                                     className="w-8 h-8 rounded ml-1 border-dashed"
-                                    onClick={() => navigate(`/roles/${item.id}/users`)}
+                                    onClick={() => navigate(`/izin/${item.id}/pengguna`)}
                                 >
                                     <Plus className="w-4 h-4" />
                                 </Button>
@@ -116,7 +116,7 @@ const RolePageContent: React.FC = () => {
                                             <div
                                                 key={idx}
                                                 className={`w-8 h-8 rounded ${bgColor} text-white flex items-center justify-center text-xs font-medium border-2 border-white`}
-                                                onClick={() => navigate(`/roles/${item.id}/users`)}
+                                                onClick={() => navigate(`/peran/${item.id}/users`)}
                                             >
                                                 {getInitials(user.name)}
                                             </div>
@@ -126,7 +126,7 @@ const RolePageContent: React.FC = () => {
                                         size="icon"
                                         variant="outline"
                                         className="w-8 h-8 rounded ml-1 border-dashed"
-                                        onClick={() => navigate(`/roles/${item.id}/users`)}
+                                        onClick={() => navigate(`/peran/${item.id}/users`)}
                                     >
                                         <Plus className="w-4 h-4" />
                                     </Button>
@@ -143,7 +143,7 @@ const RolePageContent: React.FC = () => {
                                     variant="ghost"
                                     size="sm"
                                     className="h-6 px-2"
-                                    onClick={() => navigate(`/roles/${item.id}/permissions`)}
+                                    onClick={() => navigate(`/peran/${item.id}/izin`)}
                                     aria-label="View"
                                 >
                                     <List className="h-4 w-4" />

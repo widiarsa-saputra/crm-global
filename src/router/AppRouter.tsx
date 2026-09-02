@@ -104,7 +104,7 @@ const APP_ROUTES: Record<string, AppRoute> = {
         permissions: [],
     },
     ROLES_USERS_ASSIGNED: {
-        path: "/peran/:roleId/pengguna",
+        path: "/peran/:roleId/users",
         element: <RoleUsersAssignedPage />,
         protected: true,
         roles: ["admin", 'dev'],
