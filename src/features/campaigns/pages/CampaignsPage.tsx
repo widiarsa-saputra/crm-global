@@ -187,7 +187,7 @@ const CampaignsPage: React.FC = () => {
                             <div className="w-64">
                                 <FloatingDateInput
                                     id="filter-date"
-                                    label="Date"
+                                    label="Filter Date"
                                     icon={Calendar}
                                     value={scheduleDate}
                                     onChange={setScheduleDate}
@@ -198,7 +198,7 @@ const CampaignsPage: React.FC = () => {
                             <div className="w-fit">
                                 <FloatingInput
                                     id="filter-time"
-                                    label="Time"
+                                    label="Filter Time"
                                     icon={Clock}
                                     type="time"
                                     watch={scheduleTime}
