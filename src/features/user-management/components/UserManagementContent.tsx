@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { DashboardCard } from '@/shared/components/card/DashboardCard';
-import { Download, Filter, Loader2, Search, UserRoundCheck, UserRoundPlus, UserRoundX, Users } from 'lucide-react';
+// import { DashboardCard } from '@/shared/components/card/DashboardCard';
+import { Download, Filter, Loader2, Search, 
+    // UserRoundCheck, UserRoundPlus, UserRoundX, Users
+ } from 'lucide-react';
 import React, { useState } from 'react'
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import UserManagementTable from './UserManagementTable';
 import { Checkbox } from '@/components/ui/checkbox';
 import PaginationWithShow from '@/shared/components/pagination/PaginationWithShow';
@@ -17,7 +19,7 @@ import { useDownloadImportTemplate } from '@/services/user';
 import { toast } from 'sonner';
 
 const UserManagementContent: React.FC = () => {
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
     const exportUsers = useExportUsers();
     const downloadTemplate = useDownloadImportTemplate();
 
@@ -46,36 +48,36 @@ const UserManagementContent: React.FC = () => {
             });
         }
     };
-    const dashboardCards = [
-        {
-            title: t("user-management.card.total-users"),
-            icon: <Users className="h-4 w-4" />,
-            iconBg: "bg-slate-50 text-slate-400",
-            value: "0",
-            changeType: "up" as const,
-        },
-        {
-            title: t("user-management.card.active-users"),
-            icon: <UserRoundCheck className="h-4 w-4" />,
-            iconBg: "bg-emerald-50 text-emerald-500",
-            value: "0",
-            changeType: "up" as const,
-        },
-        {
-            title: t("user-management.card.inactive-users"),
-            icon: <UserRoundX className="h-4 w-4" />,
-            iconBg: "bg-red-50 text-red-500",
-            value: "0",
-            changeType: "down" as const,
-        },
-        {
-            title: t("user-management.card.recently-added"),
-            icon: <UserRoundPlus className="h-4 w-4" />,
-            iconBg: "bg-blue-50 text-blue-500",
-            value: "0",
-            changeType: "up" as const,
-        },
-    ]
+    // const dashboardCards = [
+    //     {
+    //         title: t("user-management.card.total-users"),
+    //         icon: <Users className="h-4 w-4" />,
+    //         iconBg: "bg-slate-50 text-slate-400",
+    //         value: "0",
+    //         changeType: "up" as const,
+    //     },
+    //     {
+    //         title: t("user-management.card.active-users"),
+    //         icon: <UserRoundCheck className="h-4 w-4" />,
+    //         iconBg: "bg-emerald-50 text-emerald-500",
+    //         value: "0",
+    //         changeType: "up" as const,
+    //     },
+    //     {
+    //         title: t("user-management.card.inactive-users"),
+    //         icon: <UserRoundX className="h-4 w-4" />,
+    //         iconBg: "bg-red-50 text-red-500",
+    //         value: "0",
+    //         changeType: "down" as const,
+    //     },
+    //     {
+    //         title: t("user-management.card.recently-added"),
+    //         icon: <UserRoundPlus className="h-4 w-4" />,
+    //         iconBg: "bg-blue-50 text-blue-500",
+    //         value: "0",
+    //         changeType: "up" as const,
+    //     },
+    // ]
 
     const [search, setSearch] = useState("");
     const [entriesPerPage, setEntriesPerPage] = useState(10);
@@ -100,7 +102,7 @@ const UserManagementContent: React.FC = () => {
             </div>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+            {/* <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {dashboardCards.map((card, idx) => (
                     <DashboardCard
                         key={idx}
@@ -108,7 +110,7 @@ const UserManagementContent: React.FC = () => {
                         onDetailClick={() => console.log(`Detail clicked: ${card.title}`)}
                     />
                 ))}
-            </div>
+            </div> */}
 
             {/* Action Bar */}
             <div className="bg-white border border-slate-100 shadow-sm overflow-hidden">
