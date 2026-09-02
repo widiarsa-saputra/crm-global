@@ -90,7 +90,12 @@ const CampaignsPage: React.FC = () => {
         {
             title: "Schedule Date",
             key: "date",
-            render: (campaign) => <span className="text-muted-foreground">{campaign.date ? new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-'}</span>
+            render: (campaign) => (
+                <span className="text-muted-foreground">
+                    {campaign.date ? new Date(campaign.date).toLocaleDateString('id-ID', { day: 'numeric', month: 'numeric', year: 'numeric' }) : '-'}
+                    {campaign.time ? `  ${campaign.time}` : ''}
+                </span>
+            )
         },
         {
             title: "Open Rate",

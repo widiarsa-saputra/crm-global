@@ -132,7 +132,7 @@ const CampaignContactsPage: React.FC = () => {
                                             c.is_clicked ? 'text-green-600' : 'text-red-600'
                                         )}>{c.is_clicked ? 'clicked' : 'not clicked'}</span>
                                     },
-                                    { title: "Sent Time", key: "sent_at", className: "text-right", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }) : "-"}</span> }
+                                    { title: "Sent Time", key: "sent_at", className: "text-right", render: (c: SingleCampaignContactResponse) => <span className="text-muted-foreground">{c.sent_at ? new Date(c.sent_at).toLocaleString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).replace(/\./g, ':') : "-"}</span> }
                                 ]}
                                 data={apiContacts}
                                 isLoading={isContactsLoading || isCampaignsLoading}
