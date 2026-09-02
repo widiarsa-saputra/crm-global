@@ -109,6 +109,7 @@ interface IndexFileProps {
         paginate?: number;
         page?: number;
         include?: string; // e.g., "folder,fileItems,posts"
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         [key: string]: any;
     };
 }
