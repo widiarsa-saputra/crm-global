@@ -263,13 +263,13 @@ const CampaignsPage: React.FC = () => {
                 onClose={handleCloseDialog}
             />
 
+            <EditCampaignModal
+                campaign={selectedCampaign}
+                isOpen={dialog === 'edit'}
+                onClose={handleCloseDialog}
+            />
             {selectedCampaign && (
                 <>
-                    <EditCampaignModal
-                        campaign={selectedCampaign}
-                        isOpen={dialog === 'edit'}
-                        onClose={handleCloseDialog}
-                    />
                     <RemoveCampaignAlert
                         campaign={selectedCampaign}
                         isOpen={dialog === 'delete'}
